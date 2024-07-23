@@ -1,0 +1,48 @@
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!-- Numero Column -->
+    <ng-container matColumnDef="fournisseur">
+      <th mat-header-cell *matHeaderCellDef> fournisseur </th>
+      <td mat-cell *matCellDef="let element"> {{ element.fournisseur }} </td>
+    </ng-container>
+  
+    <!-- Date Debut Column -->
+    <ng-container matColumnDef="nDoc">
+      <th mat-header-cell *matHeaderCellDef> nDoc </th>
+      <td mat-cell *matCellDef="let element"> {{ element.nDoc }} </td>
+    </ng-container>
+  
+    <!-- Date Fin Column -->
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef> date </th>
+      <td mat-cell *matCellDef="let element"> {{ element.date }} </td>
+    </ng-container>
+  
+    <!-- Ancien Prix Column -->
+    <ng-container matColumnDef="quantitRemise">
+      <th mat-header-cell *matHeaderCellDef> quantitRemise </th>
+      <td mat-cell *matCellDef="let element"> {{ element.quantitRemise }} </td>
+    </ng-container>
+  
+    <!-- Taux Remise Column -->
+    <ng-container matColumnDef="prixAchatHT">
+      <th mat-header-cell *matHeaderCellDef> prixAchatHT </th>
+      <td mat-cell *matCellDef="let element"> {{ element.prixAchatHT }} </td>
+    </ng-container>
+  
+    <!-- Nouveau Prix Column -->
+    <ng-container matColumnDef="fidelite">
+      <th mat-header-cell *matHeaderCellDef> fidelite </th>
+      <td mat-cell *matCellDef="let element"> {{ element.fidelite }} </td>
+    </ng-container>
+
+    <!-- Nouveau Documents -->
+    <ng-container matColumnDef="documents">
+        <th mat-header-cell *matHeaderCellDef> documents </th>
+        <td mat-cell *matCellDef="let element"> {{ element.documents }} </td>
+      </ng-container>
+  
+    <!-- Header and Row Definitions -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  

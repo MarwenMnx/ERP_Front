@@ -1,0 +1,52 @@
+.custom-mat-field {
+    height: 30px; /* Adjust the height as needed */
+  }
+  
+  .custom-mat-field .mat-form-field-wrapper {
+    padding: 5px; /* Adjust padding as needed to maintain proper alignment */
+  }
+  
+  .custom-mat-field .mat-form-field-flex {
+    height: unset !important;
+  }
+  
+  .custom-mat-field .mat-input-element {
+    height: 100%; /* Adjust the input height within the field */
+  }
+  
+  .style-button-ajoute {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .style-button-ajoute button {
+    margin-top: 6px;
+    //max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .button-ligne-article {
+    background-color: #4f46e5;
+    color: #fff;
+    padding: 24px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+      display: flex;
+      justify-content: flex-end;
+  }
+  
+  .button-ligne-article:hover {
+    background-color: #1f2937; /* Couleur de fond au survol */
+    color: #fff; /* Couleur de texte au survol */
+    transition: all 0.4s linear;
+  }
+  
+  .border-input {
+    border-color: red;
+  }
+  

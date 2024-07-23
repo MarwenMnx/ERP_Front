@@ -1,0 +1,26 @@
+.mat-mdc-radio-button ~ .mat-mdc-radio-button {
+    margin-left: 16px;
+  }
+
+  .class_transport{
+    letter-spacing:1px;
+    font-size: 15px;
+    font-weight: bold;
+    color:#4f46e5;
+
+  }
+
+  .title_radio_button{
+    display: flex;
+    justify-content: space-around;
+  }
+.display-true{
+  display: block;
+}
+.display-false{
+  display: none;
+}
+  
+
+  /*****/
+  

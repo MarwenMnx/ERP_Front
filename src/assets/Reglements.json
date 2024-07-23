@@ -1,0 +1,318 @@
+  [
+      {
+        "_id": "1",
+        "numero": "R202301",
+        "date": "2023-01-15T00:00:00Z",
+        "montant": 5000,
+        "ecartEspeceNegatif": 0,
+        "utilisateur": {
+          "_id": "U1",
+          "nom": "Doe",
+          "prenom": "John"
+        },
+        "sessionCaisse": {
+          "_id": "S1",
+          "nom": "Morning Session"
+        },
+        "client": {
+          "_id": "C1",
+          "raisonSociale": "Client One"
+        },
+        "fournisseur": {
+          "_id": "F1",
+          "raisonSociale": "Fournisseur One"
+        },
+        "modeReglement": "CHEQUE",
+        "ticket": {
+          "nombre": 1,
+          "code_barre": "TICKET123",
+          "montant_ticket": 50,
+          "taux_deduction": 10,
+          "montant_deduction": 5,
+          "valeur_ticket": 45
+        },
+        "numPiece": "NP123",
+        "dateEcheance": "2023-02-15T00:00:00Z",
+        "titulaire": "John Doe",
+        "banque": {
+          "_id": "B1",
+          "abreviation": "BNK1"
+        },
+        "compteBancaire": {
+          "_id": "CB1",
+          "numeroCompte": "123456789"
+        },
+        "agence": "Agency One",
+        "statut": "VALIDE",
+        "note": "First reglement",
+        "lettrageReglement": {
+          "montant_lettre": 5000,
+          "type": 1,
+          "documents": [
+            {
+              "_id": "D1",
+              "numero": "DOC123",
+              "date": "2023-01-01T00:00:00Z",
+              "type": 1
+            }
+          ]
+        },
+        "code_societe": "CS1",
+        "code_exercice": "CE1",
+        "code_depotpv": "CD1",
+        "tab_reg": "TAB1"
+      },
+      {
+        "_id": "2",
+        "numero": "R202302",
+        "date": "2023-02-20T00:00:00Z",
+        "montant": 3000,
+        "ecartEspeceNegatif": 100,
+        "utilisateur": {
+          "_id": "U2",
+          "nom": "Smith",
+          "prenom": "Jane"
+        },
+        "sessionCaisse": {
+          "_id": "S2",
+          "nom": "Afternoon Session"
+        },
+        "client": {
+          "_id": "C2",
+          "raisonSociale": "Client Two"
+        },
+        "fournisseur": {
+          "_id": "F2",
+          "raisonSociale": "Fournisseur Two"
+        },
+        "modeReglement": "ESPECE",
+        "ticket": {
+          "nombre": 2,
+          "code_barre": "TICKET456",
+          "montant_ticket": 100,
+          "taux_deduction": 5,
+          "montant_deduction": 5,
+          "valeur_ticket": 95
+        },
+        "numPiece": "NP456",
+        "dateEcheance": "2023-03-20T00:00:00Z",
+        "titulaire": "Jane Smith",
+        "banque": {
+          "_id": "B2",
+          "abreviation": "BNK2"
+        },
+        "compteBancaire": {
+          "_id": "CB2",
+          "numeroCompte": "987654321"
+        },
+        "agence": "Agency Two",
+        "statut": "EN_ATTENTE",
+        "note": "Second reglement",
+        "lettrageReglement": {
+          "montant_lettre": 3000,
+          "type": 2,
+          "documents": [
+            {
+              "_id": "D2",
+              "numero": "DOC456",
+              "date": "2023-02-01T00:00:00Z",
+              "type": 2
+            }
+          ]
+        },
+        "code_societe": "CS2",
+        "code_exercice": "CE2",
+        "code_depotpv": "CD2",
+        "tab_reg": "TAB2"
+      },
+      {
+        "_id": "3",
+        "numero": "R202303",
+        "date": "2023-03-25T00:00:00Z",
+        "montant": 7000,
+        "ecartEspeceNegatif": 0,
+        "utilisateur": {
+          "_id": "U3",
+          "nom": "Brown",
+          "prenom": "Michael"
+        },
+        "sessionCaisse": {
+          "_id": "S3",
+          "nom": "Evening Session"
+        },
+        "client": {
+          "_id": "C3",
+          "raisonSociale": "Client Three"
+        },
+        "fournisseur": {
+          "_id": "F3",
+          "raisonSociale": "Fournisseur Three"
+        },
+        "modeReglement": "VIREMENT",
+        "ticket": {
+          "nombre": 3,
+          "code_barre": "TICKET789",
+          "montant_ticket": 200,
+          "taux_deduction": 15,
+          "montant_deduction": 30,
+          "valeur_ticket": 170
+        },
+        "numPiece": "NP789",
+        "dateEcheance": "2023-04-25T00:00:00Z",
+        "titulaire": "Michael Brown",
+        "banque": {
+          "_id": "B3",
+          "abreviation": "BNK3"
+        },
+        "compteBancaire": {
+          "_id": "CB3",
+          "numeroCompte": "112233445"
+        },
+        "agence": "Agency Three",
+        "statut": "ANNULE",
+        "note": "Third reglement",
+        "lettrageReglement": {
+          "montant_lettre": 7000,
+          "type": 3,
+          "documents": [
+            {
+              "_id": "D3",
+              "numero": "DOC789",
+              "date": "2023-03-01T00:00:00Z",
+              "type": 3
+            }
+          ]
+        },
+        "code_societe": "CS3",
+        "code_exercice": "CE3",
+        "code_depotpv": "CD3",
+        "tab_reg": "TAB3"
+      },
+      {
+        "_id": "4",
+        "numero": "R202304",
+        "date": "2023-04-10T00:00:00Z",
+        "montant": 4500,
+        "ecartEspeceNegatif": 50,
+        "utilisateur": {
+          "_id": "U4",
+          "nom": "Davis",
+          "prenom": "Emily"
+        },
+        "sessionCaisse": {
+          "_id": "S4",
+          "nom": "Morning Session"
+        },
+        "client": {
+          "_id": "C4",
+          "raisonSociale": "Client Four"
+        },
+        "fournisseur": {
+          "_id": "F4",
+          "raisonSociale": "Fournisseur Four"
+        },
+        "modeReglement": "CARTE",
+        "ticket": {
+          "nombre": 1,
+          "code_barre": "TICKET101",
+          "montant_ticket": 50,
+          "taux_deduction": 8,
+          "montant_deduction": 4,
+          "valeur_ticket": 46
+        },
+        "numPiece": "NP101",
+        "dateEcheance": "2023-05-10T00:00:00Z",
+        "titulaire": "Emily Davis",
+        "banque": {
+          "_id": "B4",
+          "abreviation": "BNK4"
+        },
+        "compteBancaire": {
+          "_id": "CB4",
+          "numeroCompte": "556677889"
+        },
+        "agence": "Agency Four",
+        "statut": "EN_COURS",
+        "note": "Fourth reglement",
+        "lettrageReglement": {
+          "montant_lettre": 4500,
+          "type": 4,
+          "documents": [
+            {
+              "_id": "D4",
+              "numero": "DOC101",
+              "date": "2023-04-01T00:00:00Z",
+              "type": 4
+            }
+          ]
+        },
+        "code_societe": "CS4",
+        "code_exercice": "CE4",
+        "code_depotpv": "CD4",
+        "tab_reg": "TAB4"
+      },
+      {
+        "_id": "5",
+        "numero": "R202305",
+        "date": "2023-05-18T00:00:00Z",
+        "montant": 8000,
+        "ecartEspeceNegatif": 200,
+        "utilisateur": {
+          "_id": "U5",
+          "nom": "Miller",
+          "prenom": "David"
+        },
+        "sessionCaisse": {
+          "_id": "S5",
+          "nom": "Afternoon Session"
+        },
+        "client": {
+          "_id": "C5",
+          "raisonSociale": "Client Five"
+        },
+        "fournisseur": {
+          "_id": "F5",
+          "raisonSociale": "Fournisseur Five"
+        },
+        "modeReglement": "PRELEVEMENT",
+        "ticket": {
+          "nombre": 2,
+          "code_barre": "TICKET202",
+          "montant_ticket": 150,
+          "taux_deduction": 12,
+          "montant_deduction": 18,
+          "valeur_ticket": 132
+        },
+        "numPiece": "NP202",
+        "dateEcheance": "2023-06-18T00:00:00Z",
+        "titulaire": "David Miller",
+        "banque": {
+          "_id": "B5",
+          "abreviation": "BNK5"
+        },
+        "compteBancaire": {
+          "_id": "CB5",
+          "numeroCompte": "998877665"
+        },
+        "agence": "Agency Five",
+        "statut": "REJETE",
+        "note": "Fifth reglement",
+        "lettrageReglement": {
+          "montant_lettre": 8000,
+          "type": 5,
+          "documents": [
+            {
+              "_id": "D5",
+              "numero": "DOC202",
+              "date": "2023-05-01T00:00:00Z",
+              "type": 5
+            }
+          ]
+        },
+        "code_societe": "CS5",
+        "code_exercice": "CE5",
+        "code_depotpv": "CD5",
+        "tab_reg": "TAB5"
+      }
+    ]
+    

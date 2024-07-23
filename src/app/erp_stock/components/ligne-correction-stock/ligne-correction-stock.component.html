@@ -1,0 +1,60 @@
+<div [formGroup]="form">
+  <div @fadeInUp class="card flex-auto">
+    <div class="px-3 py-4 flex flex-col">
+      <!--<div class="p-1 flex flex-row sm:flex-row gap-2 container">
+
+        <vex-standart-autocomplete class="basis-1/2" [isArticle]="true" [parentForm]="form" fieldId="_id"
+          fieldDisplayed="designation" libelle="Article" keyOfForm="article" (newItemEvent)="newItemEvent($event)"
+          [modeReturnObjet]="true" [items]="allArticles"
+          [value]="form.controls['article'].value"></vex-standart-autocomplete>
+
+        <mat-form-field class="basis-1/4">
+          <mat-label>QTE1_en_stock ({{ form.controls['unite1'] && form.controls['unite1'].value ?
+            form.controls['unite1'].value.libelle : 'unite 1' }})</mat-label>
+          <input class="right-aligned-input" cdkFocusInitial formControlName="quantite_en_stock" matInput
+            appMontantDecimaNumber [readonly]="true" />
+        </mat-form-field>
+
+        <mat-form-field class="basis-1/4">
+          <mat-label>Nouvelle QTE1 ({{ form.controls['unite1'] && form.controls['unite1'].value ?
+            form.controls['unite1'].value.libelle : 'unite 1' }})</mat-label>
+          <input class="right-aligned-input" cdkFocusInitial formControlName="quantite_nouvelle" matInput
+            appMontantDecimaNumber (change)="changeNouvelleQuantite()" />
+        </mat-form-field>
+
+        <mat-form-field class="basis-1/4">
+          <mat-label>QTE1_diff ({{ form.controls['unite1'] && form.controls['unite1'].value ?
+            form.controls['unite1'].value.libelle : 'unite 1' }})</mat-label>
+          <input class="right-aligned-input" cdkFocusInitial formControlName="quantiteUnite1" matInput
+            appMontantDecimaNumber (change)="changeQuantite1()" />
+        </mat-form-field>
+
+
+
+      </div>
+      <div class="p-1 flex flex-row sm:flex-row gap-2 container">
+        <mat-form-field class="flex-auto w-1/2">
+          <mat-label>MOTIF</mat-label>
+          <input cdkFocusInitial formControlName="notes" matInput />
+        </mat-form-field>
+
+        <button color="primary" mat-flat-button type="button" (click)="addNewLigne()" class="button-ligne-article">
+          Ajouter Ligne Article
+          <mat-icon svgIcon="mat:arrow_downward"></mat-icon>
+        </button>
+      </div>-->
+      <div class="p-1 flex flex-row sm:flex-row gap-2 container">
+        <vex-filtre-catg-famille-sous-famille style="width: 100%;" (filtrerEvent)="filterCateg($event)">
+        </vex-filtre-catg-famille-sous-famille>
+
+        <button color="primary" mat-flat-button type="button" (click)="selectMutipleArticles()" class="button-ligne-article">
+          Ajouter Articles
+          <mat-icon svgIcon="mat:arrow_downward"></mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<vex-list-ligne-correction-stock [allArticles]="allArticles" [documentOriginal]="documentOriginal" [lignes]="lignes"
+  (newItemEvent)="misajourLignes($event)"></vex-list-ligne-correction-stock>

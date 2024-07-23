@@ -1,0 +1,621 @@
+
+<div class="flex flex-col sm:flex-row gap-4">
+  <div @fadeInUp class="card flex-auto">
+
+    <!--<div class="px-6 py-4 border-b flex items-center">
+      <img *ngIf="form.controls.imageSrc.value" [src]="form.controls.imageSrc.value" class="avatar mr-5" />
+
+      <h2 *ngIf="form.controls.reference.value" class="headline m-0 flex-auto">
+        {{ form.controls.reference.value }}
+      </h2>
+      <h2 *ngIf="!form.controls.reference.value && !form.controls.reference.value" class="headline m-0 flex-auto">
+        New Product
+      </h2>
+
+      <button [matMenuTriggerFor]="settingsMenu" class="text-secondary" mat-icon-button type="button">
+        <mat-icon svgIcon="mat:more_vert"></mat-icon>
+      </button>
+
+      <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon svgIcon="mat:close"></mat-icon>
+      </button>
+    </div>-->
+
+    <div class="px-6 py-4 flex flex-col">
+
+      <!--start tabs-->
+      <div class="card mt-5">
+        <mat-tab-group>
+          <!--Tarif-->
+          <mat-tab label="Tarif">
+            <div class="p-1">
+
+              <div class="flex flex-col sm:flex-row">
+                <!--block 1-->
+                <div class="flex-auto">
+                  <div class="mt-2 flex flex-col sm:flex-row gap-6">
+                    <div @fadeInUp class="card flex-auto p-1">
+
+                      <div class="flex flex-col">
+
+                        <!--Prix fourn-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Prix fourn</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="prixfourn" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+                        <!--Remise.F %-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Remise.F %</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="remiseF" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+                        <!--Fodec-->
+                        <div class="align-items-center">
+                          <mat-checkbox color="primary" [checked]="true">Fodec</mat-checkbox>
+
+                          <mat-form-field class="flex-auto ml-2 smaller-input" appearance="outline">
+                            <mat-label>%</mat-label>
+                            <input class="right-aligned-input" cdkFocusInitial formControlName="tauxFodec" matInput
+                              (blur)="onBlur($event)" />
+                          </mat-form-field>
+
+                          <mat-form-field class="flex-auto ml-1 smaller-input" appearance="outline">
+                            <mat-label>Mt</mat-label>
+                            <input class="right-aligned-input" cdkFocusInitial formControlName="montantFodec" matInput
+                              (blur)="onBlur($event)" />
+                          </mat-form-field>
+                        </div>
+                        <!--D.Conso-->
+                        <div class="align-items-center">
+                          <mat-checkbox color="primary" [checked]="true">D.Conso</mat-checkbox>
+
+                          <mat-form-field class="flex-auto ml-2 smaller-input" appearance="outline">
+                            <mat-label>%</mat-label>
+                            <input class="right-aligned-input" cdkFocusInitial formControlName="tauxDC" matInput
+                              (blur)="onBlur($event)" />
+                          </mat-form-field>
+
+                          <mat-form-field class="flex-auto ml-1 smaller-input" appearance="outline">
+                            <mat-label>Mt</mat-label>
+                            <input class="right-aligned-input" cdkFocusInitial formControlName="montantDC" matInput
+                              (blur)="onBlur($event)" />
+                          </mat-form-field>
+                        </div>
+                        <!--Prix Achat Net HT-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Prix Achat Net HT</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="prixAchatNetHT" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!--block 1-->
+                <div class="sm:ml-4 flex-auto">
+                  <div class="mt-2 flex flex-col sm:flex-row gap-6">
+                    <div @fadeInUp class="card flex-auto p-2">
+
+                      <div class="flex flex-col">
+                        <!--Taux TVA-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Taux TVA</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="tauxTVA" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+                        <!--Montant TVA-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Montant TVA</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="montantTVA" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+                        <!--Prix Achat TTC-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Prix Achat TTC</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="prixAchatTTC" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+                        <!--Prix Revient HT-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Prix Revient HT</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="prixRevientHT" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+                        <!--Redevance-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Redevance</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="redevance" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+                        <!--Prix Revient TTC-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Prix Revient TTC</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="prixRevientTTC" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--block 2-->
+                <div class="sm:ml-4 flex-auto">
+                  <div class="mt-2 flex flex-col sm:flex-row gap-6">
+                    <div @fadeInUp class="card flex-auto p-2">
+                      <div class="flex flex-col ">
+                        <!--Marge 1-->
+                        <div class=" py-2 flex flex-col">
+                          <div class="align-items-center">
+                            <mat-label class="mx-3">Marge sur</mat-label>
+                            <mat-radio-group>
+                              <mat-radio-button color="primary" [checked]="true"
+                                value="Apples">P.Achat</mat-radio-button>
+                              <mat-radio-button color="primary" value="Peaches">P.Revient</mat-radio-button>
+                            </mat-radio-group>
+                          </div>
+                        </div>
+
+                        <!--Marge 2-->
+                        <div class="align-items-center">
+                          <mat-label class="mx-3">Marge %</mat-label>
+
+                          <mat-form-field class="flex-auto ml-2 smaller-input" appearance="outline">
+                            <mat-label>%</mat-label>
+                            <input class="right-aligned-input" cdkFocusInitial formControlName="tauxMarge" matInput
+                              (blur)="onBlur($event)" />
+                          </mat-form-field>
+
+                          <mat-form-field class="flex-auto ml-1 smaller-input" appearance="outline">
+                            <mat-label>Mt</mat-label>
+                            <input class="right-aligned-input" cdkFocusInitial formControlName="montantMarge" matInput
+                              (blur)="onBlur($event)" />
+                          </mat-form-field>
+                        </div>
+
+                        <!--Prix vente ht-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Prix vente HT</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="prixVenteHT" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+
+                        <!--Fodec V-->
+                        <div class="align-items-center">
+                          <mat-checkbox color="primary" [checked]="true">Fodec vte</mat-checkbox>
+
+                          <mat-form-field class="flex-auto ml-2 smaller-input" appearance="outline">
+                            <mat-label>%</mat-label>
+                            <input class="right-aligned-input" cdkFocusInitial formControlName="tauxFodecVente" matInput
+                              (blur)="onBlur($event)" />
+                          </mat-form-field>
+
+                          <mat-form-field class="flex-auto ml-1 smaller-input" appearance="outline">
+                            <mat-label>Mt</mat-label>
+                            <input class="right-aligned-input" cdkFocusInitial formControlName="montantFodecVente"
+                              matInput (blur)="onBlur($event)" />
+                          </mat-form-field>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--block 2-->
+                <div class="sm:ml-4 flex-auto">
+                  <div class="mt-2 flex flex-col sm:flex-row gap-6">
+                    <div @fadeInUp class="card flex-auto p-2">
+                      <div class="flex flex-col ">
+
+                        <!--Montant tva-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Montant tva</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="montantTVAVente" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+
+                        <!--Prix ttc-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Prix ttc</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="prixVenteTTC" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+
+                        <!--P.V Conseillé-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>P.V Conseillé</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="prixVenteConseille"
+                            matInput (blur)="onBlur($event)" />
+                        </mat-form-field>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </mat-tab>
+          <!--Plus Détails-->
+          <mat-tab label="Plus Détails">
+            <div class="p-6">
+
+              <div class="flex flex-col sm:flex-row">
+                <!--block 1-->
+                <div class="flex-auto">
+                  <div class="mt-2 flex flex-col sm:flex-row gap-6">
+                    <div @fadeInUp class="card flex-auto p-2">
+
+                      <div class="flex flex-col">
+
+                        <!--Coefficient-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Coefficient</mat-label>
+                          <input class="right-aligned-input" cdkFocusInitial formControlName="coefficient" matInput
+                            (blur)="onBlur($event)" />
+                        </mat-form-field>
+
+                        <!--Marque-->
+                        <vex-standart-autocomplete libelle="Marque"
+                          [items]="[{id:'15', libelle:'Marque 1'}, {id:'10', libelle:'Marque 2'}, {id:'12', libelle:'Marque 3'}]"></vex-standart-autocomplete>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--block 2-->
+                <div class="sm:ml-6 flex-auto">
+                  <div class="mt-2 flex flex-col sm:flex-row gap-6">
+                    <div @fadeInUp class="card flex-auto p-2">
+                      <div class="flex flex-col ">
+                        <!--Fournisseur %-->
+                        <vex-standart-autocomplete libelle="Fournisseur"
+                          [items]="[{id:'15', libelle:'Fournisseur 1'}, {id:'10', libelle:'Fournisseur 2'}, {id:'12', libelle:'Fournisseur 3'}]"></vex-standart-autocomplete>
+
+                        <!--Unité 2-->
+                        <vex-standart-autocomplete libelle="Unité 2"
+                          [items]="[{id:'15', libelle:'Unité 1'}, {id:'10', libelle:'Unité 2'}, {id:'12', libelle:'Unité 3'}]"></vex-standart-autocomplete>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--block 2-->
+                <div class="sm:ml-6 flex-auto">
+                  <div class="mt-2 flex flex-col sm:flex-row gap-6">
+                    <div @fadeInUp class="card flex-auto p-2">
+                      <div class="flex flex-col ">
+                        <!--Modele-->
+                        <vex-standart-autocomplete libelle="Modele"
+                          [items]="[{id:'15', libelle:'Modele 1'}, {id:'10', libelle:'Modele 2'}, {id:'12', libelle:'Modele 3'}]"></vex-standart-autocomplete>
+
+                        <!--RefFournisseur-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>RefFournisseur</mat-label>
+                          <input cdkFocusInitial formControlName="refFournisseur" matInput />
+                        </mat-form-field>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--block 4-->
+                <div class="sm:ml-6 flex-auto">
+                  <div class="mt-2 flex flex-col sm:flex-row gap-6">
+                    <div @fadeInUp class="card flex-auto p-2">
+                      <div class="flex flex-col ">
+                        <!--RefFournisseur-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>RefFournisseur</mat-label>
+                          <input cdkFocusInitial formControlName="refFournisseur" matInput />
+                        </mat-form-field>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="flex flex-col sm:flex-row">
+                <div class="flex-auto">
+                  <div class="mt-2 flex flex-col sm:flex-row gap-6">
+                    <div @fadeInUp class="card flex-auto p-2">
+
+                      <div class="flex flex-col">
+
+                        <!--Prix fourn-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Description</mat-label>
+                          <textarea matInput formControlName="description" placeholder="Enter your text"
+                            rows="2"></textarea>
+                        </mat-form-field>
+
+                        <!--Remise.F %-->
+                        <mat-form-field class="flex-auto">
+                          <mat-label>Observation</mat-label>
+                          <textarea matInput formControlName="observation" placeholder="Enter your text"
+                            rows="2"></textarea>
+                        </mat-form-field>
+
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </mat-tab>
+          <!--Frais-->
+          <mat-tab label="Frais">
+            <div class="p-6">
+              <vex-frais></vex-frais>
+            </div>
+          </mat-tab>
+          <!--Composant-->
+          <mat-tab label="Composant">
+            <div class="p-6">
+              <div class="flex flex-col sm:flex-row">
+                <div class="py-2 flex flex-col">
+                  <div class="d-flex align-items-center gap-4">
+                    <mat-checkbox color="primary" [checked]="true">Est Composé / Pack</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+
+              <div style="overflow-x: auto;">
+                <vex-composants></vex-composants>
+              </div>
+            </div>
+          </mat-tab>
+          <!--Stock-->
+          <mat-tab label="Stock">
+            <div class="p-6">
+              <div class="flex flex-col sm:flex-row">
+
+                <!--Autoriser stock négatif-->
+                <div class="py-2 flex flex-col">
+                  <div class="d-flex align-items-center gap-4">
+                    <mat-checkbox color="primary" [checked]="true">Autoriser stock négatif</mat-checkbox>
+                  </div>
+                </div>
+
+                <!--Stock Min-->
+                <mat-form-field class="flex-auto ml-3 input-montant">
+                  <mat-label>Stock Min</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial formControlName="stockMin" matInput
+                    (blur)="onBlur($event)" />
+                </mat-form-field>
+
+                <!--Unité 2-->
+                <mat-form-field class="flex-auto  ml-3 input-montant">
+                  <mat-label>Stock Reaprov</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial formControlName="stockReaprov" matInput />
+                </mat-form-field>
+
+                <!--Modele-->
+                <mat-form-field class="flex-auto  ml-3 input-montant">
+                  <mat-label>Stock Max</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial formControlName="stockMax" matInput />
+                </mat-form-field>
+
+              </div>
+
+              <div class="flex flex-col sm:flex-row">
+                <div class="flex-auto">
+
+                  <!--<mat-label>Longueur * Largeur * Hauteur :</mat-label>-->
+
+                  <mat-form-field class="flex-auto ml-2">
+                    <mat-label>Longueur</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="longueur" matInput
+                      (blur)="onBlur($event)" />
+                  </mat-form-field>
+                  *
+                  <!--Longueur * Largeur * Hauteur-->
+                  <mat-form-field class="flex-auto ml-2">
+                    <mat-label>Largeur</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="largeur" matInput
+                      (blur)="onBlur($event)" />
+                  </mat-form-field>
+                  *
+                  <!--Longueur * Largeur * Hauteur-->
+                  <mat-form-field class="flex-auto ml-2">
+                    <mat-label>Hauteur</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="hauteur" matInput
+                      (blur)="onBlur($event)" />
+                  </mat-form-field>
+
+                  <mat-form-field [color]="selectCtrl.value" class="flex-none ml-2">
+                    <mat-label>Mesurer par</mat-label>
+                    <mat-select [formControl]="selectCtrl" placeholder="Select a type&hellip;">
+                      <mat-option value="primary">m</mat-option>
+                      <mat-option value="accent">km</mat-option>
+                      <mat-option value="warn">cm</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row">
+                <div class="flex-auto">
+
+                  <!--Longueur * Largeur * Hauteur-->
+                  <mat-form-field class="flex-auto ml-2">
+                    <mat-label>Surface :</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="surface" matInput
+                      (blur)="onBlur($event)" />
+                  </mat-form-field>
+
+                  <!--Longueur * Largeur * Hauteur-->
+                  <mat-form-field class="flex-auto ml-2">
+                    <mat-label>Volume :</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="volume" matInput
+                      (blur)="onBlur($event)" />
+                  </mat-form-field>
+
+                  <!--Longueur * Largeur * Hauteur-->
+                  <mat-form-field class="flex-auto ml-2">
+                    <mat-label>Poids :</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="poids" matInput
+                      (blur)="onBlur($event)" />
+                  </mat-form-field>
+
+                  <mat-form-field [color]="selectCtrl.value" class="flex-none ml-2">
+                    <mat-label>Mesurer par</mat-label>
+                    <mat-select [formControl]="selectCtrl" placeholder="Select a type&hellip;">
+                      <mat-option value="primary">kg</mat-option>
+                      <mat-option value="accent">g</mat-option>
+                      <mat-option value="warn">mg</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                </div>
+              </div>
+
+              <div style="overflow-x: auto;">
+                <vex-stocks></vex-stocks>
+              </div>
+
+            </div>
+          </mat-tab>
+          <!--Code Barre / Cotisage-->
+          <mat-tab label="Code Barre / Cotisage">
+            <div class="p-6">
+
+              <div class="flex flex-col sm:flex-row">
+
+                <!--Autoriser stock négatif-->
+                <div class="py-2 flex flex-col">
+                  <div class="d-flex align-items-center gap-4">
+                    <mat-checkbox color="primary" [checked]="true">Multimode barre</mat-checkbox>
+                  </div>
+                </div>
+
+              </div>
+
+              <vex-codebarre></vex-codebarre>
+
+            </div>
+          </mat-tab>
+          <!--Promotion Remise-->
+          <mat-tab label="Promotion Remise">
+            <div class="p-6">
+
+              <div class="flex flex-col sm:flex-row">
+                <div class="py-2 flex flex-col">
+                  <div class="d-flex align-items-center gap-4">
+                    <mat-radio-group>
+                      <mat-label>Avec remise</mat-label>
+
+                      <mat-radio-button class="radio" value="OUI">
+                        OUI
+                      </mat-radio-button>
+
+                      <mat-radio-button class="radio" value="NON">
+                        NON
+                      </mat-radio-button>
+                    </mat-radio-group>
+
+                    <mat-form-field class="flex-auto ml-2">
+                      <mat-label>Plafond remise :</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="plafondRemise" matInput
+                        (blur)="onBlur($event)" />
+                    </mat-form-field>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row">
+
+                <!--Autoriser stock négatif-->
+                <div class="py-2 flex flex-col">
+                  <div class="d-flex align-items-center gap-4">
+                    <mat-checkbox color="primary" [checked]="true">Activer prix par quantité</mat-checkbox>
+                  </div>
+                </div>
+
+              </div>
+              <vex-promotionremise></vex-promotionremise>
+
+              <div class="flex flex-col sm:flex-row">
+
+                <!--Autoriser stock négatif-->
+                <div class="py-2 flex flex-col">
+                  <div class="d-flex align-items-center gap-4">
+                    <mat-checkbox color="primary" [checked]="true">Promotion</mat-checkbox>
+                  </div>
+                </div>
+
+              </div>
+              <vex-promotionremise2></vex-promotionremise2>
+
+            </div>
+          </mat-tab>
+          <!--Historique Achat-->
+          <mat-tab label="Historique Achat">
+            <div class="p-6">
+
+              <vex-historiqueachat></vex-historiqueachat>
+
+            </div>
+          </mat-tab>
+          <!--Fidélité-->
+          <mat-tab label="Fidélité">
+            <div class="p-6">
+
+              <div class="flex flex-col sm:flex-row">
+                <div class="py-2 flex flex-col">
+                  <div class="d-flex align-items-center gap-4">
+                    <mat-checkbox color="primary" [checked]="true">Point fidelite</mat-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col sm:flex-row">
+                <mat-radio-group>
+                  <mat-label>Formule</mat-label>
+
+                  <mat-radio-button class="radio" value="OUI">
+                    NB point fixe
+                  </mat-radio-button>
+
+                  <mat-radio-button class="radio" value="NON">
+                    Variable selon marge
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+
+              <vex-fidelite></vex-fidelite>
+
+            </div>
+          </mat-tab>
+          <!--Documents-->
+          <mat-tab label="Documents">
+            <div class="p-6">
+              <button>Ajouter</button>
+              <vex-documents></vex-documents>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      </form>
+
+      <div class="flex items-center justify-end gap-2">
+        <button mat-button type="button">Cancel</button>
+        <button color="primary" mat-flat-button type="button">Submit</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

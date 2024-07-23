@@ -1,0 +1,69 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+
+
+
+    <h2 *ngIf="defaults?.annee_exercice"  class="headline m-0 flex-auto">   Modifier exercice </h2>
+    <h2 *ngIf="!defaults?.annee_exercice"  class="headline m-0 flex-auto"> Ajouter exercice  </h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button  type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+
+    <mat-form-field class="flex-auto">
+      <mat-label>Année</mat-label>
+      <input cdkFocusInitial formControlName="annee_exercice" matInput />
+      <mat-error *ngIf="form.controls.annee_exercice.hasError('required')"  >Veillez inserer l'année. </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="col-sm-6">
+      <mat-label>Timbre fiscale (en Dinars)</mat-label>
+      <input style="text-align: right; padding-right: 1px !important;" matInput  formControlName="timbreFiscale"    onClick="this.select();"
+             appMontantDecimaNumber  placeholder="Montant en dinars (0.000)">
+      <mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
+      <mat-error *ngIf="form.controls.timbreFiscale.hasError('required')"  >Veillez inserer le timbre fiscale. </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="col-sm-6">
+      <mat-label>Timbre ticket (en Dinars)</mat-label>
+      <input style="text-align: right; padding-right: 1px !important;" matInput  formControlName="timbreTicket"
+             onClick="this.select();"   appMontantDecimaNumber  placeholder="Montant en dinars (0.000)">
+      <mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
+      <mat-error *ngIf="form.controls.timbreTicket.hasError('required')"  >Veillez inserer le timbre ticket. </mat-error>
+    </mat-form-field>
+
+    <div class="flex mb-7 mr-2 items-center" >
+      <mat-checkbox color="primary"  value = "false" [checked] = "false" type="checkbox" formControlName="enCours" >
+        <h2>En cours</h2>
+      </mat-checkbox>
+    </div>
+
+    <div class="flex mb-7 mr-2 items-center" >
+      <mat-checkbox color="primary"  value = "false" [checked] = "false" type="checkbox" formControlName="cloturee" >
+        <h2>Clôturé</h2>
+      </mat-checkbox>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+    <button  *ngIf="isCreateMode()" color="primary" mat-flat-button type="submit">
+      Ajouter  exercice
+    </button>
+    <button *ngIf="isUpdateMode()"  color="primary"   mat-flat-button  type="submit">
+      Modifier  exercice
+    </button>
+  </mat-dialog-actions>
+
+
+</form>
+
+
+

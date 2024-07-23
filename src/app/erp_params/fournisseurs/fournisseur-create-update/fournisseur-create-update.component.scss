@@ -1,0 +1,33 @@
+.vex-mat-dense-default .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label {
+    top: 13px;
+  }
+
+  .vex-mat-dense-default .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix {
+    padding-top: 5px;
+    padding-bottom: 3px;
+  }
+
+
+  .mat-mdc-dialog-content {
+    max-height: calc(100vh - 120px);
+  }
+
+  .right-aligned-input {
+    text-align: right;
+  }
+
+  .input-montant {
+    max-width: 200px;
+  }
+
+  .smaller-input {
+    max-width: 100px; /* Adjust the width to your desired size */
+  }
+
+  .align-items-center{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+  }
+
+  

@@ -1,0 +1,66 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+    <div class="flex items-center" mat-dialog-title>
+        
+      <h2
+      *ngIf="defaults?. matricule_fiscale"
+      class="headline m-0 flex-auto">
+     Modifier leasing
+    </h2>
+    <h2
+      *ngIf="!defaults?. matricule_fiscale"
+      class="headline m-0 flex-auto">
+      Ajouter leasing
+    </h2>
+       
+
+       <button
+          class="text-secondary"
+          mat-dialog-close
+          mat-icon-button
+          type="button">
+          <mat-icon svgIcon="mat:close"></mat-icon>
+        </button>
+    </div>
+  
+    <mat-divider class="text-border"></mat-divider>
+  
+    <mat-dialog-content class="flex flex-col">
+        <mat-form-field class="flex-auto">
+          <mat-label>Matricule fiscale</mat-label>
+          <input cdkFocusInitial formControlName="matricule_fiscale" matInput />
+           <mat-error *ngIf="form.controls.matricule_fiscale.hasError('required')"
+            >Veillez inserer la matricule fiscale.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+            <mat-label>Raison sociale</mat-label>
+            <input cdkFocusInitial formControlName="raison_sociale" matInput />
+             <mat-error *ngIf="form.controls.raison_sociale.hasError('required')"
+              >Veillez inserer le raison sociale.
+              </mat-error>
+          </mat-form-field>
+    </mat-dialog-content>
+  
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close type="button">Annuler</button>
+        <button
+          *ngIf="isCreateMode()"
+          color="primary"
+          mat-flat-button
+          type="submit">
+          Ajouter leasing
+        </button>
+        <button
+          *ngIf="isUpdateMode()"
+          color="primary"
+          mat-flat-button
+          type="submit">
+          Modifier leasing                                                                                        
+        </button>
+    </mat-dialog-actions>
+  
+  </form>
+    
+  
+    

@@ -1,0 +1,64 @@
+
+<div mat-dialog-title class="flex items-center justify-between">
+  <div class="p-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-2 container">
+    <span style="text-align: center; font-size: x-large;"> <b>Fiche client</b></span>
+  </div>
+</div>
+
+
+<mat-dialog-content>
+
+  <div class="card overflow-hidden flex-auto">
+
+
+    <div class="px-6 py-4 flex flex-col">
+
+      <!-- *************TICKET************ -->
+      <form class="example-form" [formGroup]="clientValidations" >
+        <div    class="p-1 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-1 container" >
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Raison sociale</mat-label>
+            <input cdkFocusInitial formControlName="raisonSociale" matInput />
+            <mat-error *ngIf="clientValidations.controls['raisonSociale'].hasError('required')">Veuillez renseigner le Raison Sociale.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Matricule fiscale</mat-label>
+            <input cdkFocusInitial formControlName="matriculeFiscale" matInput />
+          </mat-form-field>
+
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Tel</mat-label>
+            <input cdkFocusInitial formControlName="telephone" matInput />
+            <mat-error *ngIf="clientValidations.controls['telephone'].hasError('pattern')">Format de téléphone invalide.</mat-error>
+          </mat-form-field>
+
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Adresse</mat-label>
+            <input cdkFocusInitial formControlName="adresse" matInput />
+            <mat-error *ngIf="clientValidations.controls['adresse'].hasError('required')">Veuillez renseigner l'adresse / ville.</mat-error>
+          </mat-form-field>
+
+
+          <div>
+            <mat-checkbox color="primary"  formControlName="exonereTva">Exonere TVA</mat-checkbox>
+            <mat-checkbox color="primary" formControlName="exonereTimbre" align="end">Exonere Timbre</mat-checkbox>
+          </div>
+
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close('-1')" >Non</button>
+  <button mat-button color="primary" (click)="close('')" [disabled]="!clientValidations.valid">VALIDER</button>
+
+</mat-dialog-actions>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Vex - Angular 16+ Material Design Admin Template</title>
+  <base href="/"/>
+
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <link href="favicon.ico" rel="icon" type="image/x-icon"/>
+  <link rel="manifest" href="manifest.webmanifest">
+
+
+  <link
+  href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css"
+  rel="stylesheet"
+/>
+
+<!-- <link rel="stylesheet" href="./app//utils/table-croisee/table-croisee.component.scss"> -->
+ <!-- <link href="https://cdn.webdatarocks.com/latest/theme/custom/webdatarocks.min.css" rel="stylesheet"/> -->
+<!-- <link href="https://cdn.webdatarocks.com/latest/theme/teal/webdatarocks.min.css" rel="stylesheet"/> -->
+<!-- <link href="https://cdn.webdatarocks.com/latest/theme/green/webdatarocks.min.css" rel="stylesheet"/> -->
+<!-- <link href="https://cdn.webdatarocks.com/latest/theme/stripedteal/webdatarocks.min.css" rel="stylesheet"/> -->
+<!-- <link href="https://cdn.webdatarocks.com/latest/theme/stripedblue/webdatarocks.min.css" rel="stylesheet"/> -->
+  <meta name="theme-color" content="#4F46E5">
+</head>
+<body dir="ltr" class="body" style="height: 100% !important; min-height: 100% !important;">
+<style>
+
+    /*global table pivot style */
+   #wdr-pivot-view .wdr-grid-layout #wdr-data-sheet .wdr-cell {
+        text-align: center;
+        background:  rgba(93, 98, 107, 0.26) !important ;
+        width: auto !important;
+     }
+
+    /*  icon header pivot table style*/
+    #wdr-toolbar-wrapper #wdr-toolbar>.wdr-toolbar-group-right>li>a div.wdr-svg-icon, #wdr-toolbar-wrapper #wdr-toolbar>li>a div.wdr-svg-icon {
+    position: absolute;
+    text-align: -webkit-center !important;
+    bottom: 31px;
+    height: 2.5rem;
+    line-height: 12px;
+    color: #112d99 !important;
+    font-size: 13px;
+    font-weight: 600;
+   }
+
+   /*icons svg style*/
+   #wdr-toolbar-wrapper #wdr-toolbar li a svg, #wdr-toolbar-wrapper #wdr-toolbar li a svg path {
+    transform: translateZ(0);
+    fill: #112d99;
+   }
+   /*icon fullscreen display*/
+   #wdr-toolbar-wrapper #wdr-toolbar .wdr-toolbar-group-right {
+    position: absolute;
+    right: 30px;
+}
+ /*icon export display*/
+   #wdr-tab-export{
+    position: absolute;
+    left: 22px;
+}
+
+/*header span  with icon style*/
+#wdr-toolbar-wrapper #wdr-toolbar>.wdr-toolbar-group-right>li>a span, #wdr-toolbar-wrapper #wdr-toolbar>li>a span {
+    position: absolute;
+    top: 58px;
+    line-height: 12px;
+    color: #112d99;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+  /*header  background pivot table style  */
+  #wdr-toolbar-wrapper #wdr-toolbar  {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+    font-weight: 400;
+    background: linear-gradient(to left, #edf3f2 ,#4F46E5 , #edf3f2); 
+    text-shadow: none;
+    height: 85px;
+
+}
+
+/*title pivot table style*/
+ #wdr-pivot-view span.wdr-ui-label {
+  background-image: linear-gradient(
+    -225deg,
+    #231557 0%,
+    #acb0c2 67%,
+    #44107a 29%,
+    #3a7cc3 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 5s linear infinite;
+  display: inline-block;
+  font-size: 20px;
+    letter-spacing: 3px; 
+  
+}
+
+@keyframes textclip {
+  to {
+    background-position: 200% center;
+  }
+}
+/*affchage Data table pivot*/
+#wdr-pivot-view .wdr-grid-layout #wdr-data-sheet .wdr-cell {
+    border-color: #aba5c6;
+    text-align: center;
+    background: rgb(31 18 181 / 26%) !important;
+    width: auto !important;
+}
+
+.mat-actions-row {
+    position: sticky;
+    right: 0;
+    z-index: 2;
+
+  }
+
+  .mat-actions-row button{
+    background-color: #746ed9;
+    color: white;
+  }
+
+  .mat-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background-color: #746ed9;
+    color: white;
+    height: 35px;
+    font-size: small;
+  }
+  /* Apply sticky styles to the footer row if needed */
+  .mat-footer-row {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    background-color: #746ed9;
+    color: white;
+    height: 35px;
+  }
+
+  .mat-mdc-row {
+    font-size: small;
+    height: 1px;
+  }
+
+  .mdc-text-field {
+    font-size: small;
+  }
+  .mat-mdc-select-value {
+    font-size: small;
+  }
+
+  .mat-mdc-form-field-infix {
+    min-height: 40px;
+  }
+  .table-container {
+    max-height: calc(100vh - 300px); /* Set a maximum height or adjust according to your layout */
+    overflow-y: auto;
+  }
+
+  #vex-splash-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #111827;
+    z-index: 99999;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .vex-splash-screen-loader {
+    width: 150px;
+    height: 22px;
+    border-radius: 20px;
+    color: #0076b9;
+    border: 2px solid;
+    position: relative;
+  }
+
+  .vex-splash-screen-loader::before {
+    content: "";
+    position: absolute;
+    margin: 2px;
+    inset: 0 100% 0 0;
+    border-radius: inherit;
+    background: currentColor;
+    animation: vex-splash-screen-loader-animation 2s forwards;
+  }
+
+  .mat-mdc-table .mat-mdc-header-cell {
+    background:inherit;
+    height: 0.25rem;
+  }
+
+  @keyframes vex-splash-screen-loader-animation {
+    100% {
+      inset: 0;
+    }
+  }
+</style>
+
+<div id="wrapper">
+  <div id="wdr-component"></div>
+</div>
+
+
+<div id="vex-splash-screen">
+  <img height="70" width="70" loading="eager" src="assets/img/logo/logo.svg"/>
+  <div class="vex-splash-screen-loader"></div>
+</div>
+<vex-root></vex-root>
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!-- proprediction.component.html -->
+
+<div class="prediction-container">
+  <h1 class="title">Obtenez des recommandations d'articles</h1>
+  
+  <label for="selectedDesignations" class="label">Choisissez un ou plusieurs articles :</label>
+  <select id="selectedDesignations" multiple [(ngModel)]="selectedDesignations" class="select">
+    <option *ngFor="let designation of designations" [ngValue]="designation">{{ designation }}</option>
+  </select>
+  
+  <button class="recommendation-button" (click)="getRecommendations()">Obtenir les recommandations</button>
+  
+  <ul *ngIf="recommendations.length > 0" class="recommendations-list">
+    <li *ngFor="let recommendation of recommendations">
+      <span>{{ recommendation.item }} - Probability: </span>
+      <span [style.color]="getProbabilityColor(recommendation.probability)">
+        {{ (recommendation.probability * 100).toFixed(2) }}%
+      </span>
+    </li>
+  </ul>
+  <p *ngIf="recommendations.length === 0" class="no-recommendations">Aucune recommandation pour le moment.</p>
+</div>

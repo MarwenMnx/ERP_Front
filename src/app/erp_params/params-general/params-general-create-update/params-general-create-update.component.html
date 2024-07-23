@@ -1,0 +1,43 @@
+
+<form (ngSubmit)="save()" [formGroup]="form">
+
+  <div class="flex items-center" mat-dialog-title>
+    <h2  *ngIf="defaults?.libelle"   class="headline m-0 flex-auto">
+      Modifier paramètre général
+    </h2>
+    <h2  *ngIf="!defaults?.libelle"   class="headline m-0 flex-auto">
+      Ajouter paramètre général
+    </h2>
+    <button class="text-secondary"  mat-dialog-close  mat-icon-button  type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+    <mat-form-field class="flex-auto">
+      <mat-label>Libelle</mat-label>
+      <input cdkFocusInitial formControlName="libelle" matInput placeholder="params_test" />
+      <mat-error *ngIf="form.controls.libelle.hasError('pattern')"  > Le libelle doit contenir que des chiffres Ou Et des lettres. </mat-error>
+      <mat-error *ngIf="form.controls.libelle.hasError('required')"  >  Veuillez inserer le libellé  </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="flex-auto">
+      <mat-label>Valeur</mat-label>
+      <input cdkFocusInitial formControlName="valeur" matInput />
+      <mat-error *ngIf="form.controls.valeur.hasError('required')"  >  Veuillez inserer la valeur  </mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+    <button *ngIf="isCreateMode()" color="primary"  mat-flat-button type="submit">
+      Ajouter paramètre général
+    </button>
+    <button  *ngIf="isUpdateMode()" color="primary"  mat-flat-button type="submit">
+      Modifier  paramètre général
+    </button>
+  </mat-dialog-actions>
+
+</form>

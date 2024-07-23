@@ -1,0 +1,72 @@
+<vex-secondary-toolbar current="{{ !isCreateMode() ? form.get('code')?.value : 'Nouveau Rôle' }}">
+
+  <vex-breadcrumbs *ngIf="isCreateMode()"  [crumbs]="['Rôles', 'Nouveau Rôle']" class="flex-auto"></vex-breadcrumbs>
+  <vex-breadcrumbs *ngIf="!isCreateMode()" [crumbs]="['Rôles', 'Modifier Rôle']" class="flex-auto"></vex-breadcrumbs>
+
+  <button class="ml-2" color="primary" mat-icon-button type="button">
+    <mat-icon svgIcon="mat:more_vert"></mat-icon>
+  </button>
+</vex-secondary-toolbar>
+
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="p-6 container">
+    <div class="p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-1 container">
+      <div class="card" style="display: flex;justify-content: flex-start;">
+
+          <mat-form-field style="padding-right: 1rem;">
+            <mat-label>Libelle</mat-label>
+            <input cdkFocusInitial formControlName="libelle" matInput />
+            <mat-error *ngIf="form.controls.libelle.hasError('required')"  >Veillez inserer le libelle. </mat-error>
+          </mat-form-field>
+
+          <vex-standart-autocomplete fieldId="route" fieldDisplayed="label" [parentForm]="form" libelle="Premier page"
+                                    [value]="defaults.default_page" (newItemEvent)="newItemEvent($event)"
+                                     [modeReturnObjet]="false"
+                                     [items]="lis_of_pages" [isRequired]="true">
+          </vex-standart-autocomplete>
+
+        <div class="flex flex-col gap-2">
+          <mat-radio-group class="flex gap-4" *ngIf="isAdminBongest || isSuperAdminGroup"
+                           [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" >
+            <mat-radio-button *ngIf="isAdminBongest" [checked]="true" [value]="1" >Administrateur group </mat-radio-button>
+            <mat-radio-button [value]="2">Administrateur societé</mat-radio-button>
+            <mat-radio-button [value]="3">utilisateur</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4">
+      <div class="card flex-auto">
+
+        <div class="card p-2 grid grid-cols-1 gap-1 container">
+          <div class="flex mx-px gap-3 mb-3">
+            <div class="p-2 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-1 container">
+              <vex-modules
+                [listAccess]="listAccess"
+                (set_listAccess)="set_listAccess($event)" >
+              </vex-modules>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="p-2 grid grid-cols-1 gap-1 container" style="text-align: right; padding-bottom: 100px;">
+          <mat-dialog-actions align="end">
+            <button mat-button mat-dialog-close type="button" [routerLink]="['/roles']">Annuler</button>
+            <button *ngIf="isCreateMode()" color="primary" mat-flat-button type="submit">
+              Ajouter Rôle
+            </button>
+            <button   *ngIf="isUpdateMode()"   color="primary"  mat-flat-button    type="submit">
+              Modifier Rôle
+            </button>
+          </mat-dialog-actions>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</form>
+

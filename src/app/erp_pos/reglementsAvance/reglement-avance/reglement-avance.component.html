@@ -1,0 +1,306 @@
+<div mat-dialog-title class="flex items-center justify-between">
+  <div class="p-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-2 container">
+    <span style="text-align: center; font-size: x-large;">Type de paiement : <b>Règlement - avance</b></span>
+  </div>
+</div>
+
+<mat-dialog-content>
+
+  <div class="p-1 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-2 container">
+    <span style="float:left; font-size: x-large;color: red">Total avance(s) : <b>{{utilService.formatMontant(set_total_payement)}}</b></span>
+
+    <span style="float:right; font-size: large;color: blue ; text-align: right;">Client
+      <b>{{selectClient!='' ? ' : '+selectClient.code +' '+ selectClient.raisonSociale: ''}} </b>
+    </span>
+  </div>
+
+  <div class="card overflow-hidden flex-auto">
+
+    <div class="px-6 py-4 flex flex-col">
+
+      <div class="grid grid-cols-3 gap-1">
+
+        <mat-form-field class="flex-auto">
+          <mat-label>Date Règlement</mat-label>
+          <input [matDatepicker]="picker" matInput  [(ngModel)]="selectDate" />
+          <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-hint>  JJ/MM/AAAA  </mat-hint>
+
+        </mat-form-field>
+
+        <!-- get Client -->
+        <mat-form-field style="width: inherit; flex: content;"  >
+          <mat-icon class="icon-sm"  matIconPrefix svgIcon="mat:person_outline"></mat-icon>
+          <input #stateInputClient [formControl]="clientCtrl" [matAutocomplete]="autoClient"
+                 (focus)="set_foc_client()"
+                 onClick="this.select();" matInput placeholder="Client"  />
+          <mat-autocomplete #autoClient="matAutocomplete" >
+            <mat-option *ngFor="let stateCL of filteredClient$ | async" [value]="stateCL.code +' '+ stateCL.raisonSociale "
+                        (onSelectionChange)="stateInputClient.value !=undefined && onEnterClient($event)"
+                        style="border: 1px dotted #cbcbcb;min-height: 4rem;" >
+              <span class="flex items-center" style="min-height: 3rem;">
+                <img [src]="" class="align-middle mr-4 shadow-lg h-6 inline-block" />
+                <span class="flex flex-col">
+                  <span class="body-1 leading-snug">{{ stateCL.code }}</span>
+                  <span class="caption text-secondary leading-none">Mat.Fisc : {{ stateCL.matriculeFiscale }} / Raison Sociale : {{ stateCL.raisonSociale }}</span>
+                </span>
+              </span>
+            </mat-option>
+          </mat-autocomplete>
+
+          <button class="text-secondary" mat-icon-button matIconSuffix type="button">
+            <mat-icon svgIcon="mat:arrow_drop_down"></mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field  class="flex-none">
+          <mat-label>Mode Règlement</mat-label>
+          <mat-select  placeholder="Mode Règlement" (selectionChange)="changeModeReglement($event)">
+            <mat-option value="ESPECE">Espèce</mat-option>
+            <mat-option value="CHEQUE">Chèque</mat-option>
+            <mat-option value="CHEQUE">Traite</mat-option>
+            <mat-option value="TICKET">Ticket</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <!-- *************ESPECE************ -->
+      <form class="example-form" [formGroup]="especeValidations"
+            *ngIf="getDetailsPanier.typePayment == 'ESPECE' || getDetailsPanier.typePayment == 'CARTE_BANCAIRE'">
+        <mat-form-field appearance="outline" class="col-sm-6">
+          <mat-label>Montant</mat-label>
+          <input style="text-align: right; padding-right: 1px !important;" matInput
+                 formControlName="especeNumber"    onClick="this.select();"
+                 appMontantDecimaNumber  placeholder="Montant en dinars (15.250)">
+          <mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
+          <mat-error *ngIf="especeValidations.get('especeNumber').hasError('notEqualToZero')">
+            Le montant ne doit pas être à Zero.
+          </mat-error>
+        </mat-form-field>
+        <button (click)="addTableEspece()"  [disabled]="!especeValidations.valid || !selectClient || selectClient=='' " color="primary" mat-icon-button type="button" > <mat-icon svgIcon="mat:add"></mat-icon> </button>
+
+      </form>
+      <!-- *************TICKET************ -->
+      <form class="example-form" [formGroup]="ticketValidations"  *ngIf="getDetailsPanier.typePayment == 'TICKET'">
+        <div    class="p-1 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-1 container"
+                *ngIf="getDetailsPanier.typePayment == 'TICKET'">
+          <!-- get Type Ticket -->
+          <mat-form-field>
+            <mat-label>Numéro ticket</mat-label>
+            <input  onClick="this.select();" matInput
+                    formControlName="referenceTck"  placeholder="numéro de ticket"
+                    (change)="onEnterTicketScan($event)"   />
+            <mat-icon matIconPrefix svgIcon="mat:straighten"></mat-icon>
+            <mat-error *ngIf="ticketValidations.get('referenceTck').hasError('required')">
+              Le numéro de ticket ne doit pas être vide
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field style="width: inherit; flex: content;" (click)="set_list_ticket()">
+            <mat-icon class="icon-sm"  matIconPrefix svgIcon="mat:account_balance"></mat-icon>
+            <input #stateInputTicket  [matAutocomplete]="autoTicket"  [formControl]="ticketCtrl" (focus)="set_list_ticket()"
+                   formControlName="ticketType"  required   onClick="this.select();" matInput placeholder="Type ticket"  />
+            <mat-error *ngIf="ticketValidations.get('ticketType').hasError('required')">
+              Sélectionner le type de ticket.
+            </mat-error>
+            <mat-autocomplete #autoTicket="matAutocomplete"  >
+              <mat-option *ngFor="let stateCL of filteredTicket$ | async" [value]="stateCL.libelle"
+                          (onSelectionChange)="stateInputTicket.value !=undefined && onEnterTicket($event,stateCL)">
+                               <span class="flex items-center">
+                                    <img [src]="" class="align-middle mr-4 shadow-lg h-6 inline-block" />
+                                    <span class="flex flex-col">
+                                    <span class="body-1 leading-snug">{{ stateCL.libelle }}</span>
+                                    <span class="caption text-secondary leading-none">Code : {{ stateCL.code }}</span>
+                                </span>
+                                </span>
+              </mat-option>
+            </mat-autocomplete>
+
+            <button class="text-secondary" mat-icon-button matIconSuffix type="button">
+              <mat-icon svgIcon="mat:arrow_drop_down"></mat-icon>
+            </button>
+          </mat-form-field>
+          <mat-form-field   appearance="outline" class="col-md-4">
+            <mat-label>Montant</mat-label>
+            <input  onClick="this.select();" matInput style="text-align: right; padding-right: 1px !important;"
+                    formControlName="montantTck"  placeholder="Montant" appMontantDecimaNumber />
+            <mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
+            <mat-error *ngIf="ticketValidations.get('montantTck').hasError('required')">
+              Le montant ne dot pas être à Zero.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field >
+            <mat-label>Quantité</mat-label>
+            <input type="number" onClick="this.select();" matInput formControlName="quantiteTck" placeholder="quantité"
+                   min="1"     required  />
+            <mat-icon matIconPrefix svgIcon="mat:plus_one"></mat-icon>
+            <mat-error *ngIf="ticketValidations.get('quantiteTck').hasError('required')">
+              La quantité ne dot pas être à Zero.
+            </mat-error>
+          </mat-form-field>
+
+          <button (click)="addTableTicket()"  [disabled]="!ticketValidations.valid  || !selectClient || selectClient==''" color="primary" mat-icon-button type="button" > <mat-icon svgIcon="mat:add"></mat-icon> </button>
+        </div>
+      </form>
+
+      <!-- *************CHEQUE & TRAITE************ -->
+      <form class="example-form" [formGroup]="chTrValidations"
+            *ngIf="getDetailsPanier.typePayment == 'CHEQUE' || getDetailsPanier.typePayment == 'TRAITE'">
+        <div class="p-1 grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 gap-1 container"
+             *ngIf="getDetailsPanier.typePayment == 'CHEQUE' || getDetailsPanier.typePayment == 'TRAITE'">
+          <mat-form-field>
+            <mat-label>Numéro de {{getDetailsPanier.typePayment}}</mat-label>
+            <input type="number" onClick="this.select();" matInput formControlName="referenceCh_TR" required placeholder="Numéro"  />
+            <mat-icon matIconPrefix svgIcon="mat:straighten"></mat-icon>
+            <mat-error *ngIf="chTrValidations.get('referenceCh_TR').hasError('required')">
+              Numéro de {{getDetailsPanier.typePayment}} est obligatoire.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Montant</mat-label>
+            <input style="text-align: right; padding-right: 1px !important;"
+                   appMontantDecimaNumber   onClick="this.select();"
+                   required    matInput  formControlName="montantCh_TR"
+                   placeholder="Montant" />
+            <mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
+            <mat-error *ngIf="chTrValidations.get('montantCh_TR').hasError('required')">
+              Le montant ne dot pas être à Zero.
+            </mat-error>
+          </mat-form-field>
+          <!-- get Banque -->
+          <mat-form-field style="width: inherit; flex: content;" (click)="set_list_banque()">
+            <mat-icon class="icon-sm"  matIconPrefix svgIcon="mat:account_balance"></mat-icon>
+            <input #stateInputBanque [formControl]="banqueCtrl" [matAutocomplete]="autoBanque" (focus)="set_list_banque()"
+                   formControlName="banqueCh_TR"  onClick="this.select();" matInput placeholder="Banque"  />
+            <mat-autocomplete #autoBanque="matAutocomplete" >
+              <mat-option *ngFor="let stateCL of filteredBanque$ | async" [value]="stateCL.libelle"
+                          (onSelectionChange)="stateInputBanque.value !=undefined && onEnterBanque($event,stateCL)">
+                               <span class="flex items-center">
+                                    <img [src]="" class="align-middle mr-4 shadow-lg h-6 inline-block" />
+                                    <span class="flex flex-col">
+                                    <span class="body-1 leading-snug">{{ stateCL.abreviation }}</span>
+                                    <span class="caption text-secondary leading-none">{{ stateCL.libelle }}</span>
+                                </span>
+                                </span>
+              </mat-option>
+            </mat-autocomplete>
+
+            <button class="text-secondary" mat-icon-button matIconSuffix type="button">
+              <mat-icon svgIcon="mat:arrow_drop_down"></mat-icon>
+            </button>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Date écheance</mat-label>
+            <input required appYearSelector [matDatepicker]="picker" matInput
+                   onClick="this.select();"    formControlName="date_echeance_Ch_TR"   />
+            <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-hint>JJ/MM/AAAA</mat-hint>
+            <mat-error *ngIf="!chTrValidations.get('date_echeance_Ch_TR').hasError('dateVaidator')">
+              Date non valide.
+            </mat-error>
+            <mat-error *ngIf="!chTrValidations.get('date_echeance_Ch_TR').hasError('required')">
+              Date vide.
+            </mat-error>
+
+          </mat-form-field>
+          <mat-form-field >
+            <mat-label>Titulaire</mat-label>
+            <input type="text" onClick="this.select();" matInput  formControlName="titulaire_Ch_TR"  placeholder="Titulaire" />
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+
+          <button (click)="addTableChequeTraite()" [disabled]="!chTrValidations.valid  || !selectClient || selectClient==''"  color="primary" mat-icon-button type="button" > <mat-icon svgIcon="mat:add"></mat-icon> </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <div class="p-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-1 container">
+    <table [dataSource]="dataSourceOp" mat-table matSort class="mat-elevation-z8">
+
+      <ng-container matColumnDef="type_pay"  >
+        <th mat-header-cell *matHeaderCellDef> Modalité</th>
+        <td mat-cell *matCellDef="let element"> {{element.qte_pay > 1 ? '('+element.qte_pay+')' : '' }}
+          {{element.type_pay}} {{element.type_ticket_pay.libelle}}
+        </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="date_reglement">
+        <th mat-header-cell *matHeaderCellDef> Date règlement</th>
+        <td mat-cell *matCellDef="let element">
+          {{element.date_reglement!=''? utilService.formatDate(element.date_reglement,'DD/MM/AAAA') : ''}}
+        </td>
+      </ng-container>
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="num_pay">
+        <th mat-header-cell *matHeaderCellDef> N° Pièce</th>
+        <td mat-cell *matCellDef="let element"> {{element.num_pay}} </td>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="banque_pay">
+        <th mat-header-cell *matHeaderCellDef> Banque</th>
+        <td mat-cell *matCellDef="let element"> {{element.banque_pay.abreviation}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="date_echeance_pay">
+        <th mat-header-cell *matHeaderCellDef> Date d'écheance</th>
+        <td mat-cell *matCellDef="let element">
+          {{element.date_echeance_pay!=''? utilService.formatDate(element.date_echeance_pay,'DD/MM/AAAA') : ''}}
+        </td>
+      </ng-container>
+
+      <!-- Total Column -->
+      <ng-container matColumnDef="titulaire_pay">
+        <th mat-header-cell *matHeaderCellDef> Titulaire</th>
+        <td mat-cell *matCellDef="let element"> {{element.titulaire_pay}} </td>
+      </ng-container>
+
+      <!-- Total Column -->
+      <ng-container matColumnDef="billet_reg">
+        <th mat-header-cell *matHeaderCellDef> Montant</th>
+        <td mat-cell *matCellDef="let element">
+          {{utilService.formatMontant(element.montant_pay.toString())}} /
+        </td>
+      </ng-container>
+
+      <!-- Total Column -->
+      <ng-container matColumnDef="total_pay">
+        <th mat-header-cell *matHeaderCellDef> Montant Total</th>
+        <td mat-cell *matCellDef="let element">
+          {{utilService.formatMontant(element.total_pay.toString())}}
+        </td>
+      </ng-container>
+
+      <!-- Total Column -->
+      <ng-container matColumnDef="deel">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element ; let i = index">
+
+          <button (click)="deleteRowChequeTraite_reg(i)" color="primary" mat-icon-button
+                  type="button">
+            <mat-icon svgIcon="mat:remove"></mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns_OP ; sticky:true ; "[style.background-color]="colorTablePanier"></tr>
+      <tr mat-row *matRowDef="let row;let idx=index; let even=even; columns: displayedColumns_OP;"
+          [style.border-bottom]="'2px solid red'"></tr>
+    </table>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close('-1')">Non</button>
+  <button  mat-button color="primary"
+           (click)="close('1')"
+           [disabled]="(!especeValidations.valid && !chTrValidations.valid  &&
+            !ticketValidations.valid) || dataSourceOp.data.length==0 || set_total_payement==0">VALIDER</button>
+</mat-dialog-actions>

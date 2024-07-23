@@ -1,0 +1,163 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+
+    <h2 *ngIf="data?.reglement?.numero" class="headline m-0 flex-auto">
+      {{ data?.reglement?.numero }}
+    </h2>
+    <h2 *ngIf="!data?.reglement?.numero" class="headline m-0 flex-auto">
+      Nouveau Règlement
+    </h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+
+    <div class="grid grid-cols-3 gap-1">
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Date Règlement</mat-label>
+        <input [matDatepicker]="picker" matInput formControlName="date" />
+        <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-hint>
+          JJ/MM/AAAA
+        </mat-hint>
+        <mat-error *ngIf="!form.controls['date'].hasError('dateVaidator')">
+          Date non valide.
+        </mat-error>
+        <mat-error *ngIf="!form.controls['date'].hasError('required')">
+          Date vide.
+        </mat-error>
+      </mat-form-field>
+
+      <div class="libelle-div-numero">
+        <span>Numéro: <b>{{ form.controls['numero'].value }}</b></span>
+      </div>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Session caisse</mat-label>
+        <input cdkFocusInitial matInput />
+      </mat-form-field>
+    </div>
+
+    <div class="grid grid-cols-3 gap-1 border-bottom">
+      <div class="libelle-div">
+        <span>Montant à payer </span>
+        <span> <b> {{ getMontantString(data?.document?.totalTTC) }} </b></span>
+      </div>
+      <div class="libelle-div">
+        <span>Montant payé </span>
+        <span> <b> {{ getMontantString(data?.document?.totalPayer) }} </b></span>
+      </div>
+      <div class="libelle-div">
+        <span>Reste à payer </span>
+        <span> <b> {{ getMontantString(data?.document?.resteAPayer) }} </b></span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-1">
+
+      <mat-form-field [color]="selectCtrl.value" class="flex-none">
+        <mat-label>Mode Règlement</mat-label>
+        <mat-select formControlName="modeReglement" placeholder="Mode Règlement" (change)="changeModeReglement()">
+          <mat-option value="1">Espèce</mat-option>
+          <mat-option value="2">Chèque</mat-option>
+          <mat-option value="3">Traite</mat-option>
+          <mat-option value="4">Virement</mat-option>
+          <mat-option value="5">Versement</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Montant</mat-label>
+        <input cdkFocusInitial formControlName="montant" matInput class="right-aligned-input" appMontantDecimaNumber />
+        <mat-error *ngIf="form.controls['montant'].hasError('notEqualToZero')">Le montant est obligatoire.
+        </mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <div class="grid grid-cols-3 gap-1"
+      *ngIf="form.controls['modeReglement'].value && form.controls['modeReglement'].value !== '1'">
+
+
+      <mat-form-field class="flex-auto">
+        <mat-label>N° Piece</mat-label>
+        <input cdkFocusInitial formControlName="numPiece" matInput />
+
+        <mat-error *ngIf="form.controls['numPiece'].hasError('required')">Veuillez insérer le numéro de la pièce.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Date Échéance</mat-label>
+
+        <input [matDatepicker]="picker2" matInput formControlName="dateEcheance" />
+        <mat-datepicker-toggle [for]="picker2" matIconSuffix></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+
+        <mat-hint>
+          JJ/MM/AAAA
+        </mat-hint>
+        <mat-error *ngIf="!form.controls['dateEcheance'].hasError('dateVaidator')">
+          Date non valide.
+        </mat-error>
+        <mat-error *ngIf="!form.controls['dateEcheance'].hasError('required')">
+          Date vide.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Titulaire</mat-label>
+        <input cdkFocusInitial formControlName="titulaire" matInput />
+      </mat-form-field>
+
+    </div>
+
+    <div class="grid grid-cols-2 gap-1"
+      *ngIf="form.controls['modeReglement'].value && form.controls['modeReglement'].value !== '1'">
+
+      <vex-standart-autocomplete fieldId="_id" fieldDisplayed="abreviation" [parentForm]="form" libelle="Banque"
+        keyOfForm="banque" [value]="form.value.banque" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+        [items]="allBanques" [isRequired]="true"></vex-standart-autocomplete>
+
+      <vex-standart-autocomplete *ngIf="data.isDocumentAchat" fieldId="_id" fieldDisplayed="libelle_numeroCompte"
+        [parentForm]="form" libelle="Compte bancaire" keyOfForm="compteBancaire" [value]="form.value.compteBancaire"
+        (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true" [items]="allCompteBancaires"
+        [isRequired]="true"></vex-standart-autocomplete>
+
+      <mat-form-field class="flex-auto libelle-div" *ngIf="!data.isDocumentAchat">
+        <mat-label>Agence</mat-label>
+        <input cdkFocusInitial formControlName="agence" matInput />
+      </mat-form-field>
+
+    </div>
+
+    <div class="grid grid-cols-1 gap-1">
+
+      <mat-form-field class="flex-auto">
+        <mat-label>notes</mat-label>
+        <input cdkFocusInitial formControlName="note" matInput />
+
+      </mat-form-field>
+
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+    <button *ngIf="isCreateMode()" color="primary" mat-flat-button type="submit">
+      Ajouter Règlement
+    </button>
+    <button *ngIf="isUpdateMode()" color="primary" mat-flat-button type="submit">
+      Modifier Règlement
+    </button>
+  </mat-dialog-actions>
+
+</form>

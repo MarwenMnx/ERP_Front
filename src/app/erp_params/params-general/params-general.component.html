@@ -1,0 +1,93 @@
+<vex-page-layout>
+  <vex-page-layout-header
+    class="pb-16 flex flex-col items-start justify-center" style="max-height: 2rem;">
+    <div
+      [class.container]="layoutCtrl.value === 'boxed'"
+      [class.px-6]="layoutCtrl.value === 'fullwidth'"
+      class="w-full flex flex-col sm:flex-row justify-between">
+
+      <div class="hidden sm:block">
+      </div>
+    </div>
+  </vex-page-layout-header>
+
+  <vex-page-layout-content
+    [class.container]="layoutCtrl.value === 'boxed'"
+    [class.px-6]="layoutCtrl.value === 'fullwidth'"
+    class="-mt-6">
+    <div class="card overflow-auto -mt-16">
+      <div
+        class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
+        <h2
+          class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
+          <span>Params général</span>
+        </h2>
+
+        <div style="width: 100%">
+          <button style="float: right;" color="primary"  mat-flat-button (click)="create()">
+            Valider
+          </button>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="card p-2 grid grid-cols-1 gap-1 container">
+      <mat-tab-group >
+
+        <mat-tab label="POS - VENTE">
+
+          <div class="p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 container">
+            <div class="card flex-auto">
+              <div class="px-2 py-2 flex flex-col">
+                <vex-standart-autocomplete fieldId="_id" fieldDisplayed="raisonSociale"
+                  [value]="listParamsGeneral.RESULTAT[0].valeur.pos_vente.pos_default_client"
+                    libelle="Client par défaut" (newItemEvent)="newItemEvent('client',$event)"
+                                           keyOfForm="client" [value]="" [modeReturnObjet]="true"
+                     [items]="allClients" [isRequired]="true"></vex-standart-autocomplete>
+              </div>
+            </div>
+          </div>
+
+        </mat-tab>
+
+        <mat-tab label="DOCS - VENTE">
+
+          <div class="p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 container">
+            <div class="card flex-auto">
+              <div class="px-2 py-2 flex flex-col">
+                <mat-form-field   class="flex-none" style="text-align: right; width: 100%;">
+                  <mat-label>Taux TVA %</mat-label>
+                  <mat-select   [(ngModel)]="listParamsGeneral.RESULTAT[0].valeur.doc_vente.doc_vente_default_tva._id" placeholder="TauxTVA %"
+                  >
+                    <mat-option class="right-aligned-input" [value]="0"  >0 %</mat-option>
+                    <mat-option class="right-aligned-input" *ngFor="let taux of allTaux" [value]="taux._id"
+                                (onSelectionChange)="newItemEvent('taux_tva',taux)">
+                      {{ utilService.roundmTauxString(taux.taux) }} %
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="card flex-auto">
+              <div class="px-2 py-2 flex flex-col">
+                <!-- Mode de reglement -->
+                <mat-form-field   class="flex-none">
+                  <mat-label>Mode reglement</mat-label>
+                  <mat-select [(ngModel)]="listParamsGeneral.RESULTAT[0].valeur.doc_vente.doc_vente_mode_reglement._id" placeholder="Type">
+                    <mat-option *ngFor="let item of listModeReglements"[value]="item.key  ">{{ item.value }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+        </mat-tab>
+
+      </mat-tab-group>
+    </div>
+
+  </vex-page-layout-content>
+</vex-page-layout>
+

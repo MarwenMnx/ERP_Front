@@ -1,0 +1,17 @@
+.full-screen-dialog {
+    overflow: hidden; /* Optional: Prevent scrollbars */
+    margin: 0; /* Optional: Remove margin */
+    padding: 0; /* Optional: Remove padding */
+    box-sizing: border-box;
+}
+
+.right-aligned-input {
+    text-align: right;
+    padding-right: 1px !important;
+}
+
+.size-button-standard{
+    min-height: 49px;
+    float: right;
+}
+

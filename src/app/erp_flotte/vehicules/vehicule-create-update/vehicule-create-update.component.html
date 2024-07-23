@@ -1,0 +1,263 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+    <h2
+    *ngIf="defaults?.libelle"
+    class="headline m-0 flex-auto">
+   Modifier véhicule
+  </h2>
+  <h2
+    *ngIf="!defaults?.libelle"
+    class="headline m-0 flex-auto">
+    Ajouter véhicule
+  </h2>
+    <button
+      class="text-secondary"
+      mat-dialog-close
+      mat-icon-button
+      type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+  <mat-divider class="text-border"></mat-divider>
+  <mat-dialog-content class="flex flex-col">
+    <div class="flex flex-col sm:flex-row gap-2">
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Libelle</mat-label>
+        <input cdkFocusInitial formControlName="libelle" matInput />
+        <mat-error *ngIf="form.controls.libelle.hasError('required')"
+          >Veillez inserer la libelle.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Immatricule</mat-label>
+        <input cdkFocusInitial formControlName="immatricule" matInput />
+        <mat-error *ngIf="form.controls.immatricule.hasError('required')"
+          >Veillez inserer l'immatricule.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Num chassis</mat-label>
+        <input cdkFocusInitial formControlName="num_chassis" matInput />
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Nombre Cheveaux</mat-label>
+        <input cdkFocusInitial formControlName="nbre_cheveaux" matInput />
+        <mat-error *ngIf="form.controls.nbre_cheveaux.hasError('required')"
+          >Veillez inserer le nombre de cheveaux.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-2">
+      <vex-standart-autocomplete
+        class="flex-auto sm:w-1/4"
+        libelle="Marque"
+        keyOfForm="marque_vehicule"
+        [value]="defaults?.marque_vehicule"
+        (newItemEvent)="newItemEvent($event)"
+        [modeReturnObjet]="true"
+        [items]="modeles"
+        [isRequired]="true">
+      </vex-standart-autocomplete>
+
+      <vex-standart-autocomplete
+        class="flex-auto sm:w-1/4"
+        libelle="Modéle véhicule"
+        keyOfForm="modele_vehicule"
+        [value]="defaults?.modele_vehicule"
+        (newItemEvent)="newItemModeleVehicule($event)"
+        [modeReturnObjet]="true"
+        [items]="modelesvehicules"
+        [isRequired]="true">
+      </vex-standart-autocomplete>
+
+      <vex-standart-autocomplete
+        class="flex-auto sm:w-1/4"
+        libelle="Type véhicule"
+        keyOfForm="type_vehicule"
+        [value]="defaults?.type_vehicule"
+        (newItemEvent)="newItemTypeVehicule($event)"
+        [modeReturnObjet]="true"
+        [items]="typevehicules"
+        [isRequired]="true">
+      </vex-standart-autocomplete>
+
+      <vex-standart-autocomplete
+        class="flex-auto sm:w-1/4"
+        libelle="Sous type véhicule"
+        keyOfForm="soustype_vehicule"
+        [value]="defaults?.soustype_vehicule"
+        (newItemEvent)="newItemSousTypeVehicule($event)"
+        [modeReturnObjet]="true"
+        [items]="soustypevehicules"
+        [isRequired]="true">
+      </vex-standart-autocomplete>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-2">
+      <vex-standart-autocomplete
+        class="flex-auto w-1/4"
+        libelle="Leasing"
+        keyOfForm="leasing"
+        [value]="defaults?.leasing"
+        (newItemEvent)="newItemLeasing($event)"
+        [modeReturnObjet]="true"
+        [items]="leasinglist"
+        fieldDisplayed="raison_sociale"
+        fieldId="_id"
+        [isRequired]="true">
+      </vex-standart-autocomplete>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Type plateau</mat-label>
+        <input cdkFocusInitial formControlName="type_plateau" matInput />
+        <mat-error *ngIf="form.controls.type_plateau.hasError('required')"
+          >Veillez inserer le type de plateau.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Essieu</mat-label>
+        <input cdkFocusInitial formControlName="essieu" matInput />
+        <mat-error *ngIf="form.controls.essieu.hasError('required')"
+          >Veillez inserer l'essieu.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Poids Vide</mat-label>
+        <input cdkFocusInitial formControlName="poid_vide" matInput />
+        <mat-error *ngIf="form.controls.poid_vide.hasError('required')"
+          >Veillez inserer le poids vide.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-2">
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Charge total</mat-label>
+        <input cdkFocusInitial formControlName="charge_total" matInput />
+        <mat-error *ngIf="form.controls.charge_total.hasError('required')"
+          >Veillez inserer le charge total.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Charge utile</mat-label>
+        <input cdkFocusInitial formControlName="charge_utile" matInput />
+        <mat-error *ngIf="form.controls.charge_utile.hasError('required')"
+          >Veillez inserer la charge utile.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Nombre de Places</mat-label>
+        <input cdkFocusInitial formControlName="nb_places" matInput />
+        <mat-error *ngIf="form.controls.nb_places.hasError('required')"
+          >Veillez inserer le nombre de places.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Type contour</mat-label>
+        <input cdkFocusInitial formControlName="type_conteur" matInput />
+        <mat-error *ngIf="form.controls.type_conteur.hasError('required')"
+          >Veillez inserer le type contour.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-2">
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Valeur achat</mat-label>
+        <input cdkFocusInitial formControlName="valeur_achat" matInput />
+        <mat-error *ngIf="form.controls.valeur_achat.hasError('required')"
+          >Veillez inserer la valeur d'achat.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Date achat</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker2"
+          formControlName="date_achat" />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Date main leve leasing</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker1"
+          formControlName="date_main_leve_leasing" />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/4">
+        <mat-label>Date mise circulation</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="date_mise_circulation" />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-2">
+      <mat-form-field class="flex-auto w-1/2">
+        <mat-label>Nombre km actuelle</mat-label>
+        <input cdkFocusInitial formControlName="nombre_km_actuelle" matInput />
+        <mat-error *ngIf="form.controls.nombre_km_actuelle.hasError('required')"
+          >Veillez inserer le nombre km actuelle.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/2">
+        <mat-label>Notes</mat-label>
+        <input cdkFocusInitial formControlName="notes" matInput />
+        <mat-error *ngIf="form.controls.notes.hasError('required')"
+          >Veillez inserer les notes.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-checkbox
+        color="primary"
+        value="faux"
+        [checked]="false"
+        type="checkbox"
+        formControlName="basculante">
+        Basculante
+        </mat-checkbox>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+    <button
+      *ngIf="isCreateMode()"
+      color="primary"
+      mat-flat-button
+      type="submit">
+      Ajouter véhicule
+    </button>
+    <button
+      *ngIf="isUpdateMode()"
+      color="primary"
+      mat-flat-button
+      type="submit">
+      Modifier véhicule
+    </button>
+  </mat-dialog-actions>
+</form>

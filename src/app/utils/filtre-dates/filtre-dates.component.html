@@ -1,0 +1,28 @@
+<div class="p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1 container">
+        
+    <mat-form-field class="flex-auto">
+        <mat-label>Date 1</mat-label>
+        <input cdkFocusInitial [(ngModel)]="day2" matInput type="date" (change)="getDateStart(day2)" />
+    </mat-form-field>
+    
+    <mat-form-field class="flex-auto">
+        <mat-label>Date 2</mat-label>
+        <input cdkFocusInitial [(ngModel)]="day1" matInput type="date" (change)="getDateEnd(day1)"/>
+    </mat-form-field>
+    
+    <mat-form-field [color]="selectCtrl.value" class="flex-none">
+      <mat-label>Periode</mat-label>
+      <mat-select [(ngModel)]="periode" (selectionChange)="getOption($event)">
+        <mat-option value="aujourdhui">Aujourd'hui</mat-option>
+        <mat-option value="hier" checked>Hier</mat-option>
+        <mat-option value="cetteSemaine">Cette semaine</mat-option>
+        <mat-option value="semaineDernière">Semaine dernière</mat-option>
+        <mat-option value="moisCi">Ce mois-ci</mat-option>
+        <mat-option value="moisFlottant">Le mois flottant</mat-option>
+        <mat-option value="moisDernier">Le mois dernier</mat-option>
+        <mat-option value="cetteAnnée">Cette année</mat-option>
+        <mat-option value="annéeDernière">L'année dernière</mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+</div>

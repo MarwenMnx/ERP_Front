@@ -1,0 +1,65 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+    <div class="flex items-center" mat-dialog-title>
+        
+        <h2
+          *ngIf="form.controls.libelle.value"
+          class="headline m-0 flex-auto">
+         Modifier sous famille
+        </h2>
+        <h2
+          *ngIf="!form.controls.libelle.value"
+          class="headline m-0 flex-auto">
+          Ajouter sous famille
+        </h2>
+    
+        <button
+          class="text-secondary"
+          mat-dialog-close
+          mat-icon-button
+          type="button">
+          <mat-icon svgIcon="mat:close"></mat-icon>
+        </button>
+    </div>
+  
+    <mat-divider class="text-border"></mat-divider>
+  
+ <mat-dialog-content class="flex flex-col">
+
+      <!-- <vex-standart-autocomplete libelle="Famille" [control]="form.get('libelle')"
+      [items]="families"></vex-standart-autocomplete> -->
+
+  <vex-standart-autocomplete libelle="Famille"  keyOfForm="famille" [value]="inputAutocomplete.famille"  (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+      [items]="families"></vex-standart-autocomplete>
+      
+        <mat-form-field class="flex-auto">
+          <mat-label>Libelle</mat-label>
+          <input cdkFocusInitial formControlName="libelle" matInput />
+          <mat-error *ngIf="form.controls.libelle.hasError('required')"
+            >Veillez inserer la libelle.
+            </mat-error>
+        </mat-form-field>
+
+    </mat-dialog-content>
+  
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close type="button">Annuler</button>
+        <button
+          *ngIf="isCreateMode()"
+          color="primary"
+          mat-flat-button
+          type="submit">
+          Ajouter sous famille
+        </button>
+        <button
+          *ngIf="isUpdateMode()"
+          color="primary"
+          mat-flat-button
+          type="submit">
+          Modifier sous famille                                                                                          
+        </button>
+    </mat-dialog-actions>
+  
+  </form>
+    
+  
+    

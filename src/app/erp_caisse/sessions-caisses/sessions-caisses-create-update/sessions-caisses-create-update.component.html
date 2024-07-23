@@ -1,0 +1,175 @@
+
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+
+
+      <h2
+        *ngIf="form.controls.nom_machine_caisse.value"
+        class="headline m-0 flex-auto">
+        Modifier session caisse
+      </h2>
+      <h2
+        *ngIf="!form.controls.nom_machine_caisse.value"
+        class="headline m-0 flex-auto">
+        Ajouter session caisse
+      </h2>
+
+      <button
+        class="text-secondary"
+        mat-dialog-close
+        mat-icon-button
+        type="button">
+        <mat-icon svgIcon="mat:close"></mat-icon>
+      </button>
+  </div>
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+    <div class="flex flex-col sm:flex-row gap-2">
+      <mat-form-field class="flex-auto w-50">
+        <mat-label> Numéro</mat-label>
+        <input   matInput cdkFocusInitial   formControlName="numero" />
+      </mat-form-field>
+
+       <vex-standart-autocomplete  [parentForm]="form" class="flex-auto w-50"  libelle="Caissier possède sessions"  keyOfForm="utilisateur_caissier"
+                                                            [value]="defaults.utilisateur_caissier"
+                                                            [disabled]="utilService.getPrivilegeAccess().isUser   || isUpdateMode() "
+                                                            (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+                                                            [items]="users" fieldDisplayed="nom" [isRequired]="true" aria-readonly="true" >
+      <mat-error *ngIf="form.controls['utilisateur_caissier'].hasError('required')">Veillez inserer l'utilisateur .</mat-error>
+    </vex-standart-autocomplete>
+
+      <vex-standart-autocomplete class="flex-auto" fieldId="_id" libelle="Dépôt" fieldDisplayed="libelle"
+                                 keyOfForm="depot_PV_source" [value]="defaults.depot_PV_source"
+                                 [disabled]="utilService.getPrivilegeAccess().isUser  || isUpdateMode() "
+                                 (newItemEvent)="newItemEventDepot($event)" [modeReturnObjet]="true"
+                                 [items]="allDepots" [isRequired]="true">
+      </vex-standart-autocomplete>
+
+      <mat-form-field class="flex-auto">
+          <mat-label>Nom machine caisse</mat-label>
+          <input formControlName="nom_machine_caisse" matInput [readonly]="isUpdateMode()" />
+        </mat-form-field>
+    </div>
+
+ <div class="flex flex-col sm:flex-row gap-2 items-center">
+<mat-form-field  class="flex-auto">
+        <mat-label>Date ouverture</mat-label>
+        <input matInput [matDatepicker]="picker"   formControlName="date_ouverture" [(ngModel)]="selectDate" readonly>
+         <mat-datepicker-toggle matIconSuffix [for]="picker" ></mat-datepicker-toggle>
+        <mat-datepicker #picker disabled="true"></mat-datepicker>
+      </mat-form-field>
+
+
+     <div class="flex mb-7 mr-2 items-center" *ngIf="isUpdateMode() ; else visible" >
+       <mat-checkbox color="primary"  value = "false" [checked] = "false" type="checkbox" formControlName="cloture" >
+        <h2>Clôturé</h2>
+       </mat-checkbox>
+       </div>
+       <div>
+         <ng-template  #visible >
+          <div class="flex mb-7 mr-2 items-center">
+          <mat-checkbox  [disabled]="true">
+              <h2>Clôturé</h2>
+          </mat-checkbox>
+        </div>
+       </ng-template>
+     </div>
+
+   <mat-form-field>
+    <mat-label>Date clôture</mat-label>
+    <input matInput [matDatepicker]="pickerClo"
+            (dateInput)="addEvent('input', $event)" (dateChange)="addEvent('change', $event)"
+           formControlName="date_cloture" readonly [readonly]="isUpdateMode()">
+     <mat-datepicker-toggle matIconSuffix [for]="pickerClo"></mat-datepicker-toggle>
+    <mat-datepicker #pickerClo></mat-datepicker>
+  </mat-form-field>
+
+</div>
+<mat-divider></mat-divider>
+  <div class="flex flex-col sm:flex-row gap-2 mt-7">
+  <mat-form-field class="flex-auto">
+      <mat-label>Fond caisse superviseur</mat-label>
+      <input formControlName="fond_caisse_superviseur" matInput  [readonly]="isUpdateMode()"/>
+    </mat-form-field>
+
+
+    <mat-form-field class="flex-auto">
+      <mat-label>Fond caisse caissier</mat-label>
+      <input formControlName="fond_caisse_caissier" matInput [readonly]="isUpdateMode()" />
+    </mat-form-field>
+
+
+    <mat-form-field class="flex-auto">
+      <mat-label>Total vente</mat-label>
+      <input matInput [formControl]="inputCtrl" [readonly]="isUpdateMode()"/>
+    </mat-form-field>
+
+
+</div>
+
+<div class="flex flex-col sm:flex-row gap-2">
+
+<mat-form-field class="flex-auto">
+  <mat-label>Total encaissement</mat-label>
+  <input matInput  [formControl]="inputCtrl" [readonly]="isUpdateMode()"/>
+</mat-form-field>
+
+    <mat-form-field class="flex-auto">
+      <mat-label>Total décaissement</mat-label>
+      <input matInput [formControl]="inputCtrl"  [readonly]="isUpdateMode()" />
+    </mat-form-field>
+
+
+    <mat-form-field class="flex-auto">
+      <mat-label>Montant écart</mat-label>
+      <input  matInput  cdkFocusInitial [formControl]="inputCtrl" [readonly]="isUpdateMode()"/>
+   </mat-form-field>
+
+
+</div>
+
+  <mat-form-field class="flex-auto">
+      <mat-label>Notes</mat-label>
+      <textarea formControlName="notes" matInput ></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+
+    <button
+      *ngIf="isCreateMode()"
+      color="primary"
+      mat-flat-button
+      type="submit">
+      Ajouter session caisse
+    </button>
+
+    <button
+      *ngIf="isUpdateMode()"
+      color="primary"
+      mat-flat-button
+      type="submit">
+      Modifier session caisse
+    </button>
+  </mat-dialog-actions>
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:print"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:download"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:delete"></mat-icon>
+    <span>supprimer</span>
+  </button>
+</mat-menu>

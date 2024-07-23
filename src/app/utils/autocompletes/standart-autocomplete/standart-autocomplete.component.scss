@@ -1,0 +1,23 @@
+.max-height{
+    max-height: 180px;
+}
+
+.property1and2and3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.right-aligned-input span {
+    text-align: right;
+    padding-right: 1px !important;
+}
+
+/*.right-aligned-input{
+    display: block;
+}*/
+
+.right-aligned-input2 {
+    text-align: right;
+    padding-right: 5px !important;
+}

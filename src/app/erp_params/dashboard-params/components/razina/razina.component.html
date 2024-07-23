@@ -1,0 +1,15 @@
+<div class="card mb-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <label for="societeSelect">Sélectionnez une société :</label>
+      <select id="societeSelect" (change)="onSocieteChange($event)" class="form-select">
+        <option value="">Toutes les sociétés</option>
+        <option *ngFor="let societe of societes" [value]="societe.codeSociete">{{ societe.codeSociete }}</option>
+      </select>
+    </div>
+    <button (click)="generateCSV()" class="btn btn-primary">Télécharger CSV</button>
+  </div>
+  <div class="card-body">
+    <canvas id="fourniChart"></canvas>
+  </div>
+</div>

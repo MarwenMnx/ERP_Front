@@ -1,0 +1,204 @@
+{
+    "client": {
+        "_id": "65782374ba0d25c8162041eb",
+        "code": "CL-0002",
+        "raisonSociale": "test2021"
+    },
+    "vehicule":{
+        "libelle": "vehicule11",
+        "immatricule": "1234567891"
+    },
+    "chauffeur":{
+        "nom":"transporteur 11",
+        "numVehicule": "121"
+    },
+    "depotpv": {
+        "_id": "6572d58701a5ed58b2b96f62",
+        "libelle": "PV bennane",
+        "code_unique": "pv01"
+    },
+    "sessionCaisse": {
+        "_id": "659be7bbc6e0744d2177fb37",
+        "numero": 8
+    },
+    "utilisateur": {
+        "_id": "6569d909e54c20448510a684",
+        "nom": "Faten Mokni"
+    },
+    "lignes": [
+        {
+            "article": {
+                "_id": "657030e91d4f3de85fb01ad5",
+                "qteEnStock": 1,
+                "reference": "article3 ste S01",
+                "codeBarre": "963852741",
+                "designation": "test article3 ste1",
+                "typeArticle": 1,
+                "categorie": {
+                    "_id": "656f22fba91a09c1cf01d179",
+                    "libelle": "Category1"
+                },
+                "famille": {
+                    "_id": "656f272ea91a09c1cf01d188",
+                    "libelle": "Famille 1"
+                },
+                "venduPar": 1,
+                "archive": false,
+                "lotSerieActive": false,
+                "enVente": true,
+                "enAchat": true,
+                "tauxTVA": 0,
+                "margeAppliqueeSur": 1,
+                "estPack": false,
+                "venteStockNegatif": false,
+                "sansRemise": false,
+                "prixParQte": false,
+                "enPromotion": false,
+                "pointFidelite": false,
+                "nbPointFix": false,
+                "nbPointVar": false,
+                "estNouveau": true,
+                "deleted": false,
+                "active": true,
+                "addition_note": {
+                    "date": "2023-12-06T10:13:48.238Z",
+                    "utilisateur": "6569d909e54c20448510a684"
+                },
+                "frais": [],
+                "sousArticles": [],
+                "emplacement": [],
+                "colisage": [],
+                "prixQte": [],
+                "promotion": [],
+                "fidelite": [],
+                "modification_notes": [],
+                "prixAchat": 88,
+                "prixTTC": 150
+            },
+            "quantiteUnite1": 1,
+            "unite1": {
+                "_id": "65a4e88fafc04b897f9e6fb5",
+                "libelle": "littre"
+            },
+            "prixAchatUnitaireHT": 60,
+            "prixVenteBrutHT": 80,
+            "tauxremise": 1,
+            "remiseMontant": 1.5,
+            "prixVenteUnitaireHT": 81,
+            "isFodec": true,
+            "tauxFodec": 1,
+            "montantFodec": 5,
+            "isDC": true,
+            "tauxDC": 1,
+            "montantDC": 2,
+            "prixVenteUnitaireNetHT": 86,
+            "tauxTVA": 1,
+            "montantTVA": 1,
+            "redevance": 0,
+            "prixVenteUnitaireTTC": 90,
+            "totalBrutHT": 91,
+            "totalRemise": 0,
+            "totalHT": 90,
+            "totalFodec": 2,
+            "totalDC": 2,
+            "totalNetHT": 100,
+            "totalTVA": 1,
+            "totalRedevance": 0,
+            "timbreFiscale": 7,
+            "totalTTC": 90,
+            "gainCommercialUnitaire": 1,
+            "gainCommercialTotal": 2,
+            "gainReelUnitaire": 3,
+            "gainReelTotal": 4
+        }
+    ],
+    "totalBrutHT": 300,
+    "totalRemise": 1,
+    "totalHT": 301,
+    "totalFodec": 302,
+    "totalDC": 303,
+    "totalNetHT": 304,
+    "totalTVA": 2,
+    "totalRedevance": 3,
+    "timbreFiscale": 4,
+    "totalTTC": 305,
+    "totalGainCommerciale": 50,
+    "totalGainReel": 80,
+    "totalPayer": 306,
+    "resteAPayer": 0,
+    "reglements": [
+        {
+            "date": "2024-01-09T10:22:54.642+00:00",
+            "montant": 350,
+            "utilisateur": {
+                "_id": "6569d909e54c20448510a684",
+                "nom": "Faten Mokni"
+            },
+            "sessionCaisse": {
+                "_id": "659be7bbc6e0744d2177fb37",
+                "numero": 8
+            },
+            "client": {
+                "_id": "6581cf3753e08cce6f759c4c",
+                "code": "CL-0002",
+                "raisonSociale": "test2021",
+                "telephone": "120000555",
+                "adresseComplet": "Av. Habib bourguiba, 5025"
+            },
+            "modeReglement": 2,
+            "numPiece": "chq-00000001",
+            "dateEcheance": "2024-06-09T10:22:54.642+00:00",
+            "titulaire": "Faten Mokni",
+            "banque": {
+                "_id": "63a32b5f4b6888bae26b338a",
+                "abreviation": "BNA"
+            },
+            "compteBancaire": {
+                "_id": "659d5651bfb139eeda684a83",
+                "libelle": "compte BNA",
+                "numeroCompte": "321575754"
+            },
+            "lettrageReglement": [
+                {
+                    "montant_lettre": 1000,
+                    "type": "bonlivraisons"
+                }
+            ],
+            "code_societe": "s01",
+            "code_exercice": "23",
+            "code_depotpv": "pv01"
+        },
+        {
+            "date": "2024-01-09T10:22:54.642+00:00",
+            "montant": 512,
+            "utilisateur": {
+                "_id": "6569d909e54c20448510a684",
+                "nom": "Faten Mokni"
+            },
+            "sessionCaisse": {
+                "_id": "659be7bbc6e0744d2177fb37",
+                "numero": 8
+            },
+            "client": {
+               "_id": "6581cf3753e08cce6f759c4c",
+                "code": "CL-0002",
+                "raisonSociale": "test2021",
+                "telephone": "120000555",
+                "adresseComplet": "Av. Habib bourguiba, 5025"
+            },
+            "modeReglement": 1,
+            "lettrageReglement": [
+                {
+                    "montant_lettre": 512,
+                    "type": "bonlivraisons"
+                }
+            ],
+            "code_societe": "s01",
+            "code_exercice": "23",
+            "code_depotpv": "pv01"
+        }
+    ],
+    "code_societe": "s01",
+    "code_exercice": "23",
+    "code_depotpv": "pv01"
+}

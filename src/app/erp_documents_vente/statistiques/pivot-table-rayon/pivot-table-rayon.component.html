@@ -1,0 +1,20 @@
+
+  <div class="card p-2 mb-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 w-full -mt-3 container">
+    <date-range-picker class="mt-2.5" [labelTextRange]="labelTextPR"
+      (selectedDateRange)="set_SelectedDateRange($event)">
+    </date-range-picker>
+    <div style="text-align: right; display: flex;"  >
+      <!-- style="text-align: right; display: flex;" -->
+     <vex-standart-autocomplete class="mt-2.5 flex-auto" fieldId="_id" libelle="Filtrer Dépôt"
+        fieldDisplayed="libelle" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true" [items]="allDepots"
+        [isRequired]="true">
+      </vex-standart-autocomplete>
+     <button  class="text-secondary ml-4"  mat-icon-button matIconSuffix type="button"
+        (click)="filterRayon()">
+        <mat-icon svgIcon="mat:search"></mat-icon>
+      </button>
+  </div>
+  </div>
+  <vex-table-croisee [tableId]="tableId" [jsonData]="jsonData" [rows]="rows" [columns]="columns" [title]="pagetitle"
+    [measures]="measures">
+  </vex-table-croisee>

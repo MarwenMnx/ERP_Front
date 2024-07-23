@@ -1,0 +1,18 @@
+<div class="dashboard-container">
+  <h1>Statistiques de factures fournisseurs par jour</h1>
+  <div class="filter-export-container">
+    <div class="filter-container">
+      <label for="startDate">Date de début:</label>
+      <input type="date" id="startDate" [(ngModel)]="startDate">
+      <label for="endDate">Date de fin:</label>
+      <input type="date" id="endDate" [(ngModel)]="endDate">
+      <button (click)="applyFilters()">Appliquer le filtre</button>
+    </div>
+    <button id="exportButton" (click)="exportToCSV()">Exporter en CSV</button>
+  </div>
+  <div class="chart-container">
+    <canvas id="fChart"></canvas>
+  </div>
+</div>
+
+

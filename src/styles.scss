@@ -1,0 +1,94 @@
+@import "~simplebar/dist/simplebar.css";
+@import "~highlight.js/styles/androidstudio.css";
+// Vex Core
+@import "./@vex/styles/core";
+@import '@grapecity/wijmo.styles/wijmo.css';
+
+.flextable {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.wj-pivotpanel {
+  width: 500px;
+  margin: 0px 10px;
+}
+
+.wj-pivotgrid {
+  height: 600px;
+}
+
+.wj-flexchart {
+  margin-top: 10px;
+}
+
+/*
+  You can override any CSS Variable or style here
+  Example:
+
+  :root {
+   --vex-sidenav-background: #333333;
+  }
+
+  All possible variables can be found in @vex/styles/core or by simply inspecting the element you want to change
+  in Chrome/Firefox DevTools
+*/
+
+/**
+  Uncomment the below code and adjust the values to fit your colors, the application will automatically adjust
+ */
+html {
+  // --vex-color-primary: blue;
+  // --vex-color-primary-contrast: white;
+
+  // --vex-color-accent: yellow;
+  // --vex-color-accent-contrast: black;
+
+  // --vex-color-warn: yellow;
+  // --vex-color-warn-contrast: black;
+}
+
+.right-aligned-input {
+  text-align: right;
+  padding-right: 1px !important;
+
+}
+/*
+.vex-theme-default, .vex-theme-default.light, .vex-theme-default .light {
+  --mat-table-background-color: #9454f7;
+  --mat-table-header-headline-color: #86ea15;
+  --mat-table-header-headline-weight: 222px;
+  --mat-table-row-item-label-text-color: #030712;
+  --mat-table-row-item-outline-color: rgba(72, 70, 35, 0.71);
+  --mat-table-header-headline-size: 12px;
+  --mat-table-header-container-height: 40px;
+  --mat-table-row-item-label-text-size: 12px;
+
+
+  --mat-table-row-item-label-text-line-height: 15px;
+}
+
+.mat-mdc-row:nth-child(odd) {
+  background-color: #51ffca;
+}
+
+.mat-mdc-row:nth-child(even) {
+  background-color: #f8b3e3;
+}
+
+.mat-mdc-row:hover{
+  background-color: #87CEEB !important;
+}
+
+
+body{
+  --vex-toolbar-height: 35px;
+}
+
+.card {
+
+  #background-color: #49496a;
+}
+*/
+

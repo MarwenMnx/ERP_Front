@@ -1,0 +1,205 @@
+<div *ngIf="!(document.isDownloadDocumentPrecedent ? document.isDownloadDocumentPrecedent : false)">
+
+  <div class="p-1 grid grid-cols-1 sm:grid-cols-2 gap-1 container" [formGroup]="form" *ngIf="!blockModification">
+
+    <!--<div @fadeInUp class="card flex-auto">
+    <div class="px-2 py-2 flex flex-col">
+      <vex-standart-autocomplete [isArticle]=true [parentForm]="form" fieldId="_id" fieldDisplayed="reference"
+        libelle="Article" keyOfForm="article" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+        [items]="allArticles" [value]="form.controls['article'].value"></vex-standart-autocomplete>
+    </div>
+  </div>-->
+
+    <div class="display-flex px-0 py-2">
+      <div class="width-80px">
+        <vex-standart-autocomplete [isArticle]=true [parentForm]="form" fieldId="_id" fieldDisplayed="reference"
+          libelle="Article" keyOfForm="article" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+          [items]="allArticles" [value]="form.value.article" [isVente]="false"></vex-standart-autocomplete>
+      </div>
+      <button color="primary" mat-mini-fab type="button" (click)="openProductModal(false)" title="Details article">
+        <mat-icon svgIcon="mat:list"></mat-icon>
+      </button>
+      <button class="flex-none" color="primary" (click)="openProductModal(true)" mat-mini-fab title="Ajouter article"
+        type="button">
+        <mat-icon svgIcon="mat:add"></mat-icon>
+      </button>
+    </div>
+
+    <div @fadeInUp class="card flex-auto">
+      <div class="px-2 py-2 flex flex-col">
+        <div class="p-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-1 container">
+
+          <div class="grid grid-cols-2 gap-1">
+            <mat-form-field class="flex-auto">
+              <mat-label>Qte 1 ({{ form.controls['unite1'] && form.controls['unite1'].value ?
+                form.controls['unite1'].value.libelle : 'unite 1' }})</mat-label>
+              <input class="right-aligned-input" cdkFocusInitial formControlName="quantiteUnite1" matInput
+                appQuantiteDecimaNumber (change)="changeQuantite1()" />
+            </mat-form-field>
+
+            <mat-form-field class="flex-auto">
+              <mat-label>Qte 2 ({{ form.controls['unite2'] && form.controls['unite2'].value ?
+                form.controls['unite2'].value.libelle : 'unite 2' }})</mat-label>
+              <input class="right-aligned-input" cdkFocusInitial formControlName="quantiteUnite2" matInput
+                appQuantiteDecimaNumber (change)="changeQuantite2()"
+                [readonly]="form.controls['unite2'] && form.controls['unite2'].value ? false : true" />
+            </mat-form-field>
+          </div>
+
+          <div class="grid grid-cols-2 gap-1">
+            <mat-form-field class="flex-auto">
+              <mat-label>Prix Fournisseur</mat-label>
+              <input class="right-aligned-input" (blur)="changePrixVHT(); changeTotals();" cdkFocusInitial
+                formControlName="prixFourn" matInput appMargeDecimaNumber />
+            </mat-form-field>
+
+            <mat-form-field class="flex-auto">
+              <mat-label>P.A TTC</mat-label>
+              <input class="right-aligned-input" (blur)="changePrixUnitaireTTC()" cdkFocusInitial
+                formControlName="prixAchatUnitaireTTC" matInput appMontantDecimaNumber />
+            </mat-form-field>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div @fadeInUp class="card flex-auto">
+      <div class="p-0 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-1 container">
+        <mat-form-field class="flex-auto" appearance="outline">
+          <mat-label>Remise(%)</mat-label>
+          <input class="right-aligned-input" (blur)="changePrixVHT(); changeTotals();" cdkFocusInitial
+            formControlName="tauxremise" matInput appTauxDecimaNumber />
+        </mat-form-field>
+        <mat-form-field class="flex-auto" appearance="outline">
+          <mat-label>Remise(Mt)</mat-label>
+          <input class="right-aligned-input" (blur)="changePrixVHT(); changeTotals();" cdkFocusInitial
+            formControlName="remiseMontant" matInput appMontantDecimaNumber />
+        </mat-form-field>
+        <mat-form-field class="flex-auto">
+          <mat-label>totalHT</mat-label>
+          <input class="right-aligned-input" cdkFocusInitial formControlName="totalHT" matInput appMontantDecimaNumber
+            readonly />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div @fadeInUp class="card flex-auto">
+      <div class="p-0 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-1 container">
+        <mat-form-field class="flex-auto">
+          <mat-label>Total TTC</mat-label>
+          <input class="right-aligned-input" cdkFocusInitial formControlName="totalTTC" matInput appMontantDecimaNumber
+            readonly />
+        </mat-form-field>
+
+        <button title="Plus détails" mat-flat-button type="button"
+          (click)="isOpenPanelPlusDetails = !isOpenPanelPlusDetails" class="class-plus-details">
+          Plus Détails
+        </button>
+
+        <button color="primary" mat-flat-button type="button" (click)="addNewLigne()" class="button-ligne-article">
+          Ajouter Ligne Article
+          <mat-icon svgIcon="mat:arrow_downward"></mat-icon>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="p-1 grid grid-cols-1 sm:grid-cols-2 gap-1 container" *ngIf="isOpenPanelPlusDetails" [formGroup]="form">
+
+    <div @fadeInUp class="card flex-auto">
+      <div class="px-2 py-1 flex flex-col">
+        <div class="grid grid-cols-3 gap-1">
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Total Remise</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="totalRemise" matInput
+              appMontantDecimaNumber readonly />
+          </mat-form-field>
+
+          <!--<mat-form-field class="flex-auto">
+               <mat-label>totalBrutHT</mat-label>
+               <input class="right-aligned-input" cdkFocusInitial formControlName="totalBrutHT" matInput appMontantDecimaNumber readonly/>
+              </mat-form-field>-->
+
+
+
+          <mat-form-field class="flex-auto">
+            <mat-label>taux Fodec</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="tauxFodec" matInput
+              appMontantDecimaNumber (blur)="changePrixVHT(); changeTotals();" />
+          </mat-form-field>
+          <mat-form-field class="flex-auto">
+            <mat-label>taux DC</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="tauxDC" matInput appMontantDecimaNumber
+              (blur)="changePrixVHT(); changeTotals();" />
+          </mat-form-field>
+
+        </div>
+      </div>
+    </div>
+
+    <div @fadeInUp class="card flex-auto">
+      <div class="px-2 py-1 flex flex-col">
+        <div class="grid grid-cols-2 gap-1">
+          <mat-form-field class="flex-auto">
+            <mat-label>P.A NetHT</mat-label>
+            <input class="right-aligned-input" (blur)="changePrixUnitaireHT()" cdkFocusInitial
+              formControlName="prixAchatUnitaireNetHT" matInput appMontantDecimaNumber />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Redevance</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="redevance" matInput
+              appMontantDecimaNumber (blur)="changePrixVHT(); changeTotals();" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div @fadeInUp class="card flex-auto">
+      <div class="px-2 py-1 flex flex-col">
+        <div class="grid grid-cols-3 gap-1">
+          <mat-form-field class="flex-auto">
+            <mat-label>Total Fodec</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="totalFodec" matInput
+              appMontantDecimaNumber readonly />
+          </mat-form-field>
+          <mat-form-field class="flex-auto">
+            <mat-label>Total DC</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="totalDC" matInput appMontantDecimaNumber
+              readonly />
+          </mat-form-field>
+          <mat-form-field class="flex-auto">
+            <mat-label>Total Redevance</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="totalRedevance" matInput
+              appMontantDecimaNumber readonly />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div @fadeInUp class="card flex-auto">
+      <div class="px-2 py-1 flex flex-col">
+        <div class="grid grid-cols-2 gap-1">
+          <mat-form-field class="flex-auto">
+            <mat-label>totalNetHT</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="totalNetHT" matInput
+              appMontantDecimaNumber readonly />
+          </mat-form-field>
+          <mat-form-field class="flex-auto">
+            <mat-label>Total TVA</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="totalTVA" matInput
+              appMontantDecimaNumber readonly />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<vex-liste-ligne-document-achat [allArticles]="allArticles" [documentOriginal]="documentOriginal" [lignes]="lignes"
+  (newItemEvent)="misajourLignes($event)" [blockModification]="blockModification"></vex-liste-ligne-document-achat>

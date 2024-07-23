@@ -1,0 +1,16 @@
+<div class="chart-container">
+  <div class="filter-container">
+    <div>
+      <label for="startDate">Date de début :</label>
+      <input type="date" id="startDate" [(ngModel)]="startDate">
+      <label for="endDate">Date de fin :</label>
+      <input type="date" id="endDate" [(ngModel)]="endDate">
+      <button (click)="applyFilters()">Appliquer le filtre</button>
+    </div>
+  </div>
+  <canvas id="cChart"></canvas>
+  <button id="exportButton" class="export-button" (click)="exportToCSV()">Exporter en CSV</button>
+</div>
+
+
+

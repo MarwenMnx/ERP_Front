@@ -1,0 +1,39 @@
+    /* Center the table */
+    .center-table {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%; /* Make the container full width */
+        height: 100vh; /* Make the container full height of the viewport */
+
+    }
+
+    /* Set a max-width for the table container */
+    // .table-container {
+    //     margin-top: -3.5rem;
+    //     position: relative;
+    //     border-radius: 10px;
+    //     height: 90%; /* Adjust as needed */
+    //     max-width: none; /* Reset max-width */
+    //     max-height: none; /* Reset max-height */
+    //     overflow: hidden; /* Hide overflow */
+    //     box-shadow: 5px  4px 8px rgba(69, 80, 81, 0.3); /* Modifie les valeurs selon ton goût */
+
+
+    // }
+
+       /* Set a max-width for the table container */
+       .table-container {
+        position: relative;
+        // height: 90%; /* Adjust as needed */
+        max-width: none; /* Reset max-width */
+        max-height: none; /* Reset max-height */
+        overflow: hidden; /* Hide overflow */
+        height: 100%;
+        width: 100%;
+
+    }
+    
+
+
+    

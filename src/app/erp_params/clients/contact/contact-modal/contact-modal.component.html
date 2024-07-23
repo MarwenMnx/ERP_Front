@@ -1,0 +1,114 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+
+    <h2 *ngIf="defaults?.titre" class="headline m-0 flex-auto">
+      {{ defaults.titre + " " }}
+    </h2>
+    <h2 *ngIf="!defaults.titre" class="headline m-0 flex-auto">
+      Ajouter Contact
+    </h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+    <div class="flex flex-col sm:flex-row">
+
+      <mat-form-field class="flex-auto style">
+        <mat-label>Titre</mat-label>
+        <input cdkFocusInitial matInput formControlName="titre" type="text" />
+        <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+        <mat-error *ngIf="form.controls['titre'].hasError('required')">Veuillez inserer le titre.</mat-error>
+      </mat-form-field>
+
+      <div class="sm:ml-6 flex-auto">
+        <vex-standart-autocomplete libelle="Type-Contact" keyOfForm="typeContact" [value]="defaults.typeContact"
+          (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+          [items]="allTypeContact"></vex-standart-autocomplete>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row">
+
+      <vex-standart-autocomplete [value]="defaults.civilite" libelle="Civilité" keyOfForm="civilite" [items]="[
+          { id: '15', libelle: 'Mme' },
+          { id: '10', libelle: 'Mr' }
+        ]" (newItemEvent)="newItemEvent($event)" [isRequired]="true">
+      </vex-standart-autocomplete>
+
+      <mat-form-field class="sm:ml-6 flex-auto">
+        <mat-label>Nom-Prenom</mat-label>
+        <input formControlName="nomPrenom" matInput />
+        <mat-icon matIconPrefix svgIcon="mat:edit_location"></mat-icon>
+        <mat-error *ngIf="form.controls['nomPrenom'].hasError('required')">Veuillez inserer le nom et le
+          prenom.</mat-error>
+      </mat-form-field>
+    </div>
+
+
+    <div class="flex flex-col sm:flex-row">
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Tel</mat-label>
+        <input formControlName="telephone" matInput />
+        <mat-icon matIconPrefix svgIcon="mat:phone"></mat-icon>
+        <mat-error *ngIf="form.controls['telephone'].hasError('pattern')">Format de téléphone invalide.</mat-error>
+      </mat-form-field>
+
+
+      <mat-form-field class="sm:ml-6 flex-auto">
+        <mat-label>Mobile</mat-label>
+        <input formControlName="mobile" matInput />
+        <mat-icon matIconPrefix svgIcon="mat:phone"></mat-icon>
+        <mat-error *ngIf="form.controls['telephone'].hasError('pattern')">Format de mobile invalide.</mat-error>
+      </mat-form-field>
+
+
+      <mat-form-field class="sm:ml-6 flex-auto">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" matInput />
+        <mat-icon matIconPrefix svgIcon="mat:email"></mat-icon>
+        <mat-error *ngIf="form.controls['email'].hasError('email')">Veuillez inserer l'email.</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field class="flex-auto">
+      <mat-label>Remarques</mat-label>
+      <textarea matInput placeholder="Enter your text" formControlName="remarque"></textarea>
+
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+
+    <button *ngIf="isCreateMode()" color="primary" mat-flat-button type="submit">
+      Cree Contact
+    </button>
+
+    <button *ngIf="isUpdateMode()" color="primary" mat-flat-button type="submit">
+      Update Contact
+    </button>
+  </mat-dialog-actions>
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:print"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:download"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:delete"></mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>

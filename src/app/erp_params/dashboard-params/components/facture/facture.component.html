@@ -1,0 +1,20 @@
+<div class="card mb-4">
+  <div class="card-header">
+    <label for="societeSelect">Sélectionnez une société :</label>
+    <select id="societeSelect" class="form-select" (change)="onSocieteChange($event)">
+      <option value="">Toutes les sociétés</option>
+      <option *ngFor="let societe of societes" [value]="societe.codeSociete">{{ societe.codeSociete }}</option>
+    </select>
+    <div>
+      <p class="m-0 text-muted"><strong>Total des Factures : {{ totalDevis }}</strong></p>
+    </div>
+  </div>
+  <div class="card-body">
+    <canvas id="factureChart"></canvas>
+  </div>
+</div>
+
+
+
+  
+  

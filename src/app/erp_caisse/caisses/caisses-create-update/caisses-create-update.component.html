@@ -1,0 +1,93 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+
+    <h2  *ngIf="defaults?.numero"   class="headline m-0 flex-auto">  Modifier Caisse </h2>
+    <h2 *ngIf="!defaults?.numero"  class="headline m-0 flex-auto">   Ajouter Caisse  </h2>
+
+    <button  class="text-secondary"   mat-dialog-close    mat-icon-button   type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+
+    <div class="p-1 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-1 container">
+
+      <mat-form-field  class="flex-auto">
+        <mat-label>date_ouverture</mat-label>
+        <input matInput [matDatepicker]="picker"   formControlName="date_ouverture" [(ngModel)]="selectDate" >
+        <mat-datepicker-toggle matIconSuffix [for]="picker" ></mat-datepicker-toggle>
+        <mat-datepicker #picker  ></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Libelle</mat-label>
+        <input cdkFocusInitial formControlName="libelle" matInput />
+        <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+        <mat-error *ngIf="form.controls.libelle.hasError('required')" >Veillez inserer le libelle. </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Fond caisse</mat-label>
+        <input formControlName="fondCaisse" matInput  [readonly]="isUpdateMode()"/>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Montant</mat-label>
+        <input formControlName="montant" matInput  [readonly]="isUpdateMode()"/>
+      </mat-form-field>
+
+    </div>
+
+
+    <div class="p-1 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-1 container">
+
+      <vex-standart-autocomplete  [parentForm]="form" class="flex-auto w-50"  libelle="Crée par"  keyOfForm="utilisateur_ouverture_caisse"
+                                  [value]="defaults?.utilisateur_ouverture_caisse"
+                                  [disabled]="utilService.getPrivilegeAccess().isUser   || isUpdateMode() "
+                                  (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+                                  [items]="users" fieldDisplayed="nom" [isRequired]="true" aria-readonly="true" >
+        <mat-error *ngIf="form.controls['utilisateur_ouverture_caisse'].hasError('required')">Veillez inserer l'utilisateur .</mat-error>
+      </vex-standart-autocomplete>
+
+      <vex-standart-autocomplete  [parentForm]="form" class="flex-auto w-50"  libelle="Type Caisse"  keyOfForm="typeCaisse"
+                                  [value]="defaults?.typeCaisse"
+                                  [disabled]="utilService.getPrivilegeAccess().isUser   || isUpdateMode() "
+                                  (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+                                  [items]="listTypeCaisses" fieldDisplayed="libelle" [isRequired]="true" aria-readonly="true" >
+        <mat-error *ngIf="form.controls['typeCaisse'].hasError('required')">Veillez inserer type caisse .</mat-error>
+      </vex-standart-autocomplete>
+
+      <vex-filtre-autocomplet-select-all
+        [labelText]="labelTextBC"  [selectedDatas]="dataDepot"
+        [selectedKey]="selectedKeyDepot" [selectedVal]="selectedValDepot"
+        [isSelectedItems]="preSelectedItems"  (selectedList)="set_SelectedList($event)">
+      </vex-filtre-autocomplet-select-all>
+
+      <vex-filtre-autocomplet-select-all
+        [labelText]="labelTextUS"  [selectedDatas]="dataUsers"
+        [selectedKey]="selectedKeyUS" [selectedVal]="selectedValUS"
+        [isSelectedItems]="preSelectedUS"  (selectedList)="set_SelectedListUser($event)">
+      </vex-filtre-autocomplet-select-all>
+
+    </div>
+
+
+
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close type="button">Annuler</button>
+      <button *ngIf="isCreateMode()"    color="primary" mat-flat-button  type="submit">
+        Ajouter caisse
+      </button>
+      <button  *ngIf="isUpdateMode()"   color="primary"    mat-flat-button   type="submit">
+        Modifier caisse
+      </button>
+    </mat-dialog-actions>
+
+  </mat-dialog-content>
+
+</form>
+

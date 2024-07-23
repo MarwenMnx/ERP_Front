@@ -1,0 +1,22 @@
+
+<div class="card p-2 mb-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 w-full  container">
+  <div class="text-right p-2 mb-1 flex  container">
+    <date-range-picker class="flex-auto" [labelTextRange]="labelTextPR"
+      (selectedDateRange)="set_SelectedDateRange($event)">
+    </date-range-picker>
+   <button  class="text-secondary"  mat-icon-button matIconSuffix type="button"
+    (click)="filterVenteMagasin()">
+    <mat-icon svgIcon="mat:search"></mat-icon>
+   </button>
+</div>
+</div>
+    <vex-table-croisee
+      [tableId]="tableId"
+      [jsonData]="jsonData"
+      [rows]="rows"
+      [columns]="columns"
+      [title]="pagetitle"
+      [measures]="measures">
+    </vex-table-croisee>
+
+  

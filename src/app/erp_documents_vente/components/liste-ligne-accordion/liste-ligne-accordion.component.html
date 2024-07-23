@@ -1,0 +1,391 @@
+<vex-page-layout>
+	<vex-page-layout-header class="pb- flex flex-col items-start justify-center" style="max-height: 0px;">
+		<div [class.container]="layoutCtrl.value === 'boxed'" [class.px-6]="layoutCtrl.value === 'fullwidth'"
+			class="w-full flex flex-col sm:flex-row justify-between">
+
+			<div class="hidden sm:block">
+			</div>
+		</div>
+	</vex-page-layout-header>
+	<vex-page-layout-content style="padding-left: 0rem; padding-right: 0rem;">
+		<div class="card overflow-auto -mt-1">
+			<div class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
+				<h2
+					class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
+					<span *ngIf="selection.isEmpty()">Docs</span>
+				</h2>
+
+				<div *ngIf="selection.hasValue()" class="mr-4 pr-4 border-r flex-none">
+					<button (click)="deleteProducts(selection.selected)" color="primary" mat-icon-button
+						matTooltip="Delete selected" type="button">
+						<mat-icon svgIcon="mat:delete"></mat-icon>
+					</button>
+
+					<button color="primary" mat-icon-button matTooltip="Another action" type="button">
+						<mat-icon svgIcon="mat:folder"></mat-icon>
+					</button>
+				</div>
+
+				<mat-form-field subscriptSizing="dynamic">
+					<mat-icon matIconPrefix svgIcon="mat:search"></mat-icon>
+					<input matInput [formControl]="searchCtrl" placeholder="Search&hellip;" type="text" />
+				</mat-form-field>
+
+				<span class="flex-1"></span>
+
+				<button [matMenuTriggerFor]="columnFilterMenu" class="ml-4 flex-none" mat-icon-button
+					matTooltip="Filter Columns" type="button">
+					<mat-icon svgIcon="mat:filter_list"></mat-icon>
+				</button>
+
+			</div>
+
+			<table [dataSource]="dataSource" class="w-full" mat-table matSort>
+
+				<!-- Text Columns -->
+				<ng-container *ngFor="let column of columns; trackBy: trackByProperty">
+					<ng-container *ngIf="column.type === 'text' && column.cssClasses?.includes('text')"
+						[matColumnDef]="column.property">
+						<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+							{{ column.label }}
+						</th>
+						<td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
+							{{ row[column.property] }}
+						</td>
+						<td mat-footer-cell *matFooterCellDef> <span *ngIf="column.property == 'numero'">Total</span>
+						</td>
+					</ng-container>
+
+					<ng-container *ngIf="column.type === 'text' && !column.cssClasses?.includes('text')"
+						[matColumnDef]="column.property">
+						<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+							{{ column.label }}
+						</th>
+						<td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell style="text-align: right;">
+							{{ utilService.roundmMontantString(row[column.property]) }}
+						</td>
+						<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+							utilService.roundmMontantString(utilService.sommeTotalOfItemsByKey(column.property,
+							dataSource.filteredData)) }} </td>
+					</ng-container>
+				</ng-container>
+
+				<!-- Label Column -->
+				<ng-container matColumnDef="labels">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Labels
+					</th>
+					<td *matCellDef="let row" mat-cell>
+						<div (click)="$event.stopPropagation()" class="flex items-center gap-1">
+							<div *ngFor="let label of row.labels" [ngClass]="[label.textClass, label.bgClass]"
+								class="rounded px-2 py-1 font-medium text-xs flex-none">
+								{{ label.text }}
+							</div>
+							<div
+								class="bg-base text-hint cursor-pointer hover:bg-hover flex-none flex items-center justify-center">
+								<mat-icon class="icon-sm" svgIcon="mat:add"></mat-icon>
+							</div>
+						</div>
+					</td>
+					<td mat-footer-cell *matFooterCellDef></td>
+				</ng-container>
+				<!-- Image Column -->
+				<ng-container matColumnDef="reference">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Réference
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						{{ row.article && row.article.reference ? row.article.reference : '' }}
+					</td>
+					<td mat-footer-cell *matFooterCellDef></td>
+				</ng-container>
+
+				<!-- Image Column -->
+				<ng-container matColumnDef="designation">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Désignation
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						{{ row.article && row.article.designation ? row.article.designation : '' }}
+					</td>
+					<td mat-footer-cell *matFooterCellDef> </td>
+				</ng-container>
+
+				<ng-container matColumnDef="tauxFodec">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Taux_Fodec
+					</th>
+					<td *matCellDef="let row" class="min-w-8" mat-cell>
+						<mat-form-field class="mt-4 number-div">
+							<mat-label>Taux_Fodec</mat-label>
+							<input class="right-aligned-input" appTauxDecimaNumber [(ngModel)]="row.tauxFodec" readonly
+								matInput />
+						</mat-form-field>
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmTauxString(utilService.sommeTotalOfItemsByKey('tauxFodec',
+						dataSource.filteredData)) }}
+					</td>
+				</ng-container>
+
+				<ng-container matColumnDef="tauxDC">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Taux_DC
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						<mat-form-field class="mt-4 number-div">
+							<mat-label>Taux_DC</mat-label>
+							<input appTauxDecimaNumber class="right-aligned-input" [(ngModel)]="row.tauxDC" matInput readonly />
+						</mat-form-field>
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmTauxString(utilService.sommeTotalOfItemsByKey('tauxDC',
+						dataSource.filteredData))
+						}} </td>
+				</ng-container>
+
+				<ng-container matColumnDef="redevance">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Redevance
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						<mat-form-field class="mt-4 number-div">
+							<mat-label>Redevance</mat-label>
+							<input appMontantDecimaNumber class="right-aligned-input" [(ngModel)]="row.redevance" readonly
+								matInput />
+						</mat-form-field>
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmMontantString(utilService.sommeTotalOfItemsByKey('redevance',
+						dataSource.filteredData)) }}
+					</td>
+				</ng-container>
+
+				<!-- Image Column -->
+				<ng-container matColumnDef="prixVenteUnitaireNetHT">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Prix_UNet_HT
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						<mat-form-field class="mt-4 number-div">
+							<mat-label>Prix_UNet_HT</mat-label>
+							<input appMontantDecimaNumber class="right-aligned-input"
+								[(ngModel)]="row.prixVenteUnitaireNetHT" matInput  readonly />
+						</mat-form-field>
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmMontantString(utilService.sommeTotalOfItemsByKey('prixVenteUnitaireNetHT',
+						dataSource.filteredData)) }} </td>
+				</ng-container>
+
+				<!-- Image Column -->
+				<ng-container matColumnDef="prixVenteUnitaireTTC">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						P.U_TTC
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						<mat-form-field class="mt-4 number-div">
+							<mat-label>P.U_TTC</mat-label>
+							<input appMontantDecimaNumber class="right-aligned-input" readonly
+								[(ngModel)]="row.prixVenteUnitaireTTC" matInput />
+						</mat-form-field>
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmMontantString(utilService.sommeTotalOfItemsByKey('prixVenteUnitaireTTC',
+						dataSource.filteredData)) }} </td>
+				</ng-container>
+
+				<ng-container matColumnDef="tauxremise">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Taux_Remise
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						<mat-form-field class="mt-4 number-div">
+							<mat-label>Taux_Remise</mat-label>
+							<input appMargeDecimaNumber class="right-aligned-input" [(ngModel)]="row.tauxremise" readonly
+								matInput />
+						</mat-form-field>
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmMargeString(utilService.sommeTotalOfItemsByKey('tauxremise',
+						dataSource.filteredData)) }}
+					</td>
+				</ng-container>
+
+				<ng-container matColumnDef="remiseMontant">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Remise_Montant
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						<mat-form-field class="mt-4 number-div">
+							<mat-label>Remise_Montant</mat-label>
+							<input appMontantDecimaNumber class="right-aligned-input" [(ngModel)]="row.remiseMontant" readonly
+								matInput />
+						</mat-form-field>
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmMargeString(utilService.sommeTotalOfItemsByKey('tauxremise',
+						dataSource.filteredData)) }}
+					</td>
+				</ng-container>
+
+				<ng-container matColumnDef="prixVenteBrutHT">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Prix VenteHT
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						<mat-form-field class="mt-4 number-div">
+							<mat-label>Prix VenteHT</mat-label>
+							<input appMontantDecimaNumber class="right-aligned-input" [(ngModel)]="row.prixVenteBrutHT" readonly
+								matInput />
+						</mat-form-field>
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmMontantString(utilService.sommeTotalOfItemsByKey('prixVenteBrutHT',
+						dataSource.filteredData)) }} </td>
+				</ng-container>
+
+				<ng-container matColumnDef="quantiteUnite1">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Quantité-1
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						<mat-form-field class="mt-4 number-div">
+							<mat-label>Quantité-1</mat-label>
+							<input appQuantiteDecimaNumber class="right-aligned-input" [(ngModel)]="row.quantiteUnite1" readonly
+								matInput [readonly]="true" />
+						</mat-form-field>
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmQuantiteString(utilService.sommeTotalOfItemsByKey('quantiteUnite1',
+						dataSource.filteredData)) }} </td>
+				</ng-container>
+
+				<ng-container matColumnDef="quantiteUnite2">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Quantité-2
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell style="text-align: right;">
+						<mat-form-field class="mt-4 number-div">
+							<mat-label>Quantité-2</mat-label>
+							<input appQuantiteDecimaNumber class="right-aligned-input" [(ngModel)]="row.quantiteUnite2" readonly
+								matInput [readonly]="true" />
+						</mat-form-field>
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmQuantiteString(utilService.sommeTotalOfItemsByKey('quantiteUnite2',
+						dataSource.filteredData)) }} </td>
+				</ng-container>
+
+				<ng-container matColumnDef="tauxTVA">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						tauxTVA(%)
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell style="text-align: right;">
+						{{ utilService.roundmTauxString(row.tauxTVA) }}
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{
+						utilService.roundmTauxString(utilService.sommeTotalOfItemsByKey('tauxTVA',
+						dataSource.filteredData))
+						}}
+					</td>
+				</ng-container>
+
+				<ng-container matColumnDef="unite1">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Unité-1
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						{{ row.unite1 ? row.unite1.libelle : ''}}
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> </td>
+				</ng-container>
+
+				<ng-container matColumnDef="unite2">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Unité-2
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						{{ row.unite2 ? row.unite2.libelle : ''}}
+					</td>
+					<td mat-footer-cell *matFooterCellDef></td>
+				</ng-container>
+
+				<ng-container matColumnDef="depot">
+					<th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+						Dépot
+					</th>
+					<td *matCellDef="let row" class=" min-w-8" mat-cell>
+						{{ row.depot_pv && row.depot_pv.libelle ? row.depot_pv.libelle : '-' }}
+					</td>
+					<td mat-footer-cell *matFooterCellDef class="right-aligned-input"></td>
+				</ng-container>
+
+				<tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+				<tr mat-row *matRowDef="let row; columns: visibleColumns;"></tr>
+
+				<!-- Group header -->
+				<ng-container matColumnDef="groupHeader">
+					<td colspan="999" mat-cell *matCellDef="let group">
+						<mat-icon *ngIf="!group.expanded" svgIcon="mat:arrow_drop_down"></mat-icon>
+						<mat-icon *ngIf="group.expanded" svgIcon="mat:arrow_drop_up"></mat-icon>
+
+						<strong>N°= {{group[groupByColumns[group.level-1]]}}</strong>
+					</td>
+				</ng-container>
+
+				<!-- start docs achat -->
+				<ng-container matColumnDef="prixAchatUnitaireNetHT">
+			  		<th
+			  		  *matHeaderCellDef
+			  		  class="uppercase"
+			  		  mat-header-cell
+			  		  mat-sort-header>
+			  		  Prix_UNet_HT
+			  		</th>
+			  		<td *matCellDef="let row" class=" min-w-8" mat-cell>
+			  		  <mat-form-field class="mt-4">
+			  			<mat-label>Prix_UNet_HT</mat-label>
+			  			<input appMontantDecimaNumber class="right-aligned-input"  cdkFocusInitial [(ngModel)]="row.prixAchatUnitaireNetHT" matInput readonly/>
+			  		  </mat-form-field>
+			  		</td>
+			  		<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{ utilService.roundmMontantString(utilService.sommeTotalOfItemsByKey('prixAchatUnitaireNetHT', dataSource ? dataSource.filteredData : [])) }} </td>
+				</ng-container>
+
+				  	 <!-- Image Column -->
+				<ng-container matColumnDef="prixAchatUnitaireTTC">
+			  		<th
+			  		  *matHeaderCellDef
+			  		  class="uppercase"
+			  		  mat-header-cell
+			  		  mat-sort-header>
+			  		  P.U_TTC
+			  		</th>
+			  		<td *matCellDef="let row" class=" min-w-8" mat-cell>
+			  		  <mat-form-field class="mt-4">
+			  			<mat-label>P.U_TTC</mat-label>
+			  			<input appMontantDecimaNumber class="right-aligned-input"  cdkFocusInitial [(ngModel)]="row.prixAchatUnitaireTTC" matInput readonly/>
+			  		  </mat-form-field>
+			  		</td>
+			  		<td mat-footer-cell *matFooterCellDef class="right-aligned-input"> {{ utilService.roundmMontantString(utilService.sommeTotalOfItemsByKey('prixAchatUnitaireTTC', dataSource ? dataSource.filteredData : [])) }} </td>
+				</ng-container>
+				<!-- end docs achat -->
+
+				<tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: isGroup"
+					(click)="groupHeaderClick(row)">
+				</tr>
+				<tr *matFooterRowDef="visibleColumns" mat-footer-row></tr>
+
+			</table>
+
+		</div>
+	</vex-page-layout-content>
+</vex-page-layout>
+
+<mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+	<button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns" class="mat-menu-item block">
+	  <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
+		{{ column.label }}
+	  </mat-checkbox>
+	</button>
+</mat-menu>

@@ -1,0 +1,31 @@
+mat-grid-tile {
+  background: lavender;
+}
+.my-card {
+  background: lavender;
+  width: 100%;
+}
+
+.demo-table {
+  width: 100%;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+}
+
+.demo-row-is-clicked {
+  font-weight: bold;
+}
+
+.right-aligned-input {
+  text-align: right;
+  padding-right: 1px !important;
+
+}

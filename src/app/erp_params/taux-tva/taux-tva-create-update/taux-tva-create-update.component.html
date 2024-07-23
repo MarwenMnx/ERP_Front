@@ -1,0 +1,71 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+        
+    <h2
+    *ngIf="defaults?.libelle"
+    class="headline m-0 flex-auto">
+   Modifier Tva
+  </h2>
+  <h2
+    *ngIf="!defaults?.libelle"
+    class="headline m-0 flex-auto">
+    Ajouter Tva
+  </h2>
+    <button
+      class="text-secondary"
+      mat-dialog-close
+      mat-icon-button
+      type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+</div>
+  
+  
+    <mat-divider class="text-border"></mat-divider>
+  
+    <mat-dialog-content class="flex flex-col">
+        <mat-form-field class="flex-auto">
+          <mat-label>Libelle</mat-label>
+          <input cdkFocusInitial formControlName="libelle" matInput />
+          <mat-error *ngIf="form.controls.libelle.hasError('required')"
+            >Veillez inserer la libelle.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+            <mat-label>Tauxtva</mat-label>
+            <input cdkFocusInitial formControlName="taux" matInput />
+            <mat-icon matIconPrefix svgIcon="mat:attach_money"></mat-icon>
+            <mat-error *ngIf="form.controls.taux.hasError('required')"
+              >Veillez inserer le taux.
+              </mat-error>
+          </mat-form-field>
+
+     <!-- <mat-checkbox  type="checkbox" [(ngModel)]="isChecked" class="check" formControlName="actif">{{ isChecked ? 'true' : 'false' }}</mat-checkbox> -->
+  <mat-checkbox color="primary"  value = "false" [checked] = "false"  type="checkbox" formControlName="actif">Actif/Inactif</mat-checkbox>
+
+        
+    </mat-dialog-content>
+  
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close type="button">Annuler</button>
+        <button
+          *ngIf="isCreateMode()"
+          color="primary"
+          mat-flat-button
+          type="submit">
+          Ajouter tva
+        </button>
+        <button
+          *ngIf="isUpdateMode()"
+          color="primary"
+          mat-flat-button
+          type="submit">
+          Modifier tva                                                                                          
+        </button>
+    </mat-dialog-actions>
+  
+  </form>
+    
+  
+    

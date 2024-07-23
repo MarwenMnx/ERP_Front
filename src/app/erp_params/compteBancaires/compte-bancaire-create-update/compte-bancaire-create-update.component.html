@@ -1,0 +1,121 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+    <div class="flex items-center" mat-dialog-title>
+        
+        <h2
+          *ngIf="defaults?.libelle"
+          class="headline m-0 flex-auto">
+         Modifier compte bancaire
+        </h2>
+        <h2
+          *ngIf="!defaults?.libelle"
+          class="headline m-0 flex-auto">
+          Ajouter compte bancaire
+        </h2>
+    
+        <button
+          class="text-secondary"
+          mat-dialog-close
+          mat-icon-button
+          type="button">
+          <mat-icon svgIcon="mat:close"></mat-icon>
+        </button>
+    </div>
+  
+    <mat-divider class="text-border"></mat-divider>
+  
+    <mat-dialog-content class="flex flex-col">
+   
+<!-- 
+        <vex-standart-autocomplete libelle="Banque"  keyOfForm="banque" [value]="inputAutocomplete.banque"  (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+            [items]="Banques"></vex-standart-autocomplete> -->
+            <div class="flex flex-col sm:flex-row gap-2">
+            <mat-form-field class="flex-auto w-1/2">
+              <mat-label>Libelle</mat-label>
+              <input cdkFocusInitial formControlName="libelle" matInput />
+              <mat-error *ngIf="form.controls.libelle.hasError('required')"
+                >Veillez inserer la libelle.
+                </mat-error>
+            </mat-form-field>
+
+
+            <vex-standart-autocomplete  class="flex-auto w-1/2"  libelle="Banque"  keyOfForm="banque" [value]="defaults?.banque"  (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+            [items]="Banques" [isRequired]="true"></vex-standart-autocomplete>
+
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-2">
+
+            <mat-form-field class="flex-auto w-1/3">
+              <mat-label>Numéro compte</mat-label>
+              <input cdkFocusInitial formControlName="numeroCompte" matInput />
+              <!-- <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon> -->
+              <mat-error *ngIf="form.controls.numeroCompte.hasError('required')"
+              >Veillez inserer le N°compte.
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="flex-auto">
+              <mat-label>Rib</mat-label>
+              <input cdkFocusInitial formControlName="rib" matInput />
+              <!-- <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon> -->
+              <mat-error *ngIf="form.controls.rib.hasError('required')"
+                >Veillez inserer le rib.
+                </mat-error>
+            </mat-form-field>
+
+
+            <mat-form-field class="flex-auto w-1/3">
+              <mat-label>Agence</mat-label>
+              <input cdkFocusInitial formControlName="agence" matInput />
+              <!-- <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon> -->
+              <mat-error *ngIf="form.controls.agence.hasError('required')"
+                >Veillez inserer l'agence.
+                </mat-error>
+            </mat-form-field>
+
+           </div>
+
+          <div class="flex flex-col sm:flex-row gap-2">
+
+            <mat-form-field class="flex-auto w-1/3">
+              <mat-label>Téléphone</mat-label>
+              <input cdkFocusInitial formControlName="telephone" matInput />
+             </mat-form-field>
+
+            <mat-form-field class="flex-auto">
+              <mat-label>Iban</mat-label>
+              <input cdkFocusInitial formControlName="iban" matInput />
+              <!-- <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon> -->
+            </mat-form-field>
+
+            <mat-form-field class="flex-auto">
+              <mat-label>Bic Swift</mat-label>
+              <input cdkFocusInitial formControlName="bic_swift" matInput />
+           </mat-form-field>
+
+          </div>
+
+    </mat-dialog-content>
+  
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close type="button">Annuler</button>
+        <button
+          *ngIf="isCreateMode()"
+          color="primary"
+          mat-flat-button
+          type="submit">
+          Ajouter compte bancaire
+        </button>
+        <button
+          *ngIf="isUpdateMode()"
+          color="primary"
+          mat-flat-button
+          type="submit">
+          Modifier compte bancaire                                                                                          
+        </button>
+    </mat-dialog-actions>
+  
+  </form>
+    
+  
+    

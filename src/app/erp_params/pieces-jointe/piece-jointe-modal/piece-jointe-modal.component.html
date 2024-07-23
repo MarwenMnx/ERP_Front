@@ -1,0 +1,51 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+
+    <h2 *ngIf="defaults?.titre" class="headline m-0 flex-auto">
+      {{ defaults.titre + " " }}
+    </h2>
+    <h2 *ngIf="!defaults.titre" class="headline m-0 flex-auto">
+      Ajouter Pièce jointe
+    </h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+    <div class="flex flex-col sm:flex-row">
+
+      <mat-form-field class="flex-auto style">
+        <mat-label>Titre</mat-label>
+        <input cdkFocusInitial matInput formControlName="titre" type="text" />
+        <mat-error *ngIf="form.controls['titre'].hasError('required')">Veuillez inserer le titre.</mat-error>
+      </mat-form-field>
+
+      <div class="sm:ml-6 flex-auto">
+        <vex-standart-autocomplete libelle="Type pièce jointe" keyOfForm="type_piecejointe"
+          [value]="defaults.type_piecejointe" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+          [items]="allTypeContact"></vex-standart-autocomplete>
+      </div>
+    </div>
+
+    <div>
+      <h2>file upload</h2>
+      <input type="file" (change)="onFileSelect($event.target)"
+        accept=".pdf , .txt , .xls , .xlsx , .png , .jpg , .doc , .docx" />
+      <mat-progress-bar mode="indeterminate" color="primary" *ngIf="isUploadOpen"></mat-progress-bar>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+
+    <button *ngIf="isCreateMode()" color="primary" mat-flat-button type="submit">
+      Ajouter
+    </button>
+
+  </mat-dialog-actions>
+</form>

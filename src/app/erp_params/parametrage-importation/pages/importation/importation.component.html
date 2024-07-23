@@ -1,0 +1,110 @@
+<vex-secondary-toolbar current="{{ !isCreateMode() ? form.get('numero')?.value : 'Ajouter ' }}">
+  <vex-breadcrumbs [crumbs]="['Importations.']" class="flex-auto"></vex-breadcrumbs>
+  <button class="ml-2" color="primary" mat-icon-button type="button">
+    <mat-icon svgIcon="mat:more_vert"></mat-icon>
+  </button>
+</vex-secondary-toolbar>
+
+<form (ngSubmit)="save()" [formGroup]="form">
+
+  <div class="p-1 content">
+    <div class="p-3 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-2 container card">
+      <mat-form-field [color]="selectCtrl.value" class="flex-none">
+        <mat-label>Table</mat-label>
+        <mat-select formControlName="table" placeholder="Table" (ngModelChange)="changeParametre()">
+          <mat-option class="right-aligned-input" [value]=""></mat-option>
+          <mat-option class="right-aligned-input" *ngFor="let item of enums" [value]="item">{{ item }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button class="style-button" color="primary" mat-raised-button type="button" (click)="telechargerExcel()">
+        Télécharger excel
+        vierge</button>
+
+      <input #fileInput type="file" (change)="onFileChange($event)" accept=".xlsx, .xls">
+    </div>
+  </div>
+
+  <div class="p-1 content">
+    <div class="p-3 grid grid-cols-1 gap-2 container card">
+      <div class="p-0 grid grid-cols-1 gap-2 container">
+
+        <div class="card overflow-auto -mt-0">
+
+          <div class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
+            <h2
+              class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
+              Liste de lignes
+            </h2>
+          </div>
+
+          <table [dataSource]="dataSource" class="w-full" mat-table matSort>
+
+            <ng-container *ngFor="let column of displayedColumns; trackBy: trackByProperty">
+              
+              <ng-container [matColumnDef]="column" *ngIf="column != 'notes'">
+                <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+                  {{ column }}
+                </th>
+                <td style="padding: 10px !important;" *matCellDef="let element" mat-cell>
+                  <span *ngIf="numbersColonnes.includes(column)" style="float:right;">{{ element[column] }}</span>
+                  <span *ngIf="!numbersColonnes.includes(column)">{{ element[column] }}</span>
+                </td>
+              </ng-container>
+
+              <ng-container [matColumnDef]="column" *ngIf="column === 'notes'">
+                <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+                  {{ column }}
+                </th>
+                <td style="padding: 10px !important;" *matCellDef="let element" mat-cell [innerHTML]="element[column]">
+                </td>
+              </ng-container>
+
+            </ng-container>
+
+
+            <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+            <tr *matRowDef="let row; columns: displayedColumns"
+              [style]="(row.notes && row.notes != '') ? 'background:rgba(255, 0, 0, 0.15);' : ''"
+              class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer" mat-row></tr>
+
+          </table>
+
+          <mat-paginator [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" class="sticky left-0"></mat-paginator>
+    
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="p-2 grid grid-cols-1 gap-1 container" style="text-align: right; padding-bottom: 100px;">
+    <mat-dialog-actions align="end">
+      <button mat-button type="button">Annuler</button>
+      <button color="primary" mat-flat-button type="submit">
+        Enregitrer
+      </button>
+    </mat-dialog-actions>
+  </div>
+
+
+</form>
+
+
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:print"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:download"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:delete"></mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>

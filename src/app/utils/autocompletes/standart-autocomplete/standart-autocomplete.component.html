@@ -1,0 +1,80 @@
+<mat-form-field style="width: 100%;" [formGroup]="parentForm" *ngIf="disabled === false">
+  <mat-label>{{ libelle }}</mat-label>
+ 
+  <input #inputAutoComplete [formControl]="form.controls['libelle']" [matAutocomplete]="auto" matInput  />
+ 
+  <mat-autocomplete #auto="matAutocomplete">
+    <cdk-virtual-scroll-viewport appendOnly itemSize="10" class="example-viewport" [style]="items.length > 0 ? 'height: 180px;' : ''">
+      <ng-container *cdkVirtualFor="let item of filteredItems$ | async; trackBy: trackByFn">    
+        
+        <mat-option *ngIf="!isArticle"
+          [value]="getValue(item)" (onSelectionChange)="onEnter($event,item)">
+          <span class="flex items-center">
+            <span class="flex flex-col">
+              <span  class="body-1 leading-snug property1and2and3">{{ getValue(item) }}</span>
+            </span>
+          </span>
+        </mat-option>
+
+        <mat-option *ngIf="isArticle" [value]="getValueArticle(item)" 
+                (onSelectionChange)="onEnter($event,item)">
+            <span class="flex items-center {{ getValueArticle(item) }}">
+              <img [src]="" class="align-middle mr-4 shadow-lg h-6 inline-block" />
+              <span class="flex flex-col">
+                <span class="body-1 leading-snug property1and2and3">{{ item.article.reference }} : {{ item.article.designation }} </span>
+                <span class="caption text-secondary leading-none display-1">Prix: {{ isVente ? item.article.prixTTC : item.article.prixAchatTTC }}
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span *ngIf="item && item.depotpv">PV : {{ (item && item.depotpv) ? item.depotpv.libelle : '' }} </span>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Qte : {{ utileService.roundmQuantiteString(item?.quantite) }}
+                </span>
+              </span>
+            </span>
+        </mat-option>
+
+      </ng-container>
+    </cdk-virtual-scroll-viewport>    
+  </mat-autocomplete>
+
+
+  <button
+      (click)="itemCtrl.reset(); onEnter($event, null);"
+      *ngIf="itemCtrl.value"
+      mat-icon-button
+      matIconSuffix
+      type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+  </button>
+  <button *ngIf="!itemCtrl.value" mat-icon-button matIconSuffix type="button">
+      <mat-icon svgIcon="mat:arrow_drop_down"></mat-icon>
+  </button>
+
+  <mat-error *ngIf="parentForm.controls && parentForm.controls[keyOfForm].hasError('required')">
+    {{ libelle }} est obligatoire.
+  </mat-error>
+  
+</mat-form-field>
+
+<mat-form-field class="flex-auto" *ngIf="disabled === true" style="width: 100%;">
+  <mat-label>{{ libelle ? libelle : '' }}</mat-label>
+  <input [formControl]="form.controls['libelle']" matInput readonly/>
+</mat-form-field>
+
+<!--<p style="
+  margin-left: 16px;
+  margin-top: -22px;
+  font-weight: 300;
+  font-size: 13px;
+  color: red">
+    Veillez inserer votre libelle.
+</p>-->
+
+<!--{{ parentForm.controls ? parentForm.controls[keyOfForm].hasError('required') : 'aucun' }}
+
+<form [formGroup]="parentForm" *ngIf="parentForm.controls">
+  <mat-form-field class="flex-auto">
+    <mat-label>Categorie222</mat-label>
+    <input  [formControlName]="keyOfForm" matInput />
+    <mat-error *ngIf="parentForm.controls && parentForm.controls[keyOfForm].hasError('required')"
+      >Veillez inserer votre Référence.
+    </mat-error>
+  </mat-form-field>
+</form>-->

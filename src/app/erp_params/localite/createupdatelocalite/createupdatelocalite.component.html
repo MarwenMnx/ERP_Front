@@ -1,0 +1,64 @@
+
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+
+    <h2
+      *ngIf="defaults?.libelle"
+      class="headline m-0 flex-auto">
+      Modifier localite
+    </h2>
+    <h2
+      *ngIf="!defaults?.libelle"
+      class="headline m-0 flex-auto">
+      Ajouter localite
+    </h2>
+    <button
+      class="text-secondary"
+      mat-dialog-close
+      mat-icon-button
+      type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+    <vex-standart-autocomplete libelle="delegation" keyOfForm="delegation"
+      [value]="inputAutocomplete.delegation"
+      (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+      [items]="listeDelegation"></vex-standart-autocomplete>
+    <mat-form-field class="flex-auto">
+      <mat-label>libelle</mat-label>
+      <input cdkFocusInitial formControlName="libelle" matInput />
+      <mat-error *ngIf="form.controls['libelle'].hasError('required')">Veillez
+        inserer la libelle.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="flex-auto">
+      <mat-label>code postal</mat-label>
+      <input cdkFocusInitial formControlName="codePostal" matInput />
+      <mat-error *ngIf="form.controls['codePostal'].hasError('required')">Veillez
+        inserer la code Postal.
+      </mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+
+    <button
+      *ngIf="isCreateMode()"
+      color="primary"
+      mat-flat-button
+      type="submit">
+      valider </button>
+    <button
+      *ngIf="isUpdateMode()"
+      color="primary"
+      mat-flat-button
+      type="submit">
+      valider </button>
+  </mat-dialog-actions>
+
+</form>

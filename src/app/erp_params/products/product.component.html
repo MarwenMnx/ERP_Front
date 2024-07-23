@@ -1,0 +1,212 @@
+
+
+<vex-page-layout>
+  <vex-page-layout-header style="height: 20px;"
+      class="pb-3 flex flex-col items-start justify-center">
+      <div
+        [class.container]="layoutCtrl.value === 'boxed'"
+        [class.px-6]="layoutCtrl.value === 'fullwidth'"
+        class="w-full flex flex-col sm:flex-row justify-between">
+        
+        <!--<vex-filtre-dates></vex-filtre-dates>-->
+      
+        <br>
+      </div>
+  </vex-page-layout-header>
+
+  <vex-page-layout-content
+      [class.container]="layoutCtrl.value === 'boxed'"
+      [class.px-6]="layoutCtrl.value === 'fullwidth'"
+      class="-mt-6">
+      <div class="card overflow-auto -mt-3" #TABLE>
+        
+        <div
+          class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
+          <h2
+            class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
+            <span *ngIf="selection.isEmpty()">Produits</span>
+            <span *ngIf="selection.hasValue()"
+            >{{ selection.selected.length }} Produit<span
+              *ngIf="selection.selected.length > 1"
+            >s</span
+            >
+              selected</span
+            >
+          </h2>
+  
+          <div *ngIf="selection.hasValue()" class="mr-4 pr-4 border-r flex-none">
+            <button
+              (click)="deleteProducts(selection.selected)"
+              color="primary"
+              mat-icon-button
+              matTooltip="Delete selected"
+              type="button">
+              <mat-icon svgIcon="mat:delete"></mat-icon>
+            </button>
+  
+            <button
+              color="primary"
+              mat-icon-button
+              matTooltip="Another action"
+              type="button">
+              <mat-icon svgIcon="mat:folder"></mat-icon>
+            </button>
+          </div>
+  
+          <mat-form-field subscriptSizing="dynamic">
+            <mat-icon matIconPrefix svgIcon="mat:search"></mat-icon>
+            <input
+              matInput
+              [formControl]="searchCtrl"
+              placeholder="Recherche&hellip;"
+              type="text" />
+          </mat-form-field>
+  
+          <span class="flex-1"></span>
+  
+          <button
+            [matMenuTriggerFor]="columnFilterMenu"
+            class="ml-4 flex-none"
+            mat-icon-button
+            matTooltip="Filtrer les colonnes"
+            type="button">
+            <mat-icon svgIcon="mat:filter_list"></mat-icon>
+          </button>
+
+          <button (click)="ExportTOExcel()" class="ml-4 flex-none" color="primary" mat-mini-fab
+            matTooltip="Export Excel" type="button">
+            <mat-icon svgIcon="mat:insert_drive_file"></mat-icon>
+          </button>
+
+          <button (click)="exportToPdf()" class="ml-4 flex-none" color="primary" mat-mini-fab
+            matTooltip="Export PDF" type="button">
+            <mat-icon svgIcon="mat:picture_as_pdf"></mat-icon>
+          </button>
+  
+          <button
+            (click)="createProduct()"
+            class="ml-4 flex-none"
+            color="primary"
+            mat-mini-fab
+            matTooltip="Ajouter Produit"
+            type="button">
+            <mat-icon svgIcon="mat:add"></mat-icon>
+          </button>
+        </div>
+  
+        <table
+          @stagger
+          [dataSource]="dataSource"
+          class="w-full"
+          mat-table
+          matSort>
+      
+          <ng-container *ngFor="let column of columns; trackBy: trackByProperty">
+            <ng-container
+              *ngIf="column.type === 'text'"
+              [matColumnDef]="column.property">
+              <th
+                *matHeaderCellDef
+                class="uppercase"
+                mat-header-cell
+                mat-sort-header>
+                {{ column.label }}
+              </th>
+              <td *matCellDef="let row ;" [ngClass]="column.cssClasses" mat-cell>
+                <span *ngIf="column.property === 'reference'">{{row[column.property]}}</span>
+                <span *ngIf="column.property === 'designation'">{{row[column.property]}}</span>
+                <span *ngIf="column.property === 'codeBarre'">{{row[column.property]}}</span>
+                <span *ngIf="column.property === 'typeArticle'" >{{ utilService.getEnumKeyByValue('enum_types_articles' , row[column.property])}}</span>
+                <span *ngIf="column.property === 'categorieLibelle'" >{{ row.categorie?.libelle }}</span>
+                <span *ngIf="column.property === 'familleLibelle'" >{{ row.famille?.libelle }}</span>
+                <span *ngIf="column.property === 'sousFamilleLibelle'" >{{ row.sousFamille?.libelle }}</span>
+                <span *ngIf="column.property === 'marqueLibelle'" >{{ row.marque?.libelle }}</span>
+                <span *ngIf="column.property === 'modeleLibelle'" >{{ row.modele?.libelle }}</span>
+                <span *ngIf="column.property === 'unite1Libelle'" >{{ row.unite1?.libelle }}</span>
+                <span *ngIf="column.property === 'unite2Libelle'" >{{ row.unite2?.libelle }}</span>
+                <span class="right-aligned-input2" *ngIf="column.property === 'tauxTVA'" >{{ utilService.roundmTauxString(row.tauxTVA) }}</span>
+              </td>
+              <td mat-footer-cell *matFooterCellDef > <span *ngIf="column.property == 'reference'">Total</span> </td>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *ngFor="let column of columns; trackBy: trackByProperty">
+            <ng-container
+              *ngIf="column.type === 'image'"
+              [matColumnDef]="column.property">
+              <th
+                *matHeaderCellDef
+                class="uppercase"
+                mat-header-cell
+                mat-sort-header>
+                {{ column.label }}
+              </th>
+              <td *matCellDef="let row" class="p-5 right-aligned-input" mat-cell>
+                {{ getMontantRoundom(row[column.property]) }}
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="right-aligned-input"> <span *ngIf="dataSource">{{ utilService.roundmMontantString(utilService.sommeTotalOfItemsByKey(column.property, dataSource.filteredData)) }}</span> </td>
+            </ng-container>
+          </ng-container>
+  
+          <ng-container matColumnDef="actions">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header></th>
+            <td *matCellDef="let row" class="w-10 text-secondary" mat-cell>
+              <button
+                (click)="$event.stopPropagation()"
+                [matMenuTriggerData]="{ product: row }"
+                [matMenuTriggerFor]="actionsMenu"
+                mat-icon-button
+                type="button">
+                <mat-icon svgIcon="mat:more_horiz"></mat-icon>
+              </button>
+            </td>
+            <td mat-footer-cell *matFooterCellDef class="right-aligned-input"> </td>
+          </ng-container>
+  
+          <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
+          <tr
+            (click)="updateProduct(row)"
+            *matRowDef="let row; columns: visibleColumns"
+            @fadeInUp
+            class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer"
+            mat-row></tr>
+          <tr *matFooterRowDef="visibleColumns" mat-footer-row></tr>
+
+        </table>
+  
+        <mat-paginator
+          [pageSizeOptions]="pageSizeOptions"
+          [pageSize]="pageSize"
+          class="sticky left-0"></mat-paginator>
+      </div>
+  </vex-page-layout-content>
+  
+</vex-page-layout>
+  
+<mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+  <button
+    (click)="toggleColumnVisibility(column, $event);"
+    *ngFor="let column of columns"
+    class="mat-menu-item block">
+    <mat-checkbox
+      (click)="saveColumnVisibility(); $event.stopPropagation();"
+      [(ngModel)]="column.visible"
+      color="primary">
+      {{ column.label }}
+    </mat-checkbox>
+  </button>
+</mat-menu>
+  
+<mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
+  <ng-template let-product="product" matMenuContent>
+    <button [routerLink]="['/products/edit/'+product._id]" mat-menu-item>
+      <mat-icon svgIcon="mat:edit"></mat-icon>
+      <span>Modifier</span>
+    </button>
+    <button (click)="deleteProduct(product)" mat-menu-item>
+      <mat-icon svgIcon="mat:delete"></mat-icon>
+      <span>Supprimer</span>
+    </button>
+  </ng-template>
+</mat-menu>
+  

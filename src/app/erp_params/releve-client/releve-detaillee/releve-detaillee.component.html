@@ -1,0 +1,225 @@
+<vex-page-layout>
+  <vex-page-layout-header style="height: 20px;" class="pb-3 flex flex-col items-start justify-center">
+    <div [class.container]="layoutCtrl.value === 'boxed'" [class.px-6]="layoutCtrl.value === 'fullwidth'"
+         class="w-full flex flex-col sm:flex-row justify-between">
+
+      <!--<vex-filtre-dates></vex-filtre-dates>-->
+
+      <br>
+    </div>
+  </vex-page-layout-header>
+
+  <vex-page-layout-content [class.container]="layoutCtrl.value === 'boxed'"
+                           [class.px-6]="layoutCtrl.value === 'fullwidth'" class="-mt-6">
+
+    <div class="card p-2 mb-1 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-1 w-full -mt-3"
+         (ngSubmit)="getReleve()" [formGroup]="form">
+
+      <div class="p-0 grid grid-cols-1 gap-1 container">
+        <vex-standart-autocomplete *ngIf="isFournisseur === false" libelle="Client" fieldId="_id" fieldDisplayed="raisonSociale"
+                                   (newItemEvent)="newItemEvent($event)" keyOfForm="client" [parentForm]="form" [isRequired]="true"
+                                   [items]="allClients"></vex-standart-autocomplete>
+
+        <vex-standart-autocomplete *ngIf="isFournisseur === true" libelle="Fournisseur" fieldId="_id" fieldDisplayed="raisonSociale"
+                                   (newItemEvent)="newItemEvent($event)" keyOfForm="fournisseur" [parentForm]="form" [isRequired]="true"
+                                   [items]="allFournisseurs"></vex-standart-autocomplete>
+      </div>
+
+      <div>
+        <date-range-picker labelTextRange="Période" (selectedDateRange)="set_SelectedDateRange($event)">
+        </date-range-picker>
+      </div>
+
+      <div class="p-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-1 container">
+        <span></span>
+        <button class="size-button-standard" mat-flat-button color="primary" (click)="getReleve()"
+                type="submit">
+          Recherche
+        </button>
+      </div>
+
+    </div>
+
+    <div class="card overflow-auto -mt-3">
+
+      <div class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
+        <h2 class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
+          <span> Relevé {{ isFournisseur === false ? 'Client' : 'Fournisseur' }} </span>
+        </h2>
+
+        <div *ngIf="selection.hasValue()" class="mr-4 pr-4 border-r flex-none">
+          <button color="primary" mat-icon-button matTooltip="Another action" type="button">
+            <mat-icon svgIcon="mat:folder"></mat-icon>
+          </button>
+        </div>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-icon matIconPrefix svgIcon="mat:search"></mat-icon>
+          <input matInput [formControl]="searchCtrl" placeholder="Recherche&hellip;" type="text" />
+        </mat-form-field>
+
+        <span style="margin-left: auto;">Solde_initiale: {{ utileService.roundmMontantString(form.value.solde_initiale)
+          }}</span>
+
+        <button class="ml-4 flex-none" mat-icon-button (click)="importSoldeCredit()"
+                matTooltip="Recalcul les soldes dans le tableau" type="button">
+          <mat-icon svgIcon="mat:autorenew"></mat-icon>
+        </button>
+
+        <button (click)="ExportTOExcel()" class="ml-4 flex-none" color="primary" mat-mini-fab
+                matTooltip="Export Excel" type="button">
+          <mat-icon svgIcon="mat:insert_drive_file"></mat-icon>
+        </button>
+
+        <button (click)="exportToPdf()" class="ml-4 flex-none" color="primary" mat-mini-fab
+                matTooltip="Export PDF" type="button">
+          <mat-icon svgIcon="mat:picture_as_pdf"></mat-icon>
+        </button>
+
+        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4 flex-none" mat-icon-button
+                matTooltip="Filtrer les colonnes" type="button">
+          <mat-icon svgIcon="mat:filter_list"></mat-icon>
+        </button>
+      </div>
+      <div class="table-container" #TABLE>
+        <table @stagger [dataSource]="dataSource" class="w-full" mat-table matSort>
+
+          <ng-container matColumnDef="checkbox">
+            <th *matHeaderCellDef mat-header-cell>
+              <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()" color="primary">
+              </mat-checkbox>
+            </th>
+            <td *matCellDef="let row" class="w-4" mat-cell>
+              <mat-checkbox (change)="$event ? selection.toggle(row) : null" (click)="$event.stopPropagation()"
+                            [checked]="selection.isSelected(row)" color="primary">
+              </mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+
+          <ng-container *ngFor="let column of columns; trackBy: trackByProperty">
+            <ng-container *ngIf="column.type === 'text'" [matColumnDef]="column.property">
+              <th *matHeaderCellDef class="uppercase" mat-header-cell mat-sort-header>
+                {{ column.label }}
+              </th>
+              <td *matCellDef="let row" mat-cell>
+                <div [ngSwitch]="column.property">
+                  <span *ngSwitchCase="'modeReglement'">{{ row[column.property] ?
+                      utileService.getLibelleModeReglement(row[column.property]) : '' }}</span>
+                  <span *ngSwitchCase="'utilisateur'">{{ row[column.property] ? row[column.property].nom : '' }}</span>
+                  <span *ngSwitchCase="'dateString'" style="width:100%; text-align: center; display: block;">{{ row[column.property] ? row.dateString : ''
+                    }}</span>
+                  <span *ngSwitchCase="'dateEcheance'">{{ row[column.property] ?
+                      utileService.formatDate(row.dateEcheance)
+                      : '' }}</span>
+                  <span *ngSwitchCase="'credit'" class="right-aligned-input">{{ row[column.property] ?
+                      utileService.roundmMontantString(row[column.property]) : '' }}</span>
+                  <span *ngSwitchCase="'solde'" class="right-aligned-input">{{ row[column.property] ?
+                      utileService.roundmMontantString(row[column.property]) : '' }}</span>
+                  <span *ngSwitchCase="'debit'" class="right-aligned-input">{{ row[column.property] ?
+                      utileService.roundmMontantString(row[column.property]) : '' }}</span>
+                  <span *ngSwitchCase="'soldeCredit'" class="right-aligned-input">{{ row[column.property] ?
+                      utileService.roundmMontantString(row[column.property]) : '' }}</span>
+                  <span *ngSwitchCase="'soldeDebit'" class="right-aligned-input">{{ row[column.property] ?
+                      utileService.roundmMontantString(row[column.property]) : '' }}</span>
+                  <span *ngSwitchCase="'totalTTC'" class="right-aligned-input">{{ row[column.property] ?
+                      utileService.roundmMontantString(row[column.property]) : '' }}</span>
+                  <span *ngSwitchCase="'montant'" class="right-aligned-input">{{ row[column.property] ?
+                      utileService.roundmMontantString(row[column.property]) : '' }}</span>
+                  <span *ngSwitchDefault> {{ row[column.property] ? row[column.property] : "" }}</span>
+                </div>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>
+                <div [ngSwitch]="column.property">
+                  <span *ngSwitchCase="'numero'">Total</span>
+                  <span *ngSwitchCase="'credit'" class="right-aligned-input"><span *ngIf="dataSource">{{
+                      utileService.roundmMontantString(utileService.sommeTotalOfItemsByKey(column.property,
+                          dataSource.filteredData)) }}</span></span>
+                  <span *ngSwitchCase="'debit'" class="right-aligned-input"><span *ngIf="dataSource">{{
+                      utileService.roundmMontantString(utileService.sommeTotalOfItemsByKey(column.property,
+                          dataSource.filteredData)) }}</span></span>
+                  <span *ngSwitchCase="'totalTTC'" class="right-aligned-input"><span *ngIf="dataSource">{{
+                      utileService.roundmMontantString(utileService.sommeTotalOfItemsByKey(column.property,
+                          dataSource.filteredData)) }}</span></span>
+                  <span *ngSwitchCase="'montant'" class="right-aligned-input"><span *ngIf="dataSource">{{
+                      utileService.roundmMontantString(utileService.sommeTotalOfItemsByKey(column.property,
+                          dataSource.filteredData)) }}</span></span>
+                  <span *ngSwitchDefault> </span>
+                </div>
+              </td>
+            </ng-container>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let element">
+              <button type="button" class="btn btn-default" aria-label="Left Align"
+                      (click)="(expandedElement = expandedElement === element ? null : element);"
+              >
+                <span></span>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr *matHeaderRowDef="visibleColumns" mat-header-row class="mat-header-row"></tr>
+          <tr (click)="updateProduct(row)" *matRowDef="let row; columns: visibleColumns" @fadeInUp
+              class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer" mat-row></tr>
+          <tr *matFooterRowDef="visibleColumns" mat-footer-row class="mat-footer-row" ></tr>
+        </table>
+      </div>
+      <!--<mat-paginator [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" class="sticky left-0"></mat-paginator>-->
+
+    </div>
+
+    <div class="card p-2 mt-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-5 w-full -mt-3" (ngSubmit)="getReleve()"
+         [formGroup]="form">
+      <div class="p-0 grid grid-cols-1 container">
+      </div>
+      <div class="p-0 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-1 container">
+        <mat-form-field class="flex-auto">
+          <mat-label>Solde_initiale</mat-label>
+          <input class="right-aligned-input" cdkFocusInitial matInput appMontantDecimaNumber
+                 formControlName="solde_initiale" readonly />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+          <mat-label>Solde_periode</mat-label>
+          <input class="right-aligned-input" cdkFocusInitial matInput appMontantDecimaNumber
+                 formControlName="solde_periode" readonly />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+          <mat-label>Solde_finale</mat-label>
+          <input class="right-aligned-input" cdkFocusInitial matInput appMontantDecimaNumber
+                 formControlName="solde_finale" readonly />
+        </mat-form-field>
+      </div>
+    </div>
+
+  </vex-page-layout-content>
+</vex-page-layout>
+
+<mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+  <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns" class="mat-menu-item block">
+    <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
+      {{ column.label }}
+    </mat-checkbox>
+  </button>
+</mat-menu>
+
+<mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
+  <ng-template let-product="product" matMenuContent>
+    <button [routerLink]="['/products/edit/'+product._id]" mat-menu-item>
+      <mat-icon svgIcon="mat:edit"></mat-icon>
+      <span>Modify</span>
+    </button>
+    <button (click)="deleteProduct(product)" mat-menu-item>
+      <mat-icon svgIcon="mat:delete"></mat-icon>
+      <span>Delete</span>
+    </button>
+  </ng-template>
+</mat-menu>
+
+<table-expandable-rows-example></table-expandable-rows-example>

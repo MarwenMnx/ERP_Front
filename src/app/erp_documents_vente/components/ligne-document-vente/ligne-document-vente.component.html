@@ -1,0 +1,203 @@
+<br *ngIf="!(document.isDownloadDocumentPrecedent ? document.isDownloadDocumentPrecedent : false)">
+
+<div class="p-1 grid grid-cols-1 sm:grid-cols-2 gap-1 container" [formGroup]="form" *ngIf="!blockModification">
+
+  <!--
+  <div class="card flex-auto">
+    <div class="px-2 py-0 flex flex-col">
+      <vex-standart-autocomplete
+        [disabled]="document.isDownloadDocumentPrecedent ? document.isDownloadDocumentPrecedent : false"
+        [isArticle]=true [parentForm]="form" fieldId="_id" fieldDisplayed="designation" libelle="Article"
+        keyOfForm="article" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true" [items]="allArticles"
+        [value]="form.value.article"></vex-standart-autocomplete>
+
+
+    </div>
+  </div>-->
+
+  <div *ngIf="!(document.isDownloadDocumentPrecedent ? document.isDownloadDocumentPrecedent : false)" class="display-flex px-2 py-0">
+    <div class="width-80px">
+      <vex-standart-autocomplete
+        [disabled]="document.isDownloadDocumentPrecedent ? document.isDownloadDocumentPrecedent : false"
+        [isArticle]=true [parentForm]="form" fieldId="_id" fieldDisplayed="designation" libelle="Article"
+        keyOfForm="article" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true" [items]="allArticles"
+        [value]="form.value.article"></vex-standart-autocomplete>
+    </div>
+    <button color="primary" mat-mini-fab type="button" (click)="openProductModal(false)"
+      title="Details article">
+      <mat-icon svgIcon="mat:list"></mat-icon>
+    </button>
+    <button class="flex-none" color="primary" (click)="openProductModal(true)"
+      mat-mini-fab title="Ajouter article" type="button">
+      <mat-icon svgIcon="mat:add"></mat-icon>
+    </button>
+  </div>
+  <div *ngIf="!(document.isDownloadDocumentPrecedent ? document.isDownloadDocumentPrecedent : false)" class="p-0 grid grid-cols-1 sm:grid-cols-2 gap-1 container">
+    <div class="card flex-auto">
+      <div class="px-2 py-0 flex flex-col">
+        <div
+          class="grid {{  form.controls['unite2'] && form.controls['unite2'].value ? 'grid-cols-2' : 'grid-cols-1'}} gap-1">
+          <mat-form-field class="flex-auto border-input">
+            <mat-label>Qte 1 ({{ form.controls['unite1'] && form.controls['unite1'].value ?
+              form.controls['unite1'].value.libelle : 'unite 1' }})</mat-label>
+            <input class="right-aligned-input" formControlName="quantiteUnite1" matInput appQuantiteDecimaNumber
+              (change)="changeQuantite1()"  />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto" *ngIf="form.controls['unite2'] && form.controls['unite2'].value">
+            <mat-label>Qte 2 ({{ form.controls['unite2'] && form.controls['unite2'].value ?
+              form.controls['unite2'].value.libelle : 'unite 2' }})</mat-label>
+            <input class="right-aligned-input" formControlName="quantiteUnite2" matInput appQuantiteDecimaNumber
+              (change)="changeQuantite2()"
+              [readonly]="!(form.controls['unite2'] && form.controls['unite2'].value)"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="card flex-auto">
+      <div class="px-2 py-0 grid grid-cols-1 gap-1">
+        <div class="grid grid-cols-2 gap-1">
+          <mat-form-field class="flex-auto">
+            <mat-label>Prix Vente HT</mat-label>
+            <input class="right-aligned-input" (blur)="changePrixVHT(); changeTotals();" formControlName="prixVenteBrutHT"
+              matInput appMontantDecimaNumber />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>P.V.U TTC</mat-label>
+            <input class="right-aligned-input" (blur)="changePrixUnitaireTTC()" formControlName="prixVenteUnitaireTTC"
+              matInput appMontantDecimaNumber />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!(document.isDownloadDocumentPrecedent ? document.isDownloadDocumentPrecedent : false)" class="card flex-auto">
+    <div class="px-2 py-0 flex flex-col">
+      <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-1">
+        <mat-form-field class="flex-auto" appearance="outline">
+          <mat-label>Remise(%)</mat-label>
+          <input class="right-aligned-input" (blur)="changePrixVHT(); changeTotals();" formControlName="tauxremise"
+            matInput appMargeDecimaNumber />
+        </mat-form-field>
+        <mat-form-field class="flex-auto" appearance="outline">
+          <mat-label>Remise(Mt)</mat-label>
+          <input class="right-aligned-input" (blur)="changePrixVHT(); changeTotals();" formControlName="remiseMontant"
+            matInput appMontantDecimaNumber />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+          <mat-label>Total Net HT</mat-label>
+          <input class="right-aligned-input" formControlName="totalNetHT" matInput appMontantDecimaNumber readonly />
+        </mat-form-field>
+
+
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-4 gap-1" *ngIf="isOpenPanelPlusDetails">
+
+        <mat-form-field class="flex-auto">
+          <mat-label>taux.Fodec</mat-label>
+          <input class="right-aligned-input" formControlName="tauxFodec" matInput appMontantDecimaNumber
+            (blur)="changePrixVHT(); changeTotals();" />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+          <mat-label>taux.DC</mat-label>
+          <input class="right-aligned-input" formControlName="tauxDC" matInput appMontantDecimaNumber
+            (blur)="changePrixVHT(); changeTotals();" />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+          <mat-label>P.V.U netHT</mat-label>
+          <input class="right-aligned-input" (blur)="changePrixUnitaireHT()" formControlName="prixVenteUnitaireNetHT"
+            matInput appMontantDecimaNumber />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+          <mat-label>taux.TVA</mat-label>
+          <input class="right-aligned-input" formControlName="tauxTVA" matInput appMontantDecimaNumber
+            (blur)="changePrixVHT(); changeTotals();" />
+        </mat-form-field>
+
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-1" *ngIf="isOpenPanelPlusDetails">
+
+        <mat-form-field class="flex-auto">
+          <mat-label>totalBrutHT</mat-label>
+          <input class="right-aligned-input" formControlName="totalBrutHT" matInput appMontantDecimaNumber readonly />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+          <mat-label>Total Remise</mat-label>
+          <input class="right-aligned-input" formControlName="totalRemise" matInput appMontantDecimaNumber readonly />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+          <mat-label>totalHT</mat-label>
+          <input class="right-aligned-input" formControlName="totalHT" matInput appMontantDecimaNumber readonly />
+        </mat-form-field>
+
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!(document.isDownloadDocumentPrecedent ? document.isDownloadDocumentPrecedent : false)" class="card flex-auto">
+    <div class="px-2 py-0 flex flex-col">
+      <div class="p-0 grid grid-cols-1 sm:grid-cols-3 gap-x-1 container">
+
+        <mat-form-field class="flex-auto">
+          <mat-label>Total TTC</mat-label>
+          <input class="right-aligned-input" formControlName="totalTTC" matInput appMontantDecimaNumber readonly />
+        </mat-form-field>
+
+        <button title="Plus détails" mat-flat-button type="button"
+          (click)="isOpenPanelPlusDetails = !isOpenPanelPlusDetails" class="class-plus-details">
+          Plus Détails
+        </button>
+
+        <button color="primary" mat-flat-button type="button" (click)="addNewLigne()"
+          class="button-ligne-article flex-auto">
+          Ajouter Ligne Article
+          <mat-icon svgIcon="mat:arrow_downward"></mat-icon>
+        </button>
+
+        <mat-form-field class="flex-auto" *ngIf="isOpenPanelPlusDetails">
+          <mat-label>Total TVA</mat-label>
+          <input class="right-aligned-input" formControlName="totalTVA" matInput appMontantDecimaNumber readonly />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto" *ngIf="isOpenPanelPlusDetails">
+          <mat-label>Total Redevance</mat-label>
+          <input class="right-aligned-input" formControlName="totalRedevance" matInput appMontantDecimaNumber
+            readonly />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto" *ngIf="isOpenPanelPlusDetails">
+          <mat-label>Total Fodec</mat-label>
+          <input class="right-aligned-input" formControlName="totalFodec" matInput appMontantDecimaNumber readonly />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto" *ngIf="isOpenPanelPlusDetails">
+          <mat-label>Total DC</mat-label>
+          <input class="right-aligned-input" formControlName="totalDC" matInput appMontantDecimaNumber readonly />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto" *ngIf="isOpenPanelPlusDetails">
+          <mat-label>Gain commerciale</mat-label>
+          <input class="right-aligned-input" formControlName="gainCommercialTotal" matInput appMontantDecimaNumber
+            readonly />
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto" *ngIf="isOpenPanelPlusDetails">
+          <mat-label>Gain réel</mat-label>
+          <input class="right-aligned-input" formControlName="gainReelTotal" matInput appMontantDecimaNumber readonly />
+        </mat-form-field>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<vex-liste-ligne-document-vente [allArticles]="allArticles" [documentOriginal]="documentOriginal" [lignes]="lignes"
+  (newItemEvent)="misajourLignes($event)" [blockModification]="blockModification" [document]="document"></vex-liste-ligne-document-vente>

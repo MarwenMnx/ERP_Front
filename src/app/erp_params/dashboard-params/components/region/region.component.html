@@ -1,0 +1,15 @@
+<div class="card mb-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="text-muted">Sélectionnez la Société</h5>
+    <select class="form-select" (change)="onSocieteChange($event)">
+      <option *ngFor="let societe of societes" [value]="societe" [selected]="societe === selectedSociete">{{ societe }}</option>
+    </select>
+    <button class="btn-primary" (click)="exportPDF()">Exporter en PDF</button>
+  </div>
+  <div class="card-body">
+    <div class="chart-container">
+      <canvas #barChart></canvas>
+    </div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </div>
+</div>

@@ -1,0 +1,109 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+
+    <h2
+      *ngIf="defaults?.raisonSociale"
+      class="headline m-0 flex-auto">
+      Modifier societé
+    </h2>
+    <h2
+      *ngIf="!defaults?.raisonSociale"
+      class="headline m-0 flex-auto">
+      Ajouter societé
+    </h2>
+
+    <button
+      class="text-secondary"
+      mat-dialog-close
+      mat-icon-button
+      type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <div class="px-2 py-2 flex flex-col">
+    <mat-dialog-content class="flex flex-col">
+      <mat-form-field class="flex-auto">
+        <mat-label>Raison social</mat-label>
+        <input cdkFocusInitial formControlName="raisonSociale" matInput />
+        <mat-error *ngIf="form.controls.raisonSociale.hasError('required')" >Veillez renseigner le raison social </mat-error>
+      </mat-form-field>
+
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Matricule fiscale</mat-label>
+        <input cdkFocusInitial formControlName="matriculeFiscale" matInput />
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>RIB</mat-label>
+        <input cdkFocusInitial formControlName="rib" matInput />
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Responsable</mat-label>
+        <input cdkFocusInitial formControlName="responsable" matInput />
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>CIN Responsable</mat-label>
+        <input cdkFocusInitial formControlName="cin_responsable" matInput />
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Adresse</mat-label>
+        <input cdkFocusInitial formControlName="address" matInput />
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Tel</mat-label>
+        <input cdkFocusInitial formControlName="telephone" matInput />
+        <mat-error *ngIf="form.controls['telephone'].hasError('pattern')">Format de téléphone invalide.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Mobile</mat-label>
+        <input cdkFocusInitial formControlName="mobile" matInput />
+        <mat-error *ngIf="form.controls['mobile'].hasError('pattern')">Format de mobile invalide.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>FAX</mat-label>
+        <input cdkFocusInitial formControlName="fax" matInput />
+        <mat-error *ngIf="form.controls['fax'].hasError('pattern')">Format de mobile invalide.</mat-error>
+      </mat-form-field>
+
+      <div>
+        <mat-slide-toggle color="primary" formControlName="exemptVAT" [checked]="false"  >Exonere TVA</mat-slide-toggle>
+        <mat-slide-toggle color="primary" formControlName="exemptTimbreFiscale" [checked]="false" align="end">Exonere Timbre</mat-slide-toggle>
+      </div>
+
+
+    </mat-dialog-content>
+
+
+  </div>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+    <button
+      *ngIf="isCreateMode()"
+      color="primary"
+      mat-flat-button
+      type="submit">
+      Ajouter societé
+    </button>
+    <button
+      *ngIf="isUpdateMode()"
+      color="primary"
+      mat-flat-button
+      type="submit">
+      Modifier societé
+    </button>
+  </mat-dialog-actions>
+
+</form>
+
+

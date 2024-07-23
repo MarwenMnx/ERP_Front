@@ -1,0 +1,191 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+    <div class="flex items-center" mat-dialog-title>
+         <h2
+          *ngIf="form.controls.etatCommande.value"
+          class="headline m-0 flex-auto">
+         Modifier commande client
+        </h2>
+        <h2
+          *ngIf="!form.controls.etatCommande.value"
+          class="headline m-0 flex-auto">
+          Ajouter commande client
+        </h2>
+        <button
+          class="text-secondary"
+          mat-dialog-close
+          mat-icon-button
+          type="button">
+          <mat-icon svgIcon="mat:close"></mat-icon>
+        </button>
+    </div>
+  
+    <mat-divider class="text-border"></mat-divider>
+  
+    <mat-dialog-content class="flex flex-col">
+      <div class="flex flex-col sm:flex-row gap-2" >
+        <mat-form-field class="flex-auto w-1/3">
+          <mat-label> État commande</mat-label>
+          <input cdkFocusInitial formControlName="etatCommande" matInput />
+             <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+        </mat-form-field>
+  
+      <mat-form-field class="flex-auto w-1/3">
+          <mat-label>Date commande</mat-label>
+          <input [matDatepicker]="picker" matInput formControlName="dateCommande"  />
+          <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-hint></mat-hint>
+      </mat-form-field>
+       
+     <mat-form-field class="flex-auto w-1/3">
+          <mat-label>Num BL</mat-label>
+          <input formControlName="numBL" matInput />
+       </mat-form-field>
+      </div>
+
+       <div class="flex flex-col sm:flex-row gap-2">
+       <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Date BL</mat-label>
+        <input [matDatepicker]="picker1" matInput formControlName="dateBL"  />
+        <mat-datepicker-toggle [for]="picker1" matIconSuffix></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+        <mat-hint></mat-hint>
+    </mat-form-field>
+      
+   
+
+              
+      <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Num commande</mat-label>
+        <input formControlName="numCommande" matInput />
+      </mat-form-field>
+<!--   
+       <mat-form-field class="flex-auto">
+        <mat-label>date Devis</mat-label>
+        <input formControlName="dateDevis" matInput />
+        <mat-icon matIconPrefix svgIcon="mat:phone"></mat-icon>
+      </mat-form-field> -->
+
+      <!-- <mat-form-field>
+        <mat-label>date Devis</mat-label>
+        <input matInput [matDatepicker]="picker">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field> -->
+
+      <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Date Devis</mat-label>
+        <input [matDatepicker]="picker3" matInput formControlName="dateDevis"  />
+        <mat-datepicker-toggle [for]="picker3" matIconSuffix></mat-datepicker-toggle>
+        <mat-datepicker #picker3></mat-datepicker>
+        <mat-hint></mat-hint>
+    </mat-form-field>
+  </div>
+
+  <div class="flex flex-col sm:flex-row gap-2">
+   <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Num Devis</mat-label>
+        <input formControlName="numDevis" matInput>
+      </mat-form-field>
+
+
+      <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Code client</mat-label>
+        <input formControlName="codeClient" matInput>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Raison sociale</mat-label>
+        <input formControlName="raisonSociale" matInput>
+      </mat-form-field>
+      </div>
+
+
+      <div class="flex flex-col sm:flex-row gap-2">
+
+      <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Total brute</mat-label>
+        <input formControlName="totalBrute" matInput>
+      </mat-form-field>
+
+    <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Total remise</mat-label>
+        <input formControlName="totalRemise" matInput>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Total net HT</mat-label>
+        <input formControlName="totalNet" matInput>
+      </mat-form-field>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2">
+   
+      <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Total TVA</mat-label>
+        <input formControlName="totalTva" matInput>
+      </mat-form-field>
+
+      
+      <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Total redevance</mat-label>
+        <input formControlName="totalRedevance" matInput>
+      </mat-form-field>
+      
+      <mat-form-field class="flex-auto w-1/3">
+        <mat-label>Total TTC</mat-label>
+        <input formControlName="totalTTC" matInput>
+      </mat-form-field>
+      
+      </div>
+
+      <!-- <div class="flex flex-col sm:flex-row gap-2"> -->
+      <mat-form-field class="flex-auto">
+        <mat-label>Note</mat-label>
+        <input formControlName="note" matInput>
+      </mat-form-field>
+
+
+
+    </mat-dialog-content>
+  
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close type="button">Annuler</button>
+      
+      <button
+        *ngIf="isCreateMode()"
+        color="primary"
+        mat-flat-button
+        type="submit">
+        Ajouter commande client
+      </button>
+  
+  
+  
+      <button
+        *ngIf="isUpdateMode()"
+        color="primary"
+        mat-flat-button
+        type="submit">
+        Modifier commande client
+      </button>
+    </mat-dialog-actions>
+  </form>
+  
+  <mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+    <button mat-menu-item>
+      <mat-icon svgIcon="mat:print"></mat-icon>
+      <span>Print</span>
+    </button>
+  
+    <button mat-menu-item>
+      <mat-icon svgIcon="mat:download"></mat-icon>
+      <span>Export</span>
+    </button>
+  
+    <button mat-menu-item>
+      <mat-icon svgIcon="mat:delete"></mat-icon>
+      <span>Delete</span>
+    </button>
+  </mat-menu>
+  

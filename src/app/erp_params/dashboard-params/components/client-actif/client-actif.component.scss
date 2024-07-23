@@ -1,0 +1,41 @@
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background-color: #fff;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1rem;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+canvas {
+  width: 100% !important;
+  height: 300px !important;
+}
+
+.form-select {
+  display: inline-block;
+  width: auto;
+  margin-left: 1rem;
+}
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 14px;
+}

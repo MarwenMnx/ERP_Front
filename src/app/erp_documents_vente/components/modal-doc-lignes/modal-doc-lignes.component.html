@@ -1,0 +1,60 @@
+<div class="flex items-center" mat-dialog-title>
+
+    <h2 class="headline m-0 flex-auto">
+        {{ data?.document?.numero }}
+    </h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+
+</div>
+<mat-divider class="text-border"></mat-divider>
+<mat-dialog-content class="flex flex-col">
+    <vex-liste-ligne-document-vente *ngIf="data.withCheckQuantiteRestante && data.withCheckQuantiteRestante === true" [documentOriginal]="data?.document" [lignes]="data?.document?.lignes" [columns]="[
+    {
+      label: 'N°',
+      property: 'numero',
+      type: 'text',
+      visible: true,
+      cssClasses: ['font-medium', 'text']
+    },
+    {
+      label: 'Réference ',
+      property: 'reference',
+      type: 'image',
+      visible: true,
+      cssClasses: ['font-medium', 'text']
+    },
+    {
+      label: 'Désignation',
+      property: 'designation',
+      type: 'image',
+      visible: true,
+      cssClasses: ['font-medium', 'text']
+    },
+    {
+      label: 'Quantité-livré',
+      property: 'quantiteLivre',
+      type: 'text',
+      visible: true,
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Quantité-Restante',
+      property: 'quantiteRestante',
+      type: 'text',
+      visible: true,
+      cssClasses: ['font-medium']
+    }]"
+    ></vex-liste-ligne-document-vente>
+
+    <vex-liste-ligne-document-vente *ngIf="!data.withCheckQuantiteRestante || data.withCheckQuantiteRestante === false" [documentOriginal]="data?.document" [lignes]="data?.document?.lignes"
+    ></vex-liste-ligne-document-vente>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+    <button color="primary" mat-flat-button type="submit" (click)="accepteDownloadLignes()">
+        Télécharger la liste des lignes
+    </button>
+</mat-dialog-actions>

@@ -1,0 +1,30 @@
+.full-screen-dialog {
+    overflow: hidden; /* Optional: Prevent scrollbars */
+    margin: 0; /* Optional: Remove margin */
+    padding: 0; /* Optional: Remove padding */
+    box-sizing: border-box;
+}
+
+.right-aligned-input {
+    text-align: right;
+    padding-right: 16px !important;
+    font-weight: 600;
+    float:right;
+}
+
+.margins-input{
+    margin-top: 22px; 
+    margin-left:10px;
+}
+
+.float-right{
+    float:right;
+}
+
+.size-button-standard{
+    min-height: 49px;
+}
+
+.button-green{
+    background-color: green !important;
+}

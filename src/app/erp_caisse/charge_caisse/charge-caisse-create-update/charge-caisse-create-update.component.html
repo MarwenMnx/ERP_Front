@@ -1,0 +1,90 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+
+    <h2  *ngIf="defaults?.numero"   class="headline m-0 flex-auto">  Modifier Charge caisse </h2>
+    <h2 *ngIf="!defaults?.numero"  class="headline m-0 flex-auto">   Ajouter  Charge caisse  </h2>
+
+    <button  class="text-secondary"   mat-dialog-close    mat-icon-button   type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+
+    <div class="p-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-1 container">
+
+      <mat-form-field  class="flex-auto">
+        <mat-label>Date</mat-label>
+        <input matInput [matDatepicker]="picker"   formControlName="date" [(ngModel)]="selectDate" >
+        <mat-datepicker-toggle matIconSuffix [for]="picker" ></mat-datepicker-toggle>
+        <mat-datepicker #picker  ></mat-datepicker>
+      </mat-form-field>
+
+      <vex-standart-autocomplete  [parentForm]="form" class="flex-auto"  libelle="Type charge"  keyOfForm="type_charge"
+                                  [value]="defaults?.type_charge"
+                                  (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+                                  [items]="types_charge" fieldDisplayed="libelle" [isRequired]="true" aria-readonly="true" >
+        <mat-error *ngIf="form.controls['type_charge'].hasError('required')">Veillez inserer le type charge .</mat-error>
+      </vex-standart-autocomplete>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Montant</mat-label>
+        <input cdkFocusInitial formControlName="montant" matInput appMontantDecimaNumber />
+        <mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
+        <mat-error *ngIf="form.controls.montant.hasError('required')"  >Veillez inserer le montant
+        </mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <div class=" card p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 p-2 container">
+
+      <h1 class="class_transport flex-auto w-3">Type Beneficiaire</h1>
+      <mat-radio-group>
+        <mat-radio-button checked="true" (change)="showDivTrigger('intern')" color="primary"
+                          value="1">Interne</mat-radio-button>
+        <mat-radio-button (change)="showDivTrigger('extern')" color="primary" value="2">Externe</mat-radio-button>
+      </mat-radio-group>
+
+      <mat-form-field class="flex-auto"  *ngIf="!showDivIntern">
+        <mat-label>Bénéficiaire</mat-label>
+        <input cdkFocusInitial formControlName="beneficiaireExterne" matInput />
+      </mat-form-field>
+
+      <vex-standart-autocomplete *ngIf="showDivIntern" [parentForm]="form" class="flex-auto"  libelle="Bénéficiaire"  keyOfForm="beneficiaireInterne"
+                                  [value]="defaults?.beneficiaireInterne"
+                                  (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+                                  [items]="users" fieldDisplayed="nom" [isRequired]="true" aria-readonly="true" >
+        <mat-error *ngIf="form.controls['beneficiaireInterne'].hasError('required')">Veillez inserer le bénéficiaire .</mat-error>
+      </vex-standart-autocomplete>
+
+    </div>
+
+    <div class=" card p-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-2 p-2 container">
+      <mat-form-field class="flex-auto">
+        <mat-label>Motif</mat-label>
+        <textarea formControlName="motif" matInput ></textarea>
+      </mat-form-field>
+    </div>
+
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close type="button">Annuler</button>
+      <button *ngIf="isCreateMode()"    color="primary" mat-flat-button  type="submit">
+        Ajouter  charge caisse
+      </button>
+      <button  *ngIf="isUpdateMode()"   color="primary"    mat-flat-button   type="submit">
+        Modifier  charge caisse
+      </button>
+    </mat-dialog-actions>
+
+  </mat-dialog-content>
+
+
+
+
+</form>
+
+

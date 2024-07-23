@@ -1,0 +1,108 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+          
+    <h2
+    *ngIf="defaults?.libelle"
+    class="headline m-0 flex-auto">
+   Modifier type chéque
+  </h2>
+  <h2
+    *ngIf="!defaults?.libelle"
+    class="headline m-0 flex-auto">
+    Ajouter type chéque
+  </h2>
+    <button
+      class="text-secondary"
+      mat-dialog-close
+      mat-icon-button
+      type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+</div>
+  
+    <mat-divider class="text-border"></mat-divider>
+    <!-- <div  class="card flex-auto"> -->
+      <!-- <mat-dialog-content class="flex flex-col"> -->
+      <!-- 1er row dont ilya 3 col -->
+ <div  class="card flex-auto"> 
+      <mat-dialog-content class="flex flex-col">
+        <div class="flex flex-col sm:flex-row gap-2 mt-7">
+        <mat-form-field class="flex-auto">
+          <mat-label>Libelle</mat-label>
+          <input cdkFocusInitial formControlName="libelle" matInput />
+          <mat-error *ngIf="form.controls.libelle.hasError('required')"
+            >Veillez inserer la libelle.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="flex-auto">
+            <mat-label>Code</mat-label>
+            <input cdkFocusInitial formControlName="code" matInput />
+         <mat-error *ngIf="form.controls.code.hasError('required')"
+              >Veillez inserer le code.
+              </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Montant ticket</mat-label>
+            <input cdkFocusInitial formControlName="montant_ticket" matInput />
+            <mat-error *ngIf="form.controls.montant_ticket.hasError('required')"
+              >Veillez inserer le montant_ticket.
+              </mat-error>
+          </mat-form-field>
+
+          </div>
+             <!-- 2em row dont ilya 3 col -->
+             <div class="flex flex-col sm:flex-row gap-2 mt-7">
+                <mat-form-field class="flex-auto">
+                   <mat-label>Taux déduction</mat-label>
+                    <input cdkFocusInitial formControlName="taux_deduction" matInput />
+                <mat-error *ngIf="form.controls.taux_deduction.hasError('required')"
+              >Veillez inserer le taux_deduction.
+              </mat-error>
+          </mat-form-field>
+
+
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Montant déduction</mat-label>
+            <input cdkFocusInitial formControlName="montant_deduction" matInput />
+            <mat-error *ngIf="form.controls.montant_deduction.hasError('required')"
+              >Veillez inserer le montant_deduction.
+              </mat-error>
+          </mat-form-field>
+
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Valeur ticket</mat-label>
+            <input cdkFocusInitial formControlName="valeur_ticket" matInput />
+            <mat-error *ngIf="form.controls.valeur_ticket.hasError('required')"
+              >Veillez inserer la valeur_ticket.
+              </mat-error>
+          </mat-form-field>
+     </div>
+    </mat-dialog-content>
+    </div>
+  
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close type="button">Annuler</button>
+        <button
+          *ngIf="isCreateMode()"
+          color="primary"
+          mat-flat-button
+          type="submit">
+          Ajouter type chéque
+        </button>
+        <button
+          *ngIf="isUpdateMode()"
+          color="primary"
+          mat-flat-button
+          type="submit">
+          Modifier type chéque                                                                                          
+        </button>
+    </mat-dialog-actions>
+  
+  </form>
+    
+  
+    

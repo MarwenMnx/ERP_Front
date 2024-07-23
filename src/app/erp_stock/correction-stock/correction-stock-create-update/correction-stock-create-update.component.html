@@ -1,0 +1,78 @@
+<vex-secondary-toolbar current="{{
+    !isCreateMode()
+      ? form.get('reference')?.value
+      : 'Ajouter ' + dataParams.title
+  }}">
+  <vex-breadcrumbs [crumbs]="[dataParams.title]" class="flex-auto"></vex-breadcrumbs>
+  <button class="ml-2" color="primary" mat-icon-button type="button">
+    <mat-icon svgIcon="mat:more_vert"></mat-icon>
+  </button>
+</vex-secondary-toolbar>
+
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div [@stagger]="true" class="p-2 container">
+    <div class=" card p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 p-6 container">
+      <mat-form-field class="flex-auto">
+        <mat-label>Date</mat-label>
+        <input [matDatepicker]="picker" matInput formControlName="date" />
+        <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Numéro</mat-label>
+        <input cdkFocusInitial formControlName="numero" matInput />
+        <mat-error *ngIf="form.controls['numero'].hasError('required')">Numero est obligatoire.
+        </mat-error>
+      </mat-form-field>
+
+      <vex-standart-autocomplete fieldId="_id" libelle="Dépôt" fieldDisplayed="libelle" keyOfForm="depotpv"
+        [value]="defaults.depotpv" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true" [items]="allDepots"
+        [isRequired]="true">
+      </vex-standart-autocomplete>
+
+      <vex-standart-autocomplete fieldId="_id" libelle="Utilisateurs" fieldDisplayed="nom" keyOfForm="utilisateur"
+        [value]="defaults.utilisateur" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+        [items]="allUtilisateurs" [isRequired]="true">
+      </vex-standart-autocomplete>
+
+      <mat-form-field>
+        <mat-label>Note</mat-label>
+        <input cdkFocusInitial formControlName="notes" matInput />
+      </mat-form-field>
+    </div>
+  </div>
+  <div [@stagger]="true" class="p-1 container">
+    <vex-ligne-correction-stock [documentOriginal]="defaults" (misaJourParent)="newItemEvent($event)"
+      [allArticles]="allArticlesByDepot" [lignes]="form.controls['lignes'].value"></vex-ligne-correction-stock>
+
+    <div class="p-2 grid grid-cols-1 gap-1 container" style="text-align: right; padding-bottom: 100px">
+      <mat-dialog-actions align="end">
+        <button mat-button type="button">Annuler</button>
+        <button *ngIf="isCreateMode()" color="primary" mat-flat-button type="submit">
+          Creer {{ dataParams.title }}
+        </button>
+        <button *ngIf="isUpdateMode()" color="primary" mat-flat-button type="submit">
+          Modifier {{ dataParams.title }}
+        </button>
+      </mat-dialog-actions>
+    </div>
+  </div>
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:print"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:download"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:delete"></mat-icon>
+    <span>supprimer</span>
+  </button>
+</mat-menu>

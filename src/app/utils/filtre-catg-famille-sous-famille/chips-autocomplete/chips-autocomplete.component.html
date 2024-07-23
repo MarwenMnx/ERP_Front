@@ -1,0 +1,42 @@
+<form>
+    <mat-form-field class="example-chip-list">
+      <mat-label>{{ libelle }}</mat-label>
+      
+      <mat-chip-grid #chipGrid aria-label="Item selection">
+
+        <mat-chip-row *ngFor="let item of items" (removed)="remove(item)">
+           {{getValue(item)}}
+           <button matChipRemove [attr.aria-label]="'remove ' + item">
+            <mat-icon svgIcon="mat:close"></mat-icon>
+           </button>
+        </mat-chip-row>
+        
+      </mat-chip-grid>
+
+      <input placeholder="Séléctionnez ici..." 
+        #fruitInput 
+        [formControl]="fruitCtrl"
+        [matChipInputFor]="chipGrid" 
+        [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event)"
+        #autocompleteTrigger="matAutocompleteTrigger"
+        />
+      
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)" multiple>
+          <cdk-virtual-scroll-viewport appendOnly itemSize="10" class="example-viewport" style="height: 180px;">
+            <ng-container *cdkVirtualFor="let item of filteredItems | async">
+
+              <mat-option [value]="item" (onSelectionChange)="onEnter($event,item);" >
+                <mat-checkbox color="primary" [checked]="getCheckedItem(item)">  </mat-checkbox>
+                  {{getValue(item)}}
+              </mat-option>
+
+            </ng-container>
+          </cdk-virtual-scroll-viewport>    
+      </mat-autocomplete>
+
+    </mat-form-field>
+
+</form>
+  

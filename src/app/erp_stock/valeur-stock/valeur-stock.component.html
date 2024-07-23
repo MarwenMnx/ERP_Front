@@ -1,0 +1,324 @@
+<vex-page-layout>
+  <vex-page-layout-header style="height: 20px;" class="pb-3 flex flex-col items-start justify-center">
+    <div [class.container]="layoutCtrl.value === 'boxed'" [class.px-6]="layoutCtrl.value === 'fullwidth'"
+         class="w-full flex flex-col sm:flex-row justify-between">
+      <br>
+    </div>
+  </vex-page-layout-header>
+
+  <vex-page-layout-content
+    [class.container]="layoutCtrl.value === 'boxed'"
+    [class.px-6]="layoutCtrl.value === 'fullwidth'"
+    class="-mt-6">
+
+    <div  class="card p-2 mb-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-1 w-full -mt-3 container"  >
+
+      <date-range-picker hidden [labelTextRange]="labelTextPR"
+                         (selectedDateRange)="set_SelectedDateRange($event)" >
+      </date-range-picker>
+
+      <vex-filtre-autocomplet-select-all
+        [labelText]     ="labelTextBC"
+        [selectedDatas] ="dataTypeArticle"
+        [selectedKey]   ="selectedKeyART"
+        [selectedVal]   ="selectedValART"
+        [isSelectedItems]="preSelectedART"
+        (selectedList)="set_SelectedList($event)"
+      >
+      </vex-filtre-autocomplet-select-all>
+
+      <vex-filtre-autocomplet-select-all
+        [labelText]="labelTextDp"
+        [selectedDatas]="dataDepot"
+        [selectedKey]="selectedKeyDepot"
+        [selectedVal]="selectedValDepot"
+        [isSelectedItems]="preSelectedItems"
+        (selectedList)="set_SelectedListDepot($event)">
+      </vex-filtre-autocomplet-select-all>
+
+      <mat-form-field>
+        <mat-label>Type quantité</mat-label>
+        <mat-select [(value)]="selectedListTypeQuantite"  placeholder="Type quantité">
+          <mat-option [value]="0">Tous </mat-option>
+          <mat-option [value]="1">Positive</mat-option>
+          <mat-option [value]="-1">Négative</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div style="text-align: right; display: flex;">
+        <button class="text-secondary" mat-icon-button matIconSuffix type="button" (click)="filtrerMv()" >
+          <mat-icon svgIcon="mat:search"></mat-icon>
+        </button>
+        <button (click)="isAccordionDetailsOpen = !isAccordionDetailsOpen" color="primary" mat-icon-button
+                type="button" title="Plus de details">
+          <mat-icon svgIcon="mat:youtube_searched_for"></mat-icon>
+        </button>
+      </div>
+
+    </div>
+
+    <div *ngIf="isAccordionDetailsOpen" class="card p-2 mb-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-1 w-full -mt-3 container"  >
+      <vex-filtre-catg-famille-sous-famille style="width: 100%;" (filtrerEvent)="filterCateg($event)" > </vex-filtre-catg-famille-sous-famille>
+    </div>
+
+    <div class="card overflow-auto -mt-3">
+
+      <div
+        class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
+        <h2
+          class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
+          <span *ngIf="selection.isEmpty()">Valeur stock </span>
+          <span *ngIf="selection.hasValue()" >{{ selection.selected.length }} Valeur stock<span
+            *ngIf="selection.selected.length > 1" >s</span > selected</span >
+        </h2>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-icon matIconPrefix svgIcon="mat:search"></mat-icon>
+          <input matInput [formControl]="searchCtrl" placeholder="Recherche&hellip;" type="text" />
+        </mat-form-field>
+
+        <span class="flex-1"></span>
+        <span style="font-size: large"><b>({{dataSource.filteredData.length}}) articles</b></span>
+        <button (click)="ExportTOExcel()" class="ml-4 flex-none" color="primary" mat-mini-fab
+          matTooltip="Export Excel" type="button">
+          <mat-icon svgIcon="mat:insert_drive_file"></mat-icon>
+        </button>
+
+        <button (click)="exportToPdf()" class="ml-4 flex-none" color="primary" mat-mini-fab
+          matTooltip="Export PDF" type="button">
+          <mat-icon svgIcon="mat:picture_as_pdf"></mat-icon>
+        </button>
+        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4 flex-none" mat-icon-button  matTooltip="Filter Columns" type="button">
+          <mat-icon svgIcon="mat:filter_list"></mat-icon>
+        </button>
+
+      </div>
+
+      <div class="table-container" #TABLE>
+        <table [dataSource]="dataSource" class="w-full" mat-table matSort   >
+          <!--- Note that these columns can be defined in any order.
+                The actual rendered columns are set as a property on the row definition" -->
+
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="checkbox">
+            <th *matHeaderCellDef mat-header-cell>
+              <mat-checkbox
+                (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                color="primary">
+              </mat-checkbox>
+            </th>
+            <td *matCellDef="let row" class="w-4" mat-cell>
+              <mat-checkbox
+                (change)="$event ? selection.toggle(row) : null"
+                (click)="$event.stopPropagation()"
+                [checked]="selection.isSelected(row)"
+                color="primary">
+              </mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef class="right-aligned-input"> </td>
+          </ng-container>
+
+          <!-- Text Columns -->
+
+          <ng-container *ngFor="let column of columns; trackBy: trackByProperty">
+            <ng-container
+              *ngIf="column.type === 'text'"
+              [matColumnDef]="column.property">
+              <th *matHeaderCellDef class="uppercase" mat-header-cell   mat-sort-header>
+                {{ column.label }}
+              </th>
+              <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
+
+                <ng-template  [ngIf]="column.property == 'typeArticle'">
+                  <ng-container>{{ utilService.getEnumKeyByValue('enum_types_articles',row[column.property]) }}</ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'reference'">
+                  <ng-container>{{ row[column.property] }}</ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'designation'">
+                  <ng-container>{{ row[column.property] }}</ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'categorie'">
+                  <ng-container>{{ row[column.property]?.libelle }}</ng-container>
+                </ng-template>
+
+
+                <ng-template  [ngIf]="column.property == 'famille'">
+                  <ng-container>{{ row[column.property]?.libelle }}</ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'sousFamille'">
+                  <ng-container>{{ row[column.property]?.libelle }}</ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'qteEnStock'">
+                  <ng-container><span  style="float: right">
+                    <b> {{  utilService.roundmQuantiteString(row[column.property]) }} </b></span></ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'unite1'">
+                  <ng-container>{{ row[column.property]?.libelle }}</ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'coefficient'">
+                  <ng-container>{{ row[column.property] }}</ng-container>
+                </ng-template>
+
+
+                <ng-template  [ngIf]="column.property == 'quantiteUnite2'">
+                  <ng-container><span  style="float: right">
+                    <b> {{  utilService.roundmQuantiteString(row[column.property]) }} </b></span></ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'unite2'">
+                  <ng-container>{{ row[column.property]?.libelle }}</ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'prixAchat'">
+                  <ng-container><span  style="float: right"> <b>{{ utileService.roundmMontantString(row[column.property])}}</b></span></ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'prixAchatTTC'">
+                  <ng-container><span  style="float: right"> <b>{{ utileService.roundmMontantString(row[column.property])}}</b></span></ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'TotalHT'">
+                  <ng-container><span  style="float: right"> <b>{{ utileService.roundmMontantString(row[column.property])}}</b></span></ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'TotalTTC'">
+                  <ng-container><span  style="float: right"> <b>{{ utileService.roundmMontantString(row[column.property])}}</b></span></ng-container>
+                </ng-template>
+
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="right-aligned-input">
+
+                <ng-template  [ngIf]="column.property == 'typeArticle'">
+                  <ng-container>TOTAL ( {{dataSource.filteredData.length}} )</ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'reference'">
+                  <ng-container></ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'designation'">
+                  <ng-container></ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'categorie'">
+                  <ng-container></ng-container>
+                </ng-template>
+
+
+                <ng-template  [ngIf]="column.property == 'famille'">
+                  <ng-container></ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'sousFamille'">
+                  <ng-container></ng-container>
+                </ng-template>
+
+                <span *ngIf="dataSource && column.property == 'qteEnStock' " style="float: right"><b>{{ utilService.roundmQuantiteString(utilService.sommeTotalOfItemsByKey(column.property, dataSource.filteredData)) }}</b></span>
+
+                <ng-template  [ngIf]="column.property == 'unite1'">
+                  <ng-container></ng-container>
+                </ng-template>
+
+                <ng-template  [ngIf]="column.property == 'coefficient'">
+                  <ng-container></ng-container>
+                </ng-template>
+
+                <span *ngIf="dataSource && column.property == 'quantiteUnite2' " style="float: right"><b>{{ utilService.roundmQuantiteString(utilService.sommeTotalOfItemsByKey(column.property, dataSource.filteredData)) }}</b></span>
+
+                <ng-template  [ngIf]="column.property == 'unite2'">
+                  <ng-container></ng-container>
+                </ng-template>
+
+               <ng-template  [ngIf]="column.property == 'prixAchat'">
+                  <ng-container></ng-container>
+                </ng-template>
+                <ng-template  [ngIf]="column.property == 'prixAchatTTC'">
+                  <ng-container></ng-container>
+                </ng-template>
+
+                <span *ngIf="dataSource && column.property == 'TotalHT' " style="float: right"><b>{{ utilService.roundmMontantString(utilService.sommeTotalOfItemsByKey(column.property, dataSource.filteredData)) }}</b></span>
+                <span *ngIf="dataSource && column.property == 'TotalTTC' " style="float: right"><b>{{ utilService.roundmMontantString(utilService.sommeTotalOfItemsByKey(column.property, dataSource.filteredData)) }}</b></span>
+
+              </td>
+            </ng-container>
+          </ng-container>
+
+          <!-- Contact Column -->
+          <ng-container matColumnDef="contact">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header></th>
+
+            <td mat-footer-cell *matFooterCellDef class="right-aligned-input"> </td>
+          </ng-container>
+
+          <!-- Label Column -->
+          <ng-container matColumnDef="labels">
+            <th
+              *matHeaderCellDef
+              class="uppercase"
+              mat-header-cell
+              mat-sort-header>
+              Labels
+            </th>
+
+            <td mat-footer-cell *matFooterCellDef class="right-aligned-input"> </td>
+          </ng-container>
+
+          <!-- Action Column -->
+          <ng-container matColumnDef="actions">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header></th>
+            <td *matCellDef="let row" class="w-10 text-secondary" mat-cell>
+              <button
+                (click)="$event.stopPropagation()"
+                [matMenuTriggerData]="{ mouvementStock: row }"
+                [matMenuTriggerFor]="actionsMenu"
+                mat-icon-button
+                type="button">
+                <mat-icon svgIcon="mat:more_horiz"></mat-icon>
+              </button>
+            </td>
+            <td mat-footer-cell *matFooterCellDef class="right-aligned-input"> </td>
+          </ng-container>
+
+          <tr *matHeaderRowDef="visibleColumns" mat-header-row class="mat-header-row"></tr>
+          <tr
+            *matRowDef="let row; columns: visibleColumns"
+
+            class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer"
+            mat-row></tr>
+          <tr *matFooterRowDef="visibleColumns" mat-footer-row class="mat-footer-row"></tr>
+        </table>
+      </div>
+    </div>
+
+  </vex-page-layout-content>
+</vex-page-layout>
+
+<mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+  <button
+    (click)="toggleColumnVisibility(column, $event)"
+    *ngFor="let column of columns"
+    class="mat-menu-item block">
+    <mat-checkbox
+      (click)="$event.stopPropagation()"
+      [(ngModel)]="column.visible"
+      color="primary">
+      {{ column.label }}
+    </mat-checkbox>
+  </button>
+</mat-menu>
+
+<mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
+  <ng-template let-mouvementStock="mouvementStock" matMenuContent>
+
+  </ng-template>
+</mat-menu>

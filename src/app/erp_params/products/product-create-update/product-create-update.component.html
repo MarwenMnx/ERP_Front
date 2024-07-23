@@ -1,0 +1,831 @@
+<vex-secondary-toolbar current="{{ isUpdateMode() ? form.get('reference')?.value : 'Ajouter Produit'}}">
+
+  <vex-breadcrumbs *ngIf="isUpdateMode()" [crumbs]="['Produits', 'Modifier Produit' ]"
+    class="flex-auto"></vex-breadcrumbs>
+  <vex-breadcrumbs *ngIf="!isUpdateMode()" [crumbs]="['Produits', 'Ajouter Produit' ]"
+    class="flex-auto"></vex-breadcrumbs>
+
+  <button class="ml-2" color="primary" mat-icon-button type="button">
+    <mat-icon svgIcon="mat:more_vert"></mat-icon>
+  </button>
+</vex-secondary-toolbar>
+
+<form (ngSubmit)="save()" [formGroup]="form">
+
+  <div [@stagger]="true" class="p-1 container">
+
+    <div class="p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 container">
+
+      <div @fadeInUp class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+          <mat-form-field class="flex-auto">
+            <mat-label>Référence</mat-label>
+            <input cdkFocusInitial formControlName="reference" matInput />
+            <mat-error *ngIf="form.controls['reference'].hasError('required')">Référence est obligatoire.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Code Barre</mat-label>
+            <input cdkFocusInitial formControlName="codeBarre" matInput />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Désignation</mat-label>
+            <input cdkFocusInitial formControlName="designation" matInput />
+            <mat-error *ngIf="form.controls['designation'].hasError('required')">Désignation est obligatoire.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field [color]="selectCtrl.value" class="flex-none">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="typeArticle" placeholder="Type">
+              <mat-option value="1">Produit Simple</mat-option>
+              <mat-option value="2">Produit Fini</mat-option>
+              <mat-option value="3">Matière Première</mat-option>
+              <mat-option value="4">Service</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div @fadeInUp class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+          <div class="display-flex px-2 py-0">
+            <div class="width-80px">
+              <vex-standart-autocomplete [parentForm]="form" libelle="Categorie" keyOfForm="categorie"
+              [value]="form.value.categorie" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+              [items]="allCategories" [isRequired]="true"></vex-standart-autocomplete>
+            </div>
+            <button class="flex-none" color="primary" (click)="openPopup('Categorie')"
+              mat-mini-fab title="Ajouter Categorie" type="button">
+              <mat-icon svgIcon="mat:add"></mat-icon>
+            </button>
+          </div>
+
+          <div class="display-flex px-2 py-0">
+            <div class="width-80px">
+              <vex-standart-autocomplete libelle="Famille" keyOfForm="famille" [value]="form.value.famille"
+              (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+              [items]="famillesFiltree"></vex-standart-autocomplete>
+            </div>
+            <button class="flex-none" color="primary"  (click)="openPopup('Famille')"
+              mat-mini-fab title="Ajouter Famille" type="button">
+              <mat-icon svgIcon="mat:add"></mat-icon>
+            </button>
+          </div>
+
+          <div class="display-flex px-2 py-0">
+            <div class="width-80px">
+              <vex-standart-autocomplete libelle="Sous Famille" keyOfForm="sousFamille" [value]="form.value.sousFamille"
+              (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+              [items]="sousFamillesFiltree"></vex-standart-autocomplete>
+            </div>
+            <button class="flex-none" color="primary" (click)="openPopup('Sous Famille')"
+              mat-mini-fab title="Ajouter Sous Famille" type="button">
+              <mat-icon svgIcon="mat:add"></mat-icon>
+            </button>
+          </div>
+
+          <div class="display-flex px-2 py-0">
+            <div class="width-80px">
+              <vex-standart-autocomplete libelle="Unité" keyOfForm="unite1" [value]="form.value.unite1"
+              (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true" [items]="allUnites"
+              [isRequired]="true"></vex-standart-autocomplete>
+            </div>
+            <button class="flex-none" color="primary" (click)="openPopup('Unité')"
+              mat-mini-fab title="Ajouter Unité" type="button">
+              <mat-icon svgIcon="mat:add"></mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div @fadeInUp class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+          <mat-form-field class="flex-auto">
+            <mat-label>ValeurStock</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="valeurStock" matInput
+              appMontantDecimaNumber readonly />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Qte Global</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="qteEnStock" matInput
+              appMontantDecimaNumber readonly />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>PMP</mat-label>
+            <input class="right-aligned-input" cdkFocusInitial formControlName="pmp" matInput appMontantDecimaNumber
+              readonly />
+          </mat-form-field>
+
+          <mat-form-field [color]="selectCtrl.value" class="flex-none">
+            <mat-label>Vendu par</mat-label>
+            <mat-select formControlName="venduPar" placeholder="Vendu par">
+              <mat-option value="1">Pièce</mat-option>
+              <mat-option value="2">Poids</mat-option>
+              <mat-option value="3">Unité</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div @fadeInUp class="card flex-auto">
+        <div class="px-2 py-4 flex flex-col">
+          <div class="flex flex-row">
+            <mat-checkbox color="primary" formControlName="active">Actif</mat-checkbox>
+            <mat-checkbox color="primary" formControlName="lotSerieActive" [checked]="false" align="end">Lot/Serie
+              active</mat-checkbox>
+          </div>
+          <mat-radio-group class="flex gap-1 mt-4" formControlName="enVente">
+            <mat-radio-button color="primary" [value]="true">En Vente</mat-radio-button>
+            <mat-radio-button color="primary" [value]="false">Hors Vente</mat-radio-button>
+          </mat-radio-group>
+          <mat-radio-group class="flex gap-1 mt-4" formControlName="enAchat">
+            <mat-radio-button color="primary" [value]="true">En Achat</mat-radio-button>
+            <mat-radio-button color="primary" [value]="false">Hors Achat</mat-radio-button>
+          </mat-radio-group>
+
+          <div class="px-2 py-1 flex flex-col">
+            <div class="flex flex-row">
+              <mat-slide-toggle class="flex gap-1 mt-4" color="primary" formControlName="enBalance" [checked]="false">
+                En balance
+              </mat-slide-toggle>
+            </div>
+          </div>
+
+
+          <div class="grid grid-cols-2 gap-1">
+            <img *ngIf="imageData" [src]="imageData" class="style-image" />
+            <div class="sm:ml-3 flex-auto">
+              <input [disabled]="true" id="imageUpload" (change)="onFileSelect($event)" type="file" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div [@stagger]="true" class="p-1 container">
+    <div class="card p-2 grid grid-cols-1 gap-1 container">
+      <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onSelectedTabIndexChanged($event)">
+        <!--Tarif-->
+        <mat-tab label="Tarif">
+          <div *ngIf="selectedTabIndex == 0" [@stagger]="true" class="p-1 container">
+            <div class="p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 container">
+              <!--block 1-->
+              <div class="card flex-auto">
+                <div class="px-2 py-2 flex flex-col">
+
+                  <!--Prix fourn-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label class="color-gras">Prix Fourn</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="prixFourn" matInput
+                      appMontantDecimaNumber (blur)="changePrixVHT();" />
+                    <mat-error
+                      *ngIf="form.controls['prixFourn'].hasError('notEqualToZero') || form.controls['prixFourn'].hasError('required')">Prix
+                      fourn est obligatoire.
+                    </mat-error>
+                  </mat-form-field>
+                  <!--Remise.F %-->
+                  <div class="grid grid-cols-2 gap-1">
+                    <mat-form-field class="flex-auto">
+                      <mat-label>Remise(taux%)</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial matInput appTauxDecimaNumber
+                        formControlName="remiseF" (blur)="changePrixVHT();" />
+                    </mat-form-field>
+
+                    <mat-form-field class="flex-auto">
+                      <mat-label>Remise(Montant)</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial matInput appMontantDecimaNumber
+                        formControlName="remiseMontant" (blur)="changePrixVHT();" />
+                    </mat-form-field>
+                  </div>
+
+                  <!--Fodec-->
+                  <div class="grid grid-cols-3 gap-1">
+                    <mat-checkbox color="primary" formControlName="isFodecA"
+                      (click)="changePrixVHT()">Fodec</mat-checkbox>
+
+                    <mat-form-field class="flex-auto smaller-input" appearance="outline">
+                      <mat-label>%</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="tauxFodecA" matInput readonly
+                        appTauxDecimaNumber (blur)="onBlur($event)" />
+                    </mat-form-field>
+
+                    <mat-form-field class="flex-auto smaller-input" appearance="outline">
+                      <mat-label>Mt</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="prixFodecA" matInput readonly
+                        appMontantDecimaNumber (blur)="onBlur($event)" />
+                    </mat-form-field>
+                  </div>
+                  <!--D.Conso-->
+                  <div class="grid grid-cols-3 gap-1">
+                    <mat-checkbox color="primary" formControlName="isDC" (click)="changePrixVHT()">D.C</mat-checkbox>
+
+                    <mat-form-field class="flex-auto smaller-input" appearance="outline">
+                      <mat-label>%</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="tauxDC" matInput
+                        appTauxDecimaNumber (blur)="changePrixVHT();" />
+                    </mat-form-field>
+
+                    <mat-form-field class="flex-auto smaller-input" appearance="outline">
+                      <mat-label>Mt</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="prixDC" matInput readonly
+                        appMontantDecimaNumber />
+                    </mat-form-field>
+                  </div>
+                  <!--Prix Achat Net HT-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>Prix Achat Net HT</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="prixAchat" matInput
+                      appMontantDecimaNumber readonly />
+                  </mat-form-field>
+
+                </div>
+              </div>
+
+              <!--block 1-->
+              <div class="card flex-auto">
+                <div class="px-2 py-2 flex flex-col">
+                  <mat-form-field [color]="selectCtrl.value" class="flex-none" style="text-align: right; width: 100%;">
+                    <mat-label>Taux TVA %</mat-label>
+                    <mat-select formControlName="tauxTVA" placeholder="TauxTVA %">
+                      <mat-option class="right-aligned-input" [value]="0" (click)="changePrixVHT()">0 %</mat-option>
+                      <mat-option class="right-aligned-input" *ngFor="let taux of allTaux" [value]="taux.taux"
+                        (click)="changePrixVHT()">{{ utilService.roundmTauxString(taux.taux) }} %</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <!--Montant TVA-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>Montant TVA</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="montantTVA" matInput readonly
+                      appMontantDecimaNumber />
+                  </mat-form-field>
+                  <!--Prix Achat TTC-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label class="color-gras">Prix Achat TTC</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="prixAchatTTC" matInput
+                      (blur)="changePrixAchatTTC()" appMontantDecimaNumber />
+                  </mat-form-field>
+                  <!--Prix Revient HT-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>Prix Revient HT</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="prixRevient" matInput readonly
+                      appMontantDecimaNumber />
+                  </mat-form-field>
+                  <!--Redevance-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>Redevance</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="redevance" matInput
+                      appMontantDecimaNumber (blur)="changePrixVHT();" (change)="onBlur($event);" />
+                  </mat-form-field>
+                  <!--Prix Revient TTC-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>Prix Revient TTC</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="prixRevientTTC" matInput
+                      readonly appMontantDecimaNumber />
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!--block 2-->
+              <div class="card flex-auto">
+                <div class="px-2 py-2 flex flex-col">
+                  <!--Marge 1-->
+                  <div class=" py-2 flex flex-col">
+                    <div class="align-items-center">
+                      <mat-label class="mx-3">Marge sur</mat-label>
+                      <mat-radio-group formControlName="margeAppliqueeSur" (change)="changePrixVHT()">
+                        <mat-radio-button color="primary" value="2">P.Achat</mat-radio-button>
+                        <mat-radio-button color="primary" value="3">P.Revient</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </div>
+
+                  <!--Marge 2-->
+                  <div class="grid grid-cols-2 gap-1">
+                    <mat-form-field class="flex-auto" appearance="outline">
+                      <mat-label>Marge %</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="tauxMarge" matInput
+                        appMargeDecimaNumber (blur)="changePrixVHT();" />
+                    </mat-form-field>
+
+                    <mat-form-field class="flex-auto" appearance="outline">
+                      <mat-label>Marge Mt</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="prixMarge" matInput readonly
+                        appMontantDecimaNumber />
+                    </mat-form-field>
+                  </div>
+
+                  <!--Marge 2-->
+                  <div class="grid grid-cols-2 gap-1">
+                    <mat-form-field class="flex-auto">
+                      <mat-label>Prix vente HT</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="prixVenteHT" matInput
+                        appMontantDecimaNumber readonly />
+                    </mat-form-field>
+
+                    <mat-form-field class="flex-auto">
+                      <mat-label>Prix Vente NetHT</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="prixNetVenteHT" matInput
+                        appMontantDecimaNumber (change)="changePrixVenteHT();" />
+                    </mat-form-field>
+                  </div>
+
+                  <!--Fodec V-->
+                  <div class="grid grid-cols-3 gap-1">
+                    <mat-checkbox color="primary" formControlName="isFodecV" (click)="changePrixVHT()">Fodec
+                      vte</mat-checkbox>
+
+                    <mat-form-field class="flex-auto smaller-input" appearance="outline">
+                      <mat-label>%</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="tauxFodecV" matInput
+                        appTauxDecimaNumber readonly />
+                    </mat-form-field>
+
+                    <mat-form-field class="flex-auto smaller-input" appearance="outline">
+                      <mat-label>Mt</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="prixFodecV"
+                        appMontantDecimaNumber matInput readonly />
+                    </mat-form-field>
+                  </div>
+
+                  <!--D.Conso-->
+                  <div class="grid grid-cols-3 gap-1">
+                    <mat-checkbox color="primary" formControlName="isDCVente" (click)="changePrixVHT()">D.C
+                      vte</mat-checkbox>
+
+                    <mat-form-field class="flex-auto smaller-input" appearance="outline">
+                      <mat-label>%</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="tauxDCVente" matInput
+                        appTauxDecimaNumber (blur)="changePrixVHT();" />
+                    </mat-form-field>
+
+                    <mat-form-field class="flex-auto smaller-input" appearance="outline">
+                      <mat-label>Mt</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="prixDCVente" matInput readonly
+                        appMontantDecimaNumber />
+                    </mat-form-field>
+                  </div>
+
+                  <!--D.Conso-->
+                  <div class="grid grid-cols-2 gap-1">
+                    <mat-checkbox color="primary" formControlName="isRedevanceVente" (click)="changePrixVHT()">Redevance
+                      vte</mat-checkbox>
+
+                    <mat-form-field class="flex-auto" appearance="outline">
+                      <mat-label>Mt</mat-label>
+                      <input class="right-aligned-input" cdkFocusInitial formControlName="redevance" matInput
+                        (blur)="changePrixVHT();" readonly appMontantDecimaNumber />
+                    </mat-form-field>
+                  </div>
+
+                </div>
+              </div>
+
+              <!--block 2-->
+              <div class="card flex-auto">
+                <div class="px-2 py-2 flex flex-col">
+
+                  <!--Montant tva-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>Montant TVA</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="montantTVAVente" matInput
+                      readonly appMontantDecimaNumber />
+                  </mat-form-field>
+
+                  <!--Prix ttc-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label class="color-gras">Prix Vente TTC</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="prixTTC" matInput
+                      appMontantDecimaNumber (change)="changePrixVenteTTC();" />
+                  </mat-form-field>
+
+                  <!--P.V Conseillé-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>P.V Conseillé</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="pVenteConseille" matInput
+                      appMontantDecimaNumber />
+                  </mat-form-field>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </mat-tab>
+        <!--Plus Détails-->
+        <mat-tab label="Plus Détails">
+          <div *ngIf="selectedTabIndex == 1"  [@stagger]="true" class="p-1 container">
+
+            <div class="p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 container">
+              <!--block 1-->
+              <div class="card flex-auto">
+                <div class="px-2 py-2 flex flex-col">
+                  <!--Coefficient-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>Unité 1 = "Coefficient" X Unité 2 </mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="coefficient" matInput
+                      appMontantDecimaNumber />
+                    <mat-error *ngIf="form.controls['coefficient'].hasError('notEqualToZero')">Le coefficient est
+                      obligatoire.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <div class="display-flex px-2 py-0">
+                    <div class="width-80px">
+                      <!--Unité 2-->
+                      <vex-standart-autocomplete libelle="Unité 2" keyOfForm="unite2" [value]="form.value.unite2"
+                      (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+                      [items]="allUnites"></vex-standart-autocomplete>
+                    </div>
+                    <button class="flex-none" color="primary" (click)="openPopup('Unité')"
+                      mat-mini-fab title="Ajouter Unité" type="button">
+                      <mat-icon svgIcon="mat:add"></mat-icon>
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+
+              <!--block 2-->
+              <div class="card flex-auto">
+                <div class="px-2 py-2 flex flex-col">
+                  <!--Fournisseur %-->
+                  <vex-standart-autocomplete fieldId="_id" fieldDisplayed="raisonSociale" libelle="Fournisseur"
+                  keyOfForm="fournisseur" [value]="defaults.fournisseur" (newItemEvent)="newItemEvent($event)"
+                  [items]="allFournisseurs"></vex-standart-autocomplete>
+              
+                  <!--RefFournisseur-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>RefFournisseur</mat-label>
+                    <input cdkFocusInitial formControlName="refFournisseur" matInput />
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!--block 2-->
+              <div class="card flex-auto">
+                <div class="px-2 py-2 flex flex-col">
+                  <!--Marque-->
+                  
+                  <div class="display-flex px-2 py-0">
+                    <div class="width-80px">
+                      <!--Unité 2-->
+                      <vex-standart-autocomplete libelle="Marque" keyOfForm="marque" [value]="form.value.marque"
+                      (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+                      [items]="allMarques"></vex-standart-autocomplete>
+                    </div>
+                    <button class="flex-none" color="primary" (click)="openPopup('Marque')"
+                      mat-mini-fab title="Ajouter Unité" type="button">
+                      <mat-icon svgIcon="mat:add"></mat-icon>
+                    </button>
+                  </div>
+                  <div class="display-flex px-2 py-0">
+                    <div class="width-80px">
+                      <!--Unité 2-->
+                        <!--Modele-->
+                      <vex-standart-autocomplete libelle="Modele" keyOfForm="modele" [value]="form.value.modele"
+                      (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+                      [items]="modelesFiltree"></vex-standart-autocomplete>
+                    </div>
+                    <button class="flex-none" color="primary" (click)="openPopup('Modele')"
+                      mat-mini-fab title="Ajouter Unité" type="button">
+                      <mat-icon svgIcon="mat:add"></mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="p-1 grid grid-cols-1 gap-1 container">
+              <div class="card flex-auto">
+                <div class="px-2 py-2 flex flex-col">
+                  <!--Prix fourn-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="description" placeholder="Enter your text" rows="2"></textarea>
+                  </mat-form-field>
+                  <!--Remise.F %-->
+                  <mat-form-field class="flex-auto">
+                    <mat-label>Observation</mat-label>
+                    <textarea matInput formControlName="observation" placeholder="Enter your text" rows="2"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </mat-tab>
+        <!--Frais-->
+        <mat-tab label="Frais">
+          <div *ngIf="selectedTabIndex == 2"  [@stagger]="true" class="p-1 container">
+            <vex-frais [frais]="defaults.frais" (newItemEvent)="newItemEvent($event)"></vex-frais>
+          </div>
+        </mat-tab>
+        <!--Composant-->
+        <mat-tab label="Composant">
+          <div *ngIf="selectedTabIndex == 3"  [@stagger]="true" class="p-1 container">
+            <div class="flex flex-col sm:flex-row">
+              <div class="py-2 flex flex-col">
+                <div class="d-flex align-items-center gap-4">
+                  <mat-checkbox color="primary" [checked]="true">Est Composé / Pack</mat-checkbox>
+                </div>
+              </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <vex-composants [allArticles]="allArticles" [products]="defaults.sousArticles"
+                (newItemEvent)="newItemEvent($event)"></vex-composants>
+            </div>
+          </div>
+        </mat-tab>
+        <!--Stock-->
+        <mat-tab label="Stock">
+          <div *ngIf="selectedTabIndex == 4"  [@stagger]="true" class="p-1 container gap-0 ">
+            <div class="card p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-0 container">
+              <!--Autoriser stock négatif-->
+
+              <div class="px-1 flex flex-col">
+                <mat-checkbox color="primary" formControlName="venteStockNegatif">Autoriser stock négatif</mat-checkbox>
+              </div>
+
+              <div class="px-1 flex flex-col">
+                <!--Stock Min-->
+                <mat-form-field class="flex-auto">
+                  <mat-label>Stock Min</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial formControlName="stockMin" matInput
+                    appMontantDecimaNumber />
+                </mat-form-field>
+              </div>
+
+              <div class="px-1 flex flex-col">
+                <!--Unité 2-->
+                <mat-form-field class="flex-auto">
+                  <mat-label>Stock Reaprov</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial appMontantDecimaNumber
+                    formControlName="stockReaprov" matInput />
+                </mat-form-field>
+              </div>
+
+              <div class="px-1 flex flex-col">
+                <!--Modele-->
+                <mat-form-field class="flex-auto">
+                  <mat-label>Stock Max</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial appMontantDecimaNumber formControlName="stockMax"
+                    matInput />
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <div class="card p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-0 container">
+
+              <!--<mat-label>Longueur * Largeur * Hauteur :</mat-label>-->
+              <div class="px-1 flex flex-col">
+                <mat-form-field class="flex-auto">
+                  <mat-label>Longueur</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial formControlName="longueur" matInput
+                    appMontantDecimaNumber />
+                </mat-form-field>
+              </div>
+
+              <!--Longueur * Largeur * Hauteur-->
+              <div class="px-1 flex flex-col">
+                <mat-form-field class="flex-auto">
+                  <mat-label>Largeur</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial formControlName="largeur" matInput
+                    appMontantDecimaNumber />
+                </mat-form-field>
+              </div>
+              <!--Longueur * Largeur * Hauteur-->
+              <div class="px-1 flex flex-col">
+                <mat-form-field class="flex-auto">
+                  <mat-label>Hauteur</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial formControlName="hauteur" matInput
+                    appMontantDecimaNumber />
+                </mat-form-field>
+              </div>
+
+              <div class="px-1 flex flex-col">
+                <mat-form-field [color]="selectCtrl.value" class="flex-none">
+                  <mat-label>Mesurer par</mat-label>
+                  <mat-select placeholder="Select a type&hellip;">
+                    <mat-option value="primary">m</mat-option>
+                    <mat-option value="accent">km</mat-option>
+                    <mat-option value="warn">cm</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <div class="card p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-0 container">
+
+              <!--Longueur * Largeur * Hauteur-->
+              <div class="flex flex-col px-1 ">
+                <mat-form-field class="flex-auto">
+                  <mat-label>Surface :</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial formControlName="surface" matInput
+                    appMontantDecimaNumber />
+                </mat-form-field>
+              </div>
+              <!--Longueur * Largeur * Hauteur-->
+              <div class="flex flex-col px-1 ">
+                <mat-form-field class="flex-auto">
+                  <mat-label>Volume :</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial formControlName="volume" matInput
+                    appMontantDecimaNumber />
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col px-1 ">
+                <!--Longueur * Largeur * Hauteur-->
+                <mat-form-field class="flex-auto">
+                  <mat-label>Poids :</mat-label>
+                  <input class="right-aligned-input" cdkFocusInitial formControlName="poids" matInput
+                    appMontantDecimaNumber />
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col px-1 ">
+                <mat-form-field [color]="selectCtrl.value" class="flex-none">
+                  <mat-label>Mesurer par</mat-label>
+                  <mat-select placeholder="Select a type&hellip;">
+                    <mat-option value="primary">kg</mat-option>
+                    <mat-option value="accent">g</mat-option>
+                    <mat-option value="warn">mg</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+          </div>
+
+          <div *ngIf="selectedTabIndex == 4"  style="overflow-x: auto;">
+            <vex-stocks [emplacements]="defaults.emplacement" (newItemEvent)="newItemEvent($event)"></vex-stocks>
+          </div>
+        </mat-tab>
+        <!--Code Barre / Cotisage-->
+        <mat-tab label="Code Barre / Cotisage">
+          <div *ngIf="selectedTabIndex == 5"  [@stagger]="true" class="p-1 container">
+
+            <div class="flex flex-col sm:flex-row">
+
+              <!--Autoriser stock négatif-->
+              <div class="py-2 flex flex-col">
+                <div class="d-flex align-items-center gap-4">
+                  <mat-checkbox color="primary" [checked]="true">Multimode barre</mat-checkbox>
+                </div>
+              </div>
+
+            </div>
+
+            <vex-codebarre [listItems]="defaults.colisage ? defaults.colisage : []"
+              (newItemEvent)="newItemEvent($event)"></vex-codebarre>
+
+          </div>
+        </mat-tab>
+        <!--Promotion Remise-->
+        <mat-tab label="Promotion Remise">
+          <div *ngIf="selectedTabIndex == 6"  [@stagger]="true" class="p-1 container">
+            <div class="flex flex-col sm:flex-row">
+              <div class="py-2 flex flex-col">
+                <div class="d-flex align-items-center gap-4">
+                  <mat-radio-group formControlName="sansRemise">
+                    <mat-label>Avec remise</mat-label>
+
+                    <mat-radio-button color="primary" class="radio" [value]=false>
+                      OUI
+                    </mat-radio-button>
+
+                    <mat-radio-button color="primary" class="radio" [value]=true>
+                      NON
+                    </mat-radio-button>
+                  </mat-radio-group>
+
+                  <mat-form-field class="flex-auto ml-2">
+                    <mat-label>Plafond remise :</mat-label>
+                    <input class="right-aligned-input" cdkFocusInitial formControlName="plafondRemise" matInput
+                      appMontantDecimaNumber />
+                  </mat-form-field>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row">
+
+              <!--Autoriser stock négatif-->
+              <div class="py-2 flex flex-col">
+                <div class="d-flex align-items-center gap-4">
+                  <mat-checkbox color="primary" formControlName="prixParQte">Activer prix par quantité</mat-checkbox>
+                </div>
+              </div>
+
+            </div>
+
+            <vex-promotionremise [article]="defaults" [listItems]="defaults.prixQte"
+              (newItemEvent)="newItemEvent($event)"></vex-promotionremise>
+
+            <div class="flex flex-col sm:flex-row">
+
+              <!--Autoriser stock négatif-->
+              <div class="py-2 flex flex-col">
+                <div class="d-flex align-items-center gap-4">
+                  <mat-checkbox color="primary" formControlName="enPromotion">Promotion</mat-checkbox>
+                </div>
+              </div>
+
+            </div>
+
+            <vex-promotionremise2 [article]="defaults" [listItems]="defaults.promotion"
+              (newItemEvent)="newItemEvent($event)"></vex-promotionremise2>
+
+          </div>
+        </mat-tab>
+        <!--Historique Achat-->
+        <mat-tab label="Historique Achat">
+          <!--
+          <div [@stagger]="true" class="p-1 container">
+
+            <vex-historiqueachat></vex-historiqueachat>
+
+          </div>-->
+        </mat-tab>
+        <!--Fidélité-->
+        <mat-tab label="Fidélité">
+          <!--<div [@stagger]="true" class="p-1 container">
+
+            <div class="flex flex-col sm:flex-row">
+              <div class="py-2 flex flex-col">
+                <div class="d-flex align-items-center gap-4">
+                  <mat-checkbox color="primary" formControlName="pointFidelite" [checked]="true">Point fidelite</mat-checkbox>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row">
+              <mat-radio-group formControlName="nbPointFix" >
+                <mat-label>Formule</mat-label>
+
+                <mat-radio-button color="primary" class="radio" [value]="true">
+                  NB point fixe
+                </mat-radio-button>
+
+                <mat-radio-button color="primary" class="radio" [value]="false">
+                  Variable selon marge
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+
+            <vex-fidelite [listItems]="defaults.fidelite" (newItemEvent)="newItemEvent($event)" ></vex-fidelite>
+
+          </div>-->
+        </mat-tab>
+        <!--Documents-->
+        <mat-tab label="Documents">
+          <!--
+          <div [@stagger]="true" class="p-1 container">
+            <button>Nouveau</button>
+            <vex-documents></vex-documents>
+          </div> -->
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+
+    <div class="p-2 grid grid-cols-1 gap-1 container" style="text-align: right; padding-bottom: 100px;">
+      <mat-dialog-actions align="end">
+        <button mat-button type="button" [routerLink]="['/products']">Annuler</button>
+        <button *ngIf="isCreateMode()" color="primary" mat-flat-button type="submit">
+          Ajouter Produit
+        </button>
+        <button *ngIf="isUpdateMode()" color="primary" mat-flat-button type="submit">
+          Modifier Produit
+        </button>
+      </mat-dialog-actions>
+    </div>
+
+  </div>
+
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item (click)="clickForm()">
+    <mat-icon svgIcon="mat:print"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:download"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:delete"></mat-icon>
+    <span>Supprimer</span>
+  </button>
+</mat-menu>

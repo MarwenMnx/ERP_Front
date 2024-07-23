@@ -1,0 +1,74 @@
+
+<div class="p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-1 container">
+    <vex-filtre-autocomplet-select-all
+      labelText="Categorie"
+      [selectedDatas]="allCategories"
+      selectedKey="_id"
+      selectedVal="libelle"
+      [isSelectedItems]="categories"
+      (selectedList)="newCategories($event)">
+    </vex-filtre-autocomplet-select-all>
+
+    <vex-filtre-autocomplet-select-all
+      labelText="Famille"
+      [selectedDatas]="allFamilles"
+      selectedKey="_id"
+      selectedVal="libelle"
+      [isSelectedItems]="familles"
+      (selectedList)="newFamilles($event)">
+    </vex-filtre-autocomplet-select-all>
+
+    <vex-filtre-autocomplet-select-all
+      labelText="Sous Famille"
+      [selectedDatas]="allSousFamilles"
+      selectedKey="_id"
+      selectedVal="libelle"
+      [isSelectedItems]="sousFamilles"
+      (selectedList)="newSousFamilles($event)">
+    </vex-filtre-autocomplet-select-all>
+
+    <vex-filtre-autocomplet-select-all
+      labelText="Article"
+      [selectedDatas]="allArticles"
+      selectedKey="_id"
+      selectedVal="reference"
+      [isSelectedItems]="articles"
+      (selectedList)="newArticles($event)">
+    </vex-filtre-autocomplet-select-all>
+  
+
+    <!--<vex-chips-autocomplete
+        libelle="Categorie"
+        keyOfForm="categorie"
+        [items]="categories"
+        [allItems]="allCategories"
+        (newItemEvent)="newItemEvent($event)">
+    </vex-chips-autocomplete>
+
+    <vex-chips-autocomplete
+        libelle="Famille"
+        keyOfForm="famille"
+        [items]="familles"
+        [allItems]="allFamilles"
+        (newItemEvent)="newItemEvent($event)">
+    </vex-chips-autocomplete>
+
+    <vex-chips-autocomplete
+        libelle="Sous Famille"
+        keyOfForm="sousFamille"
+        [items]="sousFamilles"
+        [allItems]="allSousFamilles"
+        (newItemEvent)="newItemEvent($event)">
+    </vex-chips-autocomplete>
+
+    <vex-chips-autocomplete
+        libelle="Article"
+        libelleDisplayed="reference"
+        keyOfForm="article"
+        [items]="articles"
+        [allItems]="categories && categories.length > 0 ? allArticles : allAllArticles"
+        (newItemEvent)="newItemEvent($event)">
+    </vex-chips-autocomplete>-->
+
+</div>
+

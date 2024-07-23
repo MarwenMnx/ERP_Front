@@ -1,0 +1,107 @@
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+
+
+    <h2 *ngIf="defaults.titre" class="headline m-0 flex-auto">
+      {{ defaults.titre }}
+    </h2>
+    <h2 *ngIf="!defaults.titre" class="headline m-0 flex-auto">
+      Ajouter
+    </h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+    <div class="grid grid-cols-2 gap-1 container">
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Titre</mat-label>
+        <input formControlName="titre" matInput />
+        <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+        <mat-error *ngIf="form.controls['titre'].hasError('required')">Veuillez inserer le titre.</mat-error>
+      </mat-form-field>
+
+      <vex-standart-autocomplete libelle="Pays" keyOfForm="pays" [value]="defaults.pays"
+        (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true" [items]="allPays"></vex-standart-autocomplete>
+
+    </div>
+
+    <div class="grid grid-cols-2 gap-1 container">
+
+      <vex-standart-autocomplete libelle="Gouvernorat" keyOfForm="gouvernorat" [value]="defaults.gouvernorat"
+        (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+        [items]="gouvernoratsFiltree"></vex-standart-autocomplete>
+
+
+      <vex-standart-autocomplete libelle="Delegation" keyOfForm="delegation" [value]="defaults.delegation"
+        (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+        [items]="delegationsFiltree"></vex-standart-autocomplete>
+
+    </div>
+
+    <div class="grid grid-cols-2 gap-1 container">
+
+      <vex-standart-autocomplete libelle="Localite" keyOfForm="localite" [value]="defaults.localite"
+        (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+        [items]="localitesFiltree"></vex-standart-autocomplete>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>CP</mat-label>
+        <input formControlName="codePostale" matInput />
+        <mat-icon matIconPrefix svgIcon="mat:edit_location"></mat-icon>
+      </mat-form-field>
+
+    </div>
+
+    <div class="grid grid-cols-1 gap-1 container">
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Adresse</mat-label>
+        <input formControlName="adresse" matInput />
+        <mat-icon matIconPrefix svgIcon="mat:place"></mat-icon>
+      </mat-form-field>
+      <div>
+        <button mat-stroked-button type="button" (click)="openGeocalisation()">
+          <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" svgIcon="mat:place"></mat-icon>
+          <span>Géocalisation</span>
+        </button>
+      </div>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Annuler</button>
+
+    <button *ngIf="isCreateMode()" color="primary" mat-flat-button type="submit">
+      Ajouter adresse
+    </button>
+
+
+
+    <button *ngIf="isUpdateMode()" color="primary" mat-flat-button type="submit">
+      mise à jour adresse
+    </button>
+  </mat-dialog-actions>
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:print"></mat-icon>
+    <span>Imprimer</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:download"></mat-icon>
+    <span>Exporter</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:delete"></mat-icon>
+    <span>Supprimer</span>
+  </button>
+</mat-menu>

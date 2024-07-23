@@ -1,0 +1,76 @@
+
+<form (ngSubmit)="save()" [formGroup]="form">
+
+  <div class="flex items-center" mat-dialog-title>
+    <h2  class="headline m-0 flex-auto"> Géocalisation </h2>
+    <button class="text-secondary"  mat-dialog-close  mat-icon-button type="button">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+  <mat-divider class="text-border"></mat-divider>
+
+
+  <mat-dialog-content class="flex flex-col">
+
+    <div class="p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-1 container">
+      <div  class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+          <div class="flex mx-px gap-3 mb-3">
+            <mat-form-field class="flex-auto">
+              <mat-label>Latitude</mat-label>
+              <input cdkFocusInitial  formControlName="latitude"  matInput />
+            </mat-form-field>
+            <mat-form-field class="flex-auto">
+              <mat-label>Longitude</mat-label>
+              <input cdkFocusInitial  formControlName="longitude"  matInput />
+            </mat-form-field>
+            <button (click)="positionActuelle('1')"  color="primary" mat-icon-button type="button" title="Chercher par latitude & logitude">
+              <mat-icon svgIcon="mat:autorenew"></mat-icon>
+            </button>
+            <button (click)="positionActuelle('')"  color="primary" mat-icon-button type="button" title="Position actuelle">
+              <mat-icon svgIcon="mat:person_pin_circle"></mat-icon>
+            </button>
+          </div>
+          <div class="flex mx-px gap-3 mb-3">
+            <mat-form-field class="flex-auto">
+              <mat-label>Adresse</mat-label>
+              <input cdkFocusInitial formControlName="adresse" matInput />
+            </mat-form-field>
+            <button (click)="positionActuelle('2')"  color="primary" mat-icon-button type="button" title="Chercher par adresse">
+              <mat-icon svgIcon="mat:autorenew"></mat-icon>
+            </button>
+          </div>
+
+          <div class="flex mx-px gap-3 mb-3" style="display: none">
+            <mat-form-field class="flex-auto">
+              <mat-label>Lien Maps</mat-label>
+              <input cdkFocusInitial formControlName="url_maps" matInput />
+            </mat-form-field>
+            <button (click)="positionActuelle('3')"  color="primary" mat-icon-button type="button" title="Chercher par lien maps">
+              <mat-icon svgIcon="mat:map"></mat-icon>
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <div  class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+          <iframe [src]="mapsURL | safe"   width="100%" height="315"  frameborder="0"
+                  allowfullscreen  webkitallowfullscreen  mozallowfullscreen >
+          </iframe>
+
+        </div>
+      </div>
+    </div>
+
+  </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close type="button">Annuler</button>
+      <button  color="primary"  mat-flat-button  type="submit">
+        Valider Position
+      </button>
+    </mat-dialog-actions>
+
+</form>

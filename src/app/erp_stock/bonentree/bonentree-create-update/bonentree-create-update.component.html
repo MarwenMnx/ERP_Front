@@ -1,0 +1,136 @@
+<vex-secondary-toolbar current="{{!isCreateMode()? form.get('reference')?.value:'Ajouter ' + dataParams.title}}">
+  <vex-breadcrumbs [crumbs]="[dataParams.title]" class="flex-auto"></vex-breadcrumbs>
+  <button class="ml-2" color="primary" mat-icon-button type="button">
+    <mat-icon svgIcon="mat:more_vert"></mat-icon>
+  </button>
+</vex-secondary-toolbar>
+
+<form (ngSubmit)="save()" [formGroup]="form">
+  <div class="p-2 container">
+    <div class=" card p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 p-2 container">
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Date</mat-label>
+        <input [matDatepicker]="picker" matInput formControlName="date" />
+        <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Numéro</mat-label>
+        <input cdkFocusInitial formControlName="numero" matInput readonly />
+        <mat-error *ngIf="form.controls['numero'].hasError('required')">Numero est obligatoire.
+        </mat-error>
+      </mat-form-field>
+
+
+
+      <vex-standart-autocomplete class="flex-auto" fieldId="_id" libelle="Dépôt actuel" fieldDisplayed="libelle"
+                                 keyOfForm="depot_PV_source" [value]="defaults.depot_PV_source"
+                                 [disabled]="isUpdateMode()"
+                                 (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true" [items]="allDepots" [isRequired]="true">
+      </vex-standart-autocomplete>
+
+      <vex-standart-autocomplete class="flex-auto" fieldId="_id" libelle="Dépôt Source (Bon Sortie)" fieldDisplayed="libelle"
+                                 keyOfForm="depot_PV_destination" [value]="defaults.depot_PV_destination" (newItemEvent)="newItemEventDest($event)"
+                                 [disabled]="isUpdateMode()"
+                                 [modeReturnObjet]="true" [items]="allDepotsDest" [isRequired]="true">
+      </vex-standart-autocomplete>
+
+
+
+      <vex-standart-autocomplete class="flex-auto" fieldId="_id" libelle="Bon Sortie" fieldDisplayed="numero"
+        keyOfForm="bon_sortie" [value]="defaults.bon_sortie" (newItemEvent)="newItemEventDep($event)"
+                                 [disabled]="isUpdateMode()"
+        [modeReturnObjet]="true" [items]="allBonSorties" [isRequired]="true">
+      </vex-standart-autocomplete>
+
+    </div>
+
+    <div class=" card p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 p-2 container">
+
+      <h1 class="class_transport flex-auto w-5">Transport</h1>
+      <mat-radio-group formControlName="type_transport">
+        <mat-radio-button checked="true" (change)="showDivTrigger('intern')" color="primary"
+          value="1">Interne</mat-radio-button>
+        <mat-radio-button (change)="showDivTrigger('extern')" color="primary" value="2">Externe</mat-radio-button>
+      </mat-radio-group>
+      <vex-standart-autocomplete [ngClass]="showDivIntern ? 'display-true' : 'display-false'" class="flex-auto"
+        fieldId="_id" libelle="Véhicule" fieldDisplayed="libelle" keyOfForm="vehicule" [value]="defaults.vehicule"
+        (newItemEvent)="newItemEventVh($event)" [modeReturnObjet]="true" [items]="allVehicules" [isRequired]="true">
+      </vex-standart-autocomplete>
+
+      <vex-standart-autocomplete [ngClass]="showDivIntern ? 'display-true' : 'display-false'" class="flex-auto"
+        fieldId="_id" libelle="chauffeur" fieldDisplayed="nom" keyOfForm="chauffeur" [value]="defaults.chauffeur"
+        (newItemEvent)="newItemEventCh($event)" [modeReturnObjet]="true" [items]="allChauffeurs" [isRequired]="true">
+      </vex-standart-autocomplete>
+
+
+      <mat-form-field class="flex-auto" [ngClass]="showDivIntern ? 'display-false' : 'display-true'">
+        <mat-label>Véhicule</mat-label>
+        <input cdkFocusInitial formControlName="matricule_vehicule" matInput />
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto" [ngClass]="showDivIntern ? 'display-false' : 'display-true'">
+        <mat-label>Chauffeur</mat-label>
+        <input cdkFocusInitial formControlName="nom_chauffeur" matInput />
+      </mat-form-field>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>État </mat-label>
+        <mat-select [(value)]="selectedType" formControlName="etat">
+          <mat-option *ngFor="let tier of listBonSortie" [value]="tier.key">
+            {{ tier.value }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+    <div class=" card p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2 p-2 container">
+      <vex-standart-autocomplete class="flex-auto" fieldId="_id" libelle="Crée par" fieldDisplayed="nom"
+        keyOfForm="utilisateur" [value]="defaults.utilisateur" (newItemEvent)="newItemEventUser($event)"
+        [modeReturnObjet]="true" [items]="allUtilisateurs" [isRequired]="true" [disabled]="true">
+      </vex-standart-autocomplete>
+
+      <mat-form-field class="flex-auto">
+        <mat-label>Note</mat-label>
+        <input cdkFocusInitial formControlName="notes" matInput />
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="p-1 container">
+    <vex-ligne-document-entree [selectArts_Div]="selectArts_Div" [documentOriginal]="defaults"
+      (misaJourParent)="newItemEventLigne($event)" [allArticles]="allArticlesByDepot"
+      [lignes]="form.controls['lignes'].value">
+    </vex-ligne-document-entree>
+
+    <div class="p-2 grid grid-cols-1 gap-1 container" style="text-align: right; padding-bottom: 100px">
+      <mat-dialog-actions align="end">
+        <button mat-button type="button">Annuler</button>
+        <button *ngIf="isCreateMode()" color="primary" mat-flat-button type="submit">
+          Creer {{ dataParams.title }}
+        </button>
+        <button *ngIf="isUpdateMode()" color="primary" mat-flat-button type="submit">
+          Modifier {{ dataParams.title }}
+        </button>
+      </mat-dialog-actions>
+    </div>
+  </div>
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:print"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:download"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:delete"></mat-icon>
+    <span>supprimer</span>
+  </button>
+</mat-menu>

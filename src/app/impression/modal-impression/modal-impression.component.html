@@ -1,0 +1,47 @@
+<form (ngSubmit)="imprimer()" [formGroup]="form">
+  <div class="flex items-center" mat-dialog-title>
+      <h2 class="headline m-0 flex-auto">
+        Confirmation Impression
+      </h2>
+      <button 
+        class="text-secondary"
+        mat-dialog-close
+        mat-icon-button
+        type="button">
+        <mat-icon svgIcon="mat:close"></mat-icon>
+      </button>
+  </div>
+
+  <mat-divider class="text-border"></mat-divider>
+
+  <mat-dialog-content class="flex flex-col">
+    
+    <div class="grid grid-cols-3 gap-1">
+        
+        
+    </div>
+
+    <div class=" py-2 flex flex-col">
+      <div class="align-items-center">
+        <mat-label class="mx-3">Format PDF:</mat-label>
+        <mat-radio-group formControlName="formatPDF">
+          <mat-radio-button color="primary" value="A4" >A4</mat-radio-button>
+          <mat-radio-button color="primary" value="A5" >A5</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close type="button">Annuler</button>
+      <button
+        *ngIf="isCreateMode()"
+        color="primary"
+        mat-flat-button
+        type="submit">
+        Imprimer 
+      </button>
+  </mat-dialog-actions>
+
+</form>

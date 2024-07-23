@@ -1,0 +1,100 @@
+<div class="p-1">
+  <form [formGroup]="parentForm">
+    <div *ngIf="!displayOnlyAdress" class="flex flex-col sm:flex-row">
+      <!--block 1-->
+      <div class="flex-auto">
+        <div class="mt-2 flex flex-col sm:flex-row gap-6">
+          <div @fadeInUp class="card flex-auto p-1">
+
+            <div class="flex flex-col">
+
+              <vex-standart-autocomplete libelle="Pays" keyOfForm="pays" [value]="defaults.pays"  (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+              [items]="allPays"></vex-standart-autocomplete>
+
+              <vex-standart-autocomplete libelle="Gouvernorat" keyOfForm="gouvernorat" [value]="defaults.gouvernorat"  (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+                [items]="gouvernoratsFiltree"></vex-standart-autocomplete>
+
+              <vex-standart-autocomplete libelle="Delegation" keyOfForm="delegation" [value]="defaults.delegation"  (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+                [items]="delegationsFiltree"></vex-standart-autocomplete>
+
+              <vex-standart-autocomplete libelle="Localite" keyOfForm="localite" [value]="defaults.localite"  (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+                [items]="localitesFiltree"></vex-standart-autocomplete>
+
+              <mat-form-field class="flex-auto">
+                <mat-label>Code Postale</mat-label>
+                <input  formControlName="codePostale" matInput />
+              </mat-form-field>
+
+              <mat-form-field class="flex-auto">
+                <mat-label>Adresse</mat-label>
+                <input  formControlName="adresse" matInput />
+              </mat-form-field>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!--block 1-->
+      <div class="sm:ml-4 flex-auto">
+        <div class="mt-2 flex flex-col sm:flex-row gap-6">
+          <div @fadeInUp class="card flex-auto p-2">
+
+            <div class="flex flex-col">
+              <!--email-->
+              <mat-form-field class="flex-auto">
+                <mat-label>Email </mat-label>
+                <input   formControlName="email" matInput  />
+                <mat-error *ngIf="parentForm.controls['email'].hasError('email')">Format email invalide </mat-error>
+              </mat-form-field>
+              <!--Site Web-->
+              <mat-form-field class="flex-auto">
+                <mat-label>Site Web </mat-label>
+                <input   formControlName="siteWeb" matInput  />
+              </mat-form-field>
+
+              <!--Status prospection-->
+              <mat-form-field [color]="selectCtrl.value" class="flex-none">
+                <mat-label>Status prospection</mat-label>
+                <mat-select formControlName="statusProspection" placeholder="Type">
+                  <mat-option *ngFor="let item of listStatusProspections"[value]="item.key">{{ item.value }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+               <!-- Mode de reglement -->
+              <mat-form-field [color]="selectCtrl.value" class="flex-none">
+                <mat-label>Mode reglement</mat-label>
+                <mat-select formControlName="modeReglement" placeholder="Type">
+                  <mat-option *ngFor="let item of listModeReglements"[value]="item.key  ">{{ item.value }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!--Observations-->
+              <mat-form-field class="flex-auto">
+                <mat-label>Observations</mat-label>
+                <textarea  formControlName="observation"  class="textarea" matInput  ></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div *ngIf="displayOnlyAdress" class="flex flex-col sm:flex-row gap-2">
+      <vex-standart-autocomplete libelle="Pays" keyOfForm="pays" [value]="defaults.pays"  (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+        [items]="allPays"></vex-standart-autocomplete>
+
+      <vex-standart-autocomplete libelle="Gouvernorat" keyOfForm="gouvernorat" [value]="defaults.gouvernorat"  (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+        [items]="gouvernoratsFiltree"></vex-standart-autocomplete>
+
+      <vex-standart-autocomplete libelle="Delegation" keyOfForm="delegation" [value]="defaults.delegation"  (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+        [items]="delegationsFiltree"></vex-standart-autocomplete>
+
+      <vex-standart-autocomplete libelle="Localite" keyOfForm="localite" [value]="defaults.localite"  (newItemEvent)="addChangeEvent($event)" [modeReturnObjet]="true"
+        [items]="localitesFiltree"></vex-standart-autocomplete>
+
+    </div>
+  </form>
+</div>

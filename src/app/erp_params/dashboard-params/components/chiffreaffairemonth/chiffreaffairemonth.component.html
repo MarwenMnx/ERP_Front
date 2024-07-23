@@ -1,0 +1,35 @@
+
+<div class="card"><div class="dashboard-container">
+  <div class="chart-container">
+    <canvas id="chiffreAffaireChart"></canvas>
+  </div>
+  <div class="details-table">
+    <label for="societyFilter">Filtrer par société:</label>
+    <select id="societyFilter" [(ngModel)]="selectedSociety">
+      <option *ngFor="let society of societies" [value]="society">{{ society }}</option>
+    </select>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Société</th>
+          <th>Mois</th>
+          <th>Chiffre d'affaires (TTC)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let detail of paginatedDetails">
+          <td>{{ detail.society }}</td>
+          <td>{{ detail.month }}</td>
+          <td>{{ detail.total_TTC | number:'1.2-2' }} TND</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination-controls">
+      <button (click)="prevPage()" [disabled]="currentPage === 1">Précédent</button>
+      <button (click)="nextPage()" [disabled]="currentPage * itemsPerPage >= filteredDetails.length">Suivant</button>
+    </div>
+  </div>
+</div>
+
+</div>

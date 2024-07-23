@@ -1,0 +1,116 @@
+<div mat-dialog-title class="flex items-center justify-between">
+  <div class="p-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-2 container" style="justify-items: left;">
+    <span style="text-align: center;  font-size:  large;"><b>Ticket N° {{num_ticket }}</b></span>
+    <span *ngIf="autre_doc" style="text-align: center;  font-size: large;"><b>Retour N° {{num_retour}}</b></span>
+  </div>
+  <div class="p-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-2 container" style="justify-items: flex-end;">
+    <span style="text-align: left;    font-size: small;"><b>Caissier : </b>{{caissier}}</span>
+    <span style="text-align: left;    font-size: small;"><b>Client : </b>{{client}}</span>
+    <span style="text-align: right;    font-size: small;"><b>Date : </b>{{dateOp}}</span>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <div class="p-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-1 container">
+    <h3>Liste des articles</h3>
+    <table [dataSource]="dataSourceART" mat-table matSort class="mat-elevation-z8">
+
+      <ng-container matColumnDef="reference"  >
+        <th mat-header-cell *matHeaderCellDef> Référence</th>
+        <td mat-cell *matCellDef="let element"> {{element.article.reference }} </td>
+      </ng-container>
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="designation">
+        <th mat-header-cell *matHeaderCellDef> Désignation</th>
+        <td mat-cell *matCellDef="let element"> {{element.article.designation}} </td>
+      </ng-container>
+      <!-- Position Column -->
+      <ng-container matColumnDef="unite">
+        <th mat-header-cell *matHeaderCellDef> Unité</th>
+        <td mat-cell *matCellDef="let element"> {{element.unite.libelle}} </td>
+      </ng-container>
+      <!-- Position Column -->
+      <ng-container matColumnDef="quantite">
+        <th mat-header-cell *matHeaderCellDef> Qte</th>
+        <td mat-cell *matCellDef="let element"> {{element.article.unite1._id==element.unite._id ? element.quantiteUnite1 : element.quantiteUnite2}} </td>
+      </ng-container>
+      <!-- Position Column -->
+      <ng-container matColumnDef="pu_ttc">
+        <th mat-header-cell *matHeaderCellDef> PU</th>
+        <td mat-cell *matCellDef="let element"> {{utilService.formatMontant(element.pu_ttc)}} </td>
+      </ng-container>
+      <!-- Position Column -->
+      <ng-container matColumnDef="totalTTC">
+        <th mat-header-cell *matHeaderCellDef> total TTC</th>
+        <td mat-cell *matCellDef="let element"> {{utilService.formatMontant(element.totalTTC)}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns_ART ; sticky:false ; "[style.background-color]="colorTableART"></tr>
+      <tr mat-row *matRowDef="let row;let idx=index; let even=even; columns: displayedColumns_ART;"
+          [style.border-bottom]="'2px solid red'"></tr>
+    </table>
+
+    <h3  *ngIf="!autre_doc">Liste des règlements</h3>
+    <table  *ngIf="!autre_doc" [dataSource]="dataSourceOp" mat-table matSort class="mat-elevation-z8">
+
+      <ng-container matColumnDef="type_pay"  >
+        <th mat-header-cell *matHeaderCellDef> Modalité</th>
+        <td mat-cell *matCellDef="let element"> {{element.qte_pay > 1 ? '('+element.qte_pay+')' : '' }}  {{element.type_pay}} {{element.type_ticket_pay.libelle}}  </td>
+      </ng-container>
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="num_pay">
+        <th mat-header-cell *matHeaderCellDef> N° Pièce</th>
+        <td mat-cell *matCellDef="let element"> {{element.num_pay}} </td>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="banque_pay">
+        <th mat-header-cell *matHeaderCellDef> Banque</th>
+        <td mat-cell *matCellDef="let element"> {{element.banque_pay.abreviation}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="date_echeance_pay">
+        <th mat-header-cell *matHeaderCellDef> Date d'écheance</th>
+        <td mat-cell *matCellDef="let element">
+          {{element.date_echeance_pay!=''? utilService.formatDate(element.date_echeance_pay,'DD/MM/AAAA') : ''}}
+        </td>
+      </ng-container>
+
+      <!-- Total Column -->
+      <ng-container matColumnDef="titulaire_pay">
+        <th mat-header-cell *matHeaderCellDef> Titulaire</th>
+        <td mat-cell *matCellDef="let element"> {{element.titulaire_pay}} </td>
+      </ng-container>
+
+      <!-- Total Column -->
+      <ng-container matColumnDef="total_pay">
+        <th mat-header-cell *matHeaderCellDef> Montant Total</th>
+        <td mat-cell *matCellDef="let element"> {{utilService.formatMontant(element.total_pay.toString())}} </td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns_OP ; sticky:true ; "[style.background-color]="colorTablePanier"></tr>
+      <tr mat-row *matRowDef="let row;let idx=index; let even=even; columns: displayedColumns_OP;"
+          [style.border-bottom]="'2px solid red'"></tr>
+    </table>
+  </div>
+</mat-dialog-content>
+
+<div class="px-6 py-4 border-b flex items-center" style="justify-content: space-between;">
+  <div style="text-align: center;  width: max-content; align-items: center;flex-direction:column">
+    <span style="font-size: medium;display: flex; align-items: center;"> <b>Total Vente :&nbsp;&nbsp; </b> <span style="color: red">{{utilService.formatMontant(totalAchat)}}</span> </span>
+  </div>
+  <div  *ngIf="!autre_doc" style="text-align: center;  width: max-content; align-items: center;flex-direction:column">
+    <span style="font-size: medium;display: flex; align-items: center;"><b>Total règlement :&nbsp;&nbsp; </b> <span style="color: red">{{utilService.formatMontant(totalReglement)}}</span></span>
+  </div>
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close('-1')">Annuler</button>
+  <button mat-button color="primary" (click)="close('2')">Imprimer Talent</button>
+  <button mat-button color="primary" (click)="close('1')">Imprimer Ticket</button>
+  <button mat-button color="primary" (click)="close('3')">Autre format</button>
+</mat-dialog-actions>

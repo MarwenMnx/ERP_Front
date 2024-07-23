@@ -1,0 +1,27 @@
+<div class="card p-2 mb-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 w-full  container">
+    <date-range-picker class="mt-2.5"  [labelTextRange]="labelTextPR"
+      (selectedDateRange)="set_SelectedDateRange($event)">
+    </date-range-picker>
+    <div style=" align-items: center ; text-align:center; display: flex;"  >
+    <vex-filtre-autocomplet-select-all class="mt-2.5 flex-auto"  [labelText]="labelTextBC" [selectedDatas]="dataTypeDocument"
+          [selectedKey]="selectedKeyBq" [selectedVal]="selectedValBq" [isSelectedItems]="preSelectedBq"
+          (selectedList)="set_SelectedList($event)">
+        </vex-filtre-autocomplet-select-all>
+    <button  class="text-secondary ml-4"  mat-icon-button matIconSuffix type="button"
+      (click)="filterReglementAchat()">
+      <mat-icon svgIcon="mat:search"></mat-icon>
+    </button>
+  </div>
+
+</div>
+
+    <vex-table-croisee
+      [tableId]="tableId"
+      [jsonData]="jsonData"
+      [rows]="rows"
+      [columns]="columns"
+      [title]="pagetitle"
+      [measures]="measures">
+    </vex-table-croisee>
+
+ 

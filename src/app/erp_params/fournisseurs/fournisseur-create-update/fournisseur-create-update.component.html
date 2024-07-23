@@ -1,0 +1,170 @@
+<vex-secondary-toolbar current="{{ isUpdateMode() ? form.get('code')?.value : 'Ajouter Fournisseur'}}">
+
+  <vex-breadcrumbs *ngIf="isUpdateMode()" [crumbs]="['Fournisseurs', 'Modifier Fournisseur' ]"
+    class="flex-auto"></vex-breadcrumbs>
+  <vex-breadcrumbs *ngIf="!isUpdateMode()" [crumbs]="['Fournisseurs', 'Ajouter Fournisseur' ]"
+    class="flex-auto"></vex-breadcrumbs>
+
+  <button class="ml-2" color="primary" mat-icon-button type="button">
+    <mat-icon svgIcon="mat:more_vert"></mat-icon>
+  </button>
+</vex-secondary-toolbar>
+
+<form (ngSubmit)="save()" [formGroup]="form">
+
+  <div class="p-6 container">
+    <div class="p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1 container">
+
+      <div class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+          <mat-form-field class="flex-auto">
+            <mat-label>Code</mat-label>
+            <input cdkFocusInitial formControlName="code" matInput readonly="mode === 'update'" />
+            <!-- <mat-error *ngIf="form.controls.['code'].hasError('required')">Veuillez inserer  le code.
+              </mat-error> -->
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Raison sociale</mat-label>
+            <input cdkFocusInitial formControlName="raisonSociale" matInput />
+            <mat-error *ngIf="form.controls['raisonSociale'].hasError('required')">Veuillez inserer le Raison
+              Sociale.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Matricule fiscale</mat-label>
+            <input cdkFocusInitial formControlName="matriculeFiscale" matInput />
+          </mat-form-field>
+
+          <vex-standart-autocomplete libelle="Categorie fournisseur" keyOfForm="tiersCategorie"
+            [value]="defaults.tiersCategorie" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+            [items]="allTiersCategorie"></vex-standart-autocomplete>
+
+          <div class="flex mx-px gap-3 mb-3">
+
+            <mat-form-field class="flex-auto w-1/2">
+              <mat-label>Tel</mat-label>
+              <input cdkFocusInitial formControlName="telephone" matInput />
+              <mat-error *ngIf="form.controls['telephone'].hasError('pattern')">Format de téléphone
+                invalide.</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="flex-auto w-1/2">
+              <mat-label>Mobile</mat-label>
+              <input cdkFocusInitial formControlName="mobile" matInput />
+              <mat-error *ngIf="form.controls['mobile'].hasError('pattern')">Format de mobile invalide.</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Solde</mat-label>
+            <input appMontantDecimaNumber class="right-aligned-input" cdkFocusInitial formControlName="solde" matInput
+              readonly />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto" appearance="outline">
+            <mat-label>Plafond Solde</mat-label>
+            <input appMontantDecimaNumber class="right-aligned-input" cdkFocusInitial formControlName="plafondSolde"
+              matInput />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto" appearance="outline">
+            <mat-label>En Cours</mat-label>
+            <input appMontantDecimaNumber class="right-aligned-input" cdkFocusInitial formControlName="enCours" matInput
+              readonly />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto" appearance="outline">
+            <mat-label>Plafond En Cours</mat-label>
+            <input appMontantDecimaNumber class="right-aligned-input" cdkFocusInitial formControlName="plafondEnCours"
+              matInput />
+          </mat-form-field>
+
+          <mat-form-field [color]="selectCtrl.value" class="flex-none">
+            <mat-label>Condition reglement</mat-label>
+            <mat-select formControlName="conditionReglement" placeholder="Type">
+              <mat-option *ngFor="let item of listConditionReglements" [value]="item.key">{{ item.value }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </div>
+      </div>
+
+      <div class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+          <div class="flex flex-row">
+            <vex-standart-autocomplete style="width: 100%;" *ngIf="!form.controls['exonereRS'].value"
+              [value]="defaults.tauxRS" libelle="Taux RS" keyOfForm="tauxRS" [items]="[
+              { id: '15', libelle: '0' },
+              { id: '10', libelle: '0.5' },
+              { id: '12', libelle: '1' },
+              { id: '12', libelle: '1.5' }
+              ]" (newItemEvent)="newItemEvent($event)"></vex-standart-autocomplete>
+
+            <mat-form-field *ngIf="form.controls['exonereRS'].value" class="flex-auto" appearance="outline">
+              <mat-label>Taux RS</mat-label>
+              <input class="right-aligned-input" cdkFocusInitial formControlName="tauxRS" matInput readonly />
+            </mat-form-field>
+
+          </div>
+          <div>
+            <mat-checkbox color="primary" formControlName="exonereTva">Exonere TVA</mat-checkbox>
+            <mat-checkbox color="primary" (click)="changeExonereRS()" formControlName="exonereRS" align="end">Exonere
+              RS</mat-checkbox>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="flex flex-col sm:flex-row gap-4 p-6">
+    <div class="card flex-auto">
+
+      <div class="card p-2 grid grid-cols-1 gap-1 container">
+        <mat-tab-group>
+          <!--details-->
+          <mat-tab label="Details">
+            <vex-details (newItemEvent)="newItemEvent($event)" [allPays]="allPays" [defaults]="defaults"
+              [gouvernoratsFiltree]="gouvernoratsFiltree" [delegationsFiltree]="delegationsFiltree"
+              [localitesFiltree]="localitesFiltree" [parentForm]="form"></vex-details>
+          </mat-tab>
+
+          <!--Adress de  livraison-->
+          <mat-tab label="Adr livraison " style="width: 100%;">
+            <vex-adr-livraison [adresseLivraisons]="defaults.adresseLivraison"
+              (newItemEvent)="newItemEvent($event)"></vex-adr-livraison>
+          </mat-tab>
+
+          <!-- Contact -->
+          <mat-tab label="Contact">
+            <vex-contact [contacts]="defaults.contact" [fournisseur]="defaults"
+              (newItemEvent)="newItemEvent($event)"></vex-contact>
+          </mat-tab>
+
+        </mat-tab-group>
+      </div>
+      <!--end tabs-->
+
+      <!--  ajouter et mis a jour buttons -->
+      <div class="p-2 grid grid-cols-1 gap-1 container" style="text-align: right; padding-bottom: 100px;">
+        <mat-dialog-actions align="end">
+          <button mat-button mat-dialog-close type="button" [routerLink]="['/clients']">Annuler</button>
+          <button *ngIf="isCreateMode()" color="primary" mat-flat-button type="submit">
+            Ajouter Fournisseur
+          </button>
+          <button *ngIf="isUpdateMode()" color="primary" mat-flat-button type="submit">
+            Modifier Fournisseur
+          </button>
+        </mat-dialog-actions>
+      </div>
+
+    </div>
+  </div>
+
+</form>

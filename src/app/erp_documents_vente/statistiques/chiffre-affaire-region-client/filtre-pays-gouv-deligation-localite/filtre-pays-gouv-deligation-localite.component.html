@@ -1,0 +1,41 @@
+
+         <div class="p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-1 container">
+
+              <vex-standart-autocomplete
+                libelle="Pays"
+                keyOfForm="pays"
+                [value]="defaults.pays"
+                (newItemEvent)="addChangeEvent($event)"
+                [modeReturnObjet]="true"
+                [items]="allPays"></vex-standart-autocomplete>
+
+              <vex-standart-autocomplete
+                libelle="Gouvernorat"
+                keyOfForm="gouvernorat"
+                [value]="defaults.gouvernorat"
+                (newItemEvent)="addChangeEvent($event)"
+                [modeReturnObjet]="true"
+                [items]="gouvernoratsFiltree"></vex-standart-autocomplete>
+
+              <vex-standart-autocomplete
+                libelle="Delegation"
+                keyOfForm="delegation"
+                [value]="defaults.delegation"
+                (newItemEvent)="addChangeEvent($event)"
+                [modeReturnObjet]="true"
+                [items]="delegationsFiltree"></vex-standart-autocomplete>
+
+              <vex-standart-autocomplete
+                libelle="Localite"
+                keyOfForm="localite"
+                [value]="defaults.localite"
+                (newItemEvent)="addChangeEvent($event)"
+                [modeReturnObjet]="true"
+                [items]="localitesFiltree"></vex-standart-autocomplete>
+            <!-- </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form> -->
+</div>

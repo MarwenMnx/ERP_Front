@@ -1,0 +1,19 @@
+
+
+<mat-form-field [formGroup]="searchDataForm" fxFlex fxLayout="column" autocomplete="off" style="display: flex">
+  <mat-label>{{labelText}}</mat-label>
+  <mat-select placeholder="{{labelText}}" formControlName="dataType" multiple>
+    <mat-form-field style="max-width: -moz-available;">
+      <input #stateInputData matInput  placeholder="Search..." (keyup)="onKeyFiltre($event.target)"  />
+    </mat-form-field>
+    <mat-option #allSelected (click)="toggleAllSelection()" [value]="0">All</mat-option>
+    <mat-option *ngFor="let cur_val of selectedDatas" [value]="cur_val[selectedKey]"
+      style="display:block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+      (onSelectionChange)="stateInputData.value !=undefined && onEnterObject($event, cur_val)"  
+      >
+      {{cur_val[selectedVal]}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+  <!--(onSelectionChange)="stateInputData.value !=undefined && onEnterObject($event, cur_val)"-->
+     

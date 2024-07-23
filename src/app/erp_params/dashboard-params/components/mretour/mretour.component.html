@@ -1,0 +1,46 @@
+<div class="dashboard-container">
+  <h2>Statistiques des Retours Marchandises Fournisseurs</h2>
+  <div class="form-container">
+    <div class="form-group">
+      <mat-form-field appearance="fill">
+        <mat-label>Sélectionnez la société</mat-label>
+        <mat-select [(ngModel)]="selectedSociete" (selectionChange)="onSocieteChange()">
+          <mat-option *ngFor="let societe of societes" [value]="societe">{{ societe }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Date de début</mat-label>
+        <input matInput [matDatepicker]="picker1" [(ngModel)]="startDate" (dateChange)="onDateChange()">
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Date de fin</mat-label>
+        <input matInput [matDatepicker]="picker2" [(ngModel)]="endDate" (dateChange)="onDateChange()">
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+      
+      <div class="button-container">
+        <button mat-raised-button color="primary" (click)="generateCSV()">Générer le rapport CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="totals-container">
+    <div class="total-item">
+      <span class="total-label">Total BonRetourMarchandise:</span>
+      <span class="total-value">{{ totalBonAchat }}</span>
+    </div>
+    <div class="total-item">
+      <span class="total-label">Total TTC:</span>
+      <span class="total-value">{{ formatCurrency(totalTTC) }}</span>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="MarChart"></canvas>
+  </div>
+</div>

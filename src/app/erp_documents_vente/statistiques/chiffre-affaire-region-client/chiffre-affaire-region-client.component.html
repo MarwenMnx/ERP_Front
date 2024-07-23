@@ -1,0 +1,44 @@
+
+  <div class="card p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5  gap-1 w-full ">
+    <div style="text-align: right; display: flex  ; align-items: center; ">
+      <date-range-picker
+       class="mt-2.5"
+        [labelTextRange]="labelTextPR"
+        (selectedDateRange)="set_SelectedDateRange($event)">
+      </date-range-picker>
+      
+      <button
+        style="margin-left: 15px"
+        class="text-secondary"
+        mat-icon-button
+        matIconSuffix
+        type="button"
+        (click)="filterRegionClient()">
+        <mat-icon svgIcon="mat:search"></mat-icon>
+      </button>
+
+        <button (click)="isAccordionDetailsOpen = !isAccordionDetailsOpen" color="primary" mat-icon-button type="button"
+        title="Plus de details">
+        <mat-icon svgIcon="mat:youtube_searched_for"></mat-icon>
+        </button>
+      </div>
+    </div>
+    
+    <!-- component pays localite ... -->
+   <div *ngIf="isAccordionDetailsOpen" 
+        class="card p-2 mb-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-1 w-full -mt-3 container">
+           <vex-filtre-pays-gouv-deligation-localite class="flex-auto" style="width: 100%;" (newItemEvent)="newItemEvent($event)" [allPays]="allPays" [defaults]="defaults"
+            [gouvernoratsFiltree]="gouvernoratsFiltree" [delegationsFiltree]="delegationsFiltree"
+            [localitesFiltree]="localitesFiltree" [parentForm]="form">
+           </vex-filtre-pays-gouv-deligation-localite>
+    </div>
+ 
+   <vex-table-croisee
+    [tableId]="tableId"
+    [jsonData]="jsonData"
+    [rows]="rows"
+    [columns]="columns"
+    [title]="pagetitle"
+    [measures]="measures">
+   </vex-table-croisee>
+

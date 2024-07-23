@@ -1,0 +1,336 @@
+<vex-secondary-toolbar current="{{ !isCreateMode() ? form.get('numero')?.value : 'Ajouter '+dataParams.title }}">
+  <vex-breadcrumbs [crumbs]="[dataParams.title]" class="flex-auto"></vex-breadcrumbs>
+  <button class="ml-2" color="primary" mat-icon-button type="button" [matMenuTriggerFor]="settingsMenu">
+    <mat-icon svgIcon="mat:more_vert"></mat-icon>
+  </button>
+</vex-secondary-toolbar>
+
+<form (ngSubmit)="save()" [formGroup]="form">
+
+  <div class="p-1 content ">
+
+    <div class="p-3 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-2 container card">
+
+      <div class="p-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2 container">
+        <mat-form-field class="class-input">
+          <mat-label>Numero</mat-label>
+          <input formControlName="numero" matInput readonly />
+          <mat-error *ngIf="form.controls['numero'].hasError('required')">Numero est obligatoire.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="class-input">
+          <mat-label>Date</mat-label>
+          <input [matDatepicker]="picker" matInput formControlName="date" />
+          <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="p-0 grid grid-cols-2 gap-1">
+        <div class="col-span-1 p-0">
+          <vex-standart-autocomplete fieldId="_id" fieldDisplayed="raisonSociale" [parentForm]="form" libelle="Client"
+            keyOfForm="client" [value]="defaults.client" (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true"
+            [items]="allClients" [isRequired]="true"></vex-standart-autocomplete>
+        </div>
+        <div style="justify-items: right; text-align: left;">
+          <p style="font-size: 10px;"> Solde: {{ getClient() ? utilService.roundmMontantString(getClient()?.solde) : ''
+            }}
+            <br> Plafond Solde: {{ getClient() ? utilService.roundmMontantString(getClient()?.plafondSolde) : ''
+            }}
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-1">
+        <mat-form-field class="flex-auto">
+          <mat-label>Total Net HT</mat-label>
+          <input formControlName="totalNetHT" matInput class="right-aligned-input" appMontantDecimaNumber readonly />
+        </mat-form-field>
+        <div class="col-span-2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Total TTC</mat-label>
+            <input matInput formControlName="totalTTC" class="right-aligned-input color-totalTTC" appMontantDecimaNumber
+              readonly>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="display-flex"
+        *ngIf="dataParams.withDocumentPrecedent && !dataParams.withCheckMultipleDocumentPrecedent">
+        <div class="width-80px">
+          <vex-standart-autocomplete [modeReturnObjet]="true"
+            [value]="(form.value.documentPrecedent && form.value.documentPrecedent.length > 0) ? form.value.documentPrecedent[0] : null"
+            [libelle]="dataParams.titreDocumentPrecedent" fieldId="_id" fieldDisplayed="numero"
+            [items]="this.allDocsPrecedents"
+            (newItemEvent)="selectDocumentPrecedent($event)"></vex-standart-autocomplete>
+        </div>
+
+        <button (click)="openModalDetailDocumentPrecedent()" color="primary" mat-mini-fab type="button"
+          title="Details {{ dataParams.titreDocumentPrecedent }}">
+          <mat-icon svgIcon="mat:list"></mat-icon>
+        </button>
+
+        <button (click)="downloadDocumentPrecedent()" class="flex-none" color="primary"
+          mat-mini-fab title="Télécharger la liste des lignes" type="button">
+          <mat-icon svgIcon="mat:arrow_downward"></mat-icon>
+        </button>
+      </div>
+
+      <div class="display-flex"
+        *ngIf="dataParams.withDocumentPrecedent && dataParams.withCheckMultipleDocumentPrecedent === true">
+        <div class="width-80px">
+          <vex-filtre-autocomplet-select-all [labelText]="dataParams.titreDocumentPrecedent"
+            [selectedDatas]="allDocsPrecedents" selectedKey="_id" selectedVal="numeroDate"
+            [isSelectedItems]="form.value.documentPrecedent" (selectedList)="set_SelectedList($event)">
+          </vex-filtre-autocomplet-select-all>
+        </div>
+
+        <button (click)="downloadDocumentPrecedentMultiple()" class="flex-none" color="primary" mat-mini-fab
+          title="Télécharger la liste des lignes" type="button">
+          <mat-icon svgIcon="mat:arrow_downward"></mat-icon>
+        </button>
+      </div>
+
+      <div class="p-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2 container"
+        *ngIf="dataParams.withBonCommandeClient">
+        <mat-form-field class="class-input">
+          <mat-label>Numero Commande Client</mat-label>
+          <input formControlName="numeroDocClient" matInput />
+        </mat-form-field>
+
+        <mat-form-field class="class-input">
+          <mat-label>Date Commande Client</mat-label>
+          <input [matDatepicker]="picker2" matInput formControlName="dateDocClient" />
+          <mat-datepicker-toggle [for]="picker2" matIconSuffix></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="flex flex-row" *ngIf="dataParams.withTransporteur">
+        <div class="basis-1/3">
+          <h1 class="class_transport flex-auto w-5">Transport</h1>
+        </div>
+        <div class="basis-2/3">
+          <mat-radio-group formControlName="type_transport" (change)="showChauffeurInternFn()">
+            <mat-radio-button checked="true" color="primary" value="1">Interne</mat-radio-button>
+            <mat-radio-button color="primary" value="2">Externe</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-1" *ngIf="dataParams.withTransporteur">
+        <vex-standart-autocomplete *ngIf="showChauffeurIntern === true" fieldId="_id" fieldDisplayed="nom"
+          [parentForm]="form" libelle="Chauffeur" keyOfForm="chauffeur" [value]="defaults.chauffeur"
+          (newItemEvent)="newItemEvent($event)" [modeReturnObjet]="true" [items]="[]"></vex-standart-autocomplete>
+        <vex-standart-autocomplete *ngIf="showChauffeurIntern === true" [parentForm]="form" libelle="Véhicule"
+          keyOfForm="vehicule" [value]="defaults.vehicule" (newItemEvent)="newItemEvent($event)"
+          [modeReturnObjet]="true" [items]="[]"></vex-standart-autocomplete>
+        <mat-form-field class="flex-auto" *ngIf="showChauffeurIntern === false">
+          <mat-label>chauffeur</mat-label>
+          <input formControlName="nom_chauffeur" matInput />
+        </mat-form-field>
+        <mat-form-field class="flex-auto" *ngIf="showChauffeurIntern === false">
+          <mat-label>Véhicule</mat-label>
+          <input formControlName="matricule_vehicule" matInput />
+        </mat-form-field>
+      </div>
+
+      <mat-radio-group *ngIf="dataParams.withCheckMultipleDocumentPrecedent" class="flex gap-1 mt-4"
+        formControlName="avecRegroupementLignes" (change)="avecRegroupementLignesFN()">
+        <mat-radio-button color="primary" [value]="false">Regroupement par documents</mat-radio-button>
+        <mat-radio-button color="primary" [value]="true">Regroupement par articles</mat-radio-button>
+      </mat-radio-group>
+
+      <button title="Plus détails" class="class-plus-details" mat-flat-button type="button"
+        (click)="isOpenPanelPlusDetails = !isOpenPanelPlusDetails">
+        Plus Détails
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="p-1 container" *ngIf="isOpenPanelPlusDetails">
+
+    <div class="p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 container">
+
+      <div class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Total Brut HT</mat-label>
+            <input formControlName="totalBrutHT" matInput class="right-aligned-input" appMontantDecimaNumber readonly />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Total Remise</mat-label>
+            <input formControlName="totalRemise" matInput class="right-aligned-input" appMontantDecimaNumber readonly />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Total HT</mat-label>
+            <input formControlName="totalHT" matInput class="right-aligned-input" appMontantDecimaNumber readonly />
+          </mat-form-field>
+
+        </div>
+      </div>
+
+      <div class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Total Fodec</mat-label>
+            <input formControlName="totalFodec" matInput class="right-aligned-input" appMontantDecimaNumber readonly />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Total D.C</mat-label>
+            <input formControlName="totalDC" matInput class="right-aligned-input" appMontantDecimaNumber readonly />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Total Net HT</mat-label>
+            <input formControlName="totalNetHT" matInput class="right-aligned-input" appMontantDecimaNumber readonly />
+          </mat-form-field>
+
+        </div>
+      </div>
+
+      <div class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Total TVA</mat-label>
+            <input formControlName="totalTVA" matInput class="right-aligned-input" appMontantDecimaNumber readonly />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Timbre</mat-label>
+            <input formControlName="timbreFiscale" matInput class="right-aligned-input" appMontantDecimaNumber
+              readonly />
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Redevance</mat-label>
+            <input formControlName="totalRedevance" matInput class="right-aligned-input" appMontantDecimaNumber
+              readonly />
+          </mat-form-field>
+
+        </div>
+      </div>
+
+      <div class="card flex-auto">
+        <div class="px-2 py-2 flex flex-col">
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Total TTC</mat-label>
+            <input formControlName="totalTTC" matInput class="right-aligned-input" appMontantDecimaNumber readonly />
+            <mat-error *ngIf="form.controls['totalTTC'].hasError('notEqualToZero')">Total-TTC doit être supérieur à
+              zéro.
+            </mat-error>
+          </mat-form-field>
+
+          <div class="grid grid-cols-2 gap-1">
+            <mat-form-field class="flex-auto">
+              <mat-label>Total Payé</mat-label>
+              <input formControlName="totalPayer" matInput class="right-aligned-input" appMontantDecimaNumber
+                readonly />
+            </mat-form-field>
+
+            <mat-form-field class="flex-auto">
+              <mat-label>Reste a payé</mat-label>
+              <input formControlName="resteAPayer" matInput class="right-aligned-input" appMontantDecimaNumber
+                readonly />
+            </mat-form-field>
+          </div>
+
+          <div class="grid grid-cols-2 gap-1">
+            <mat-form-field class="flex-auto">
+              <mat-label>Gain commerciale</mat-label>
+              <input formControlName="totalGainCommerciale" matInput class="right-aligned-input" appMontantDecimaNumber
+                readonly />
+            </mat-form-field>
+
+            <mat-form-field class="flex-auto">
+              <mat-label>Gain réel</mat-label>
+              <input formControlName="totalGainReel" matInput class="right-aligned-input" appMontantDecimaNumber
+                readonly />
+            </mat-form-field>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="p-1 container">
+
+    <div class="card p-2 grid grid-cols-1 gap-1 container">
+      <mat-tab-group [(selectedIndex)]="selectedTabIndex">
+        <mat-tab label="Articles">
+          <div *ngIf="selectedTabIndex == 0">
+            <ng-container
+              *ngIf="!form.value.avecRegroupementLignes && form.value.isDownloadDocumentPrecedent === true && dataParams.withCheckMultipleDocumentPrecedent === true; else ligneDocumentVente">
+              <vex-liste-ligne-accordion
+                [lignes]="dataParams.withCheckMultipleDocumentPrecedent === true ? lignesVertualFacture : form.controls['lignes'].value"></vex-liste-ligne-accordion>
+            </ng-container>
+
+            <ng-template #ligneDocumentVente>
+              <vex-ligne-document-vente (restartListProduitsEvent)="restartAllArticles()" [dataParams]="dataParams" [document]="form.value" [documentOriginal]="defaults" [blockModification]="form.value.isDownloadDocumentPrecedent === true && dataParams.withCheckMultipleDocumentPrecedent === true"
+                (misaJourParent)="newItemEvent($event)" [allArticles]="allArticles"
+                [lignes]="dataParams.withCheckMultipleDocumentPrecedent === true ? lignesVertualFacture : form.controls['lignes'].value"></vex-ligne-document-vente>
+            </ng-template>
+          </div>
+        </mat-tab>
+        <mat-tab label="Règlements" *ngIf="dataParams.withReglement">
+          <vex-reglements *ngIf="selectedTabIndex == 1" tab_reg="{{enum_reglement_client}}" [document]="form.value"
+            (misaJourParent)="newItemEvent($event)" [listItems]="form.value.reglements" [isDocumentAchat]="false"
+            [type_doc]="dataParams.type_doc_reg ? dataParams.type_doc_reg : ''">
+          </vex-reglements>
+        </mat-tab>
+        <mat-tab label="Observations">
+          <div class="p-1 container" *ngIf="selectedTabIndex == 2">
+            <mat-form-field class="flex-auto width-100">
+              <mat-label>Notes</mat-label>
+              <textarea matInput formControlName="notes" placeholder="Enter your text" rows="2"></textarea>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+
+    <div class="p-2 grid grid-cols-1 gap-1 container" style="text-align: right; padding-bottom: 100px;">
+      <mat-dialog-actions align="end">
+        <button mat-button type="button" [routerLink]="['/' + dataParams.pageList]">Annuler</button>
+        <button *ngIf="isCreateMode()" mat-flat-button class="class-plus-creer" type="submit">
+          Creer {{ dataParams.titleButton }}
+        </button>
+        <button *ngIf="isUpdateMode()" mat-flat-button class="class-plus-creer" type="submit">
+          Modifier {{ dataParams.titleButton }}
+        </button>
+      </mat-dialog-actions>
+    </div>
+
+  </div>
+
+</form>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:print"></mat-icon>
+    <span>Print</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:download"></mat-icon>
+    <span>Export</span>
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon svgIcon="mat:delete"></mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>

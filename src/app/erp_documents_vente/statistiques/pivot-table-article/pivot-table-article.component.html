@@ -1,0 +1,39 @@
+
+
+<div class="card p-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 items-center gap-1 w-full ">
+  <date-range-picker  class="mt-2.5" [labelTextRange]="labelTextPR"
+  (selectedDateRange)="set_SelectedDateRange($event)">
+  </date-range-picker>
+  <div style="text-align: right; display: flex;" class="items-center">
+<vex-filtre-autocomplet-select-all  class="mt-2.5 flex-auto" [labelText]="labelTextDp" [selectedDatas]="dataDepot"
+[selectedKey]="selectedKeyDepot" [selectedVal]="selectedValDepot" [isSelectedItems]="preSelectedItems"
+(selectedList)="set_SelectedListDepot($event)">
+</vex-filtre-autocomplet-select-all>
+
+<button  class="text-secondary" mat-icon-button matIconSuffix type="button"
+(click)="filterArticle()">
+<mat-icon svgIcon="mat:search"></mat-icon>
+</button>
+
+<button  class="mr-2" (click)="isAccordionDetailsOpen = !isAccordionDetailsOpen" color="primary" mat-icon-button type="button"
+title="Plus de details">
+<mat-icon svgIcon="mat:youtube_searched_for"></mat-icon>
+</button>
+</div>
+</div>
+<div *ngIf="isAccordionDetailsOpen" 
+class="card p-2 mb-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-1 w-full -mt-3 container">
+    <vex-filtre-catg-famille-sous-famille class="flex-auto" style="width: 100%;"  (filtrerEvent)="filterCateg($event)">
+        </vex-filtre-catg-famille-sous-famille>
+</div>
+
+  <vex-table-croisee
+    [tableId]="tableId"
+    [jsonData]="jsonData"
+    [rows]="rows"
+    [columns]="columns"
+    [title]="pagetitle"
+    [measures]="measures">
+  </vex-table-croisee>
+
+

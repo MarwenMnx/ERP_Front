@@ -1,0 +1,24 @@
+
+<mat-form-field class="flex-auto width-100">
+    <mat-label>Total HT</mat-label>
+    <input
+      cdkFocusInitial
+      #inputActive
+      [formControl]="parentForm?.controls[keyForm]"
+      matInput
+      class="right-aligned-input"
+      appMontantDecimaNumber
+      (focusout)="onInputBlur()"
+      *ngIf="!showReadOnlyInput"
+    />
+   
+    <input
+      cdkFocusInitial
+      [value]="utilService.roundmMontantString(parentForm?.controls[keyForm].value)"
+      matInput
+      class="right-aligned-input"
+      (focus)="onInputFocus();"
+      readonly
+      *ngIf="showReadOnlyInput"
+    />
+</mat-form-field>

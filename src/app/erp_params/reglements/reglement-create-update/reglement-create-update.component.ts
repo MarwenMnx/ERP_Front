@@ -1,346 +1,728 @@
-import {
-  AfterViewInit,
-  Component,
-  DestroyRef,
-  Inject,
-  inject,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild
-} from '@angular/core';
-import { Observable, of, ReplaySubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { TableColumn } from '@vex/interfaces/table-column.interface';
-
-import { SelectionModel } from '@angular/cdk/collections';
-import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
-import { stagger40ms } from '@vex/animations/stagger.animation';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  UntypedFormControl,
-  Validators
-} from '@angular/forms';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button';
-import { NgClass, NgFor, NgIf, CommonModule } from '@angular/common';
-import { VexPageLayoutContentDirective } from '@vex/components/vex-page-layout/vex-page-layout-content.directive';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { VexBreadcrumbsComponent } from '@vex/components/vex-breadcrumbs/vex-breadcrumbs.component';
-import { VexPageLayoutHeaderDirective } from '@vex/components/vex-page-layout/vex-page-layout-header.directive';
-import { VexPageLayoutComponent } from '@vex/components/vex-page-layout/vex-page-layout.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { EventEmitter } from 'stream';
-import { AppDateAdapter, APP_DATE_FORMATS } from '../../../utils/dateAdapter/date.adapter';
-import { NativeDateAdapter, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatOptionModule } from "@angular/material/core";
-import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { SharedModule } from 'src/app/utils/shared.module';
-import { dateVaidator, getDateByForma, getDateInput, isObjectIdMongoose, notEqualToZero, roundmMontantString, showAlertError, showAlertSucess, showLoading, succesAlerteAvecTimer } from 'src/app/global-functions';
-import { TokenService } from 'src/app/services/token.service';
-import { Lettrage, Reglement } from 'src/app/erp_params/reglements/models/reglement.model';
-import { ReglementHttpService } from 'src/app/erp_params/reglements/services/reglement-http.service';
-import { BanqueHttpService } from 'src/app/erp_params/banque/services/banque-http.service';
-import { StandartAutocompleteComponent } from 'src/app/utils/autocompletes/standart-autocomplete/standart-autocomplete.component';
-import { Banque, IBanqueCollection } from 'src/app/erp_params/banque/models/banque.model';
-import { CompteBancaires, ICompteBancaires } from 'src/app/erp_params/compteBancaires/models/compteBancaires.model';
-import { HttpClientModule } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
-import {  NavigationEnd } from '@angular/router';
-import { MatTable } from '@angular/material/table';
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {CommonModule, DatePipe, NgIf} from "@angular/common";
+import {MatInputModule} from "@angular/material/input";
+import {SharedModule} from "../../../utils/shared.module";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {FormBuilder, FormsModule, ReactiveFormsModule, UntypedFormControl, Validators} from "@angular/forms";
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatOptionModule} from "@angular/material/core";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatTableDataSource, MatTableModule} from "@angular/material/table";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
+import {APP_DATE_FORMATS, AppDateAdapter} from "../../../utils/dateAdapter/date.adapter";
+import {MomentDateAdapter} from "@angular/material-moment-adapter";
+import {ReglementHttpService} from "../../../erp_params/reglements/services/reglement-http.service";
+import {UtilService} from "../../../utils/UtilService.service";
+import {TokenService} from "../../../services/token.service";
+import {BanqueHttpService} from "../../../erp_params/banque/services/banque-http.service";
+import {UsersHttpService} from "../../../erp_params/users/services/users-http.service";
+import {ClientHttpService} from "../../../erp_params/clients/services/client-http.service";
+import {FournisseurHttpService} from "../../../erp_params/fournisseurs/services/fournisseur-http.service";
+import {ImpressionPdfService} from "../../../impression/impression-pdf.service";
+import {Banque} from "../../../erp_params/banque/models/banque.model";
+import {typeChequeTicket} from "../../../erp_params/type-cheque-ticket/models/typeChequeTicket.model";
+import {debounceTime, distinctUntilChanged, filter, map, startWith} from "rxjs/operators";
+import {TypeChequeTicketHttpService} from "../../../erp_params/type-cheque-ticket/services/typeChequeTicket-http.service";
+import {TicketHttpService} from "../../../erp_params/ticket/services/ticket-http.service";
+import {dateVaidator, notEqualToZero, roundmMontantNumber, showAlertError} from "../../../global-functions";
 import Swal from "sweetalert2";
-
+import {DemoDialogComponent, set_ModePayement} from "../../../erp_pos/caisse/caisse.component";
+import { Observable, of, ReplaySubject } from 'rxjs';
+import {MatMenuModule} from "@angular/material/menu";
+import {MatDividerModule} from "@angular/material/divider";
+import {MatSelectModule} from "@angular/material/select";
+import {StandartAutocompleteComponent} from "../../../utils/autocompletes/standart-autocomplete/standart-autocomplete.component";
+import {Client} from "../../../erp_params/clients/models/client.model";
+import { Fournisseur } from '../../fournisseurs/models/fournisseur.model';
+import {enum_type_document} from "../../../global-enums";
+import { log } from 'console';
 
 @Component({
   selector: 'vex-reglement-create-update',
   templateUrl: './reglement-create-update.component.html',
   styleUrls: ['./reglement-create-update.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    HttpClientModule,
+  imports: [MatDialogModule, MatButtonModule, MatIconModule, MatFormFieldModule, CommonModule,
+    MatInputModule, SharedModule,
+    MatDatepickerModule, FormsModule, MatOptionModule, MatAutocompleteModule,
+    ReactiveFormsModule, MatTableModule, RouterLink,
     ReactiveFormsModule,
     MatDialogModule,
     NgIf,
-    NgFor,
     MatButtonModule,
     MatMenuModule,
-    MatIconModule,
     MatDividerModule,
     MatFormFieldModule,
-    MatInputModule,
     MatSelectModule,
     MatOptionModule,
-    MatTableModule,
     MatDatepickerModule,
     SharedModule,
-    StandartAutocompleteComponent
-  ],
+    StandartAutocompleteComponent]
+  ,
   providers:
     [
-      { provide: AppDateAdapter, useClass: AppDateAdapter }, // Parse MatDatePicker Format
+      { provide: AppDateAdapter ,  useClass: AppDateAdapter }, // Parse MatDatePicker Format
       // { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
       //{ provide: MAT_DATE_LOCALE, useValue: 'fr' },
       { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-      { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS }
+      { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
+      DatePipe
     ]
 })
-export class CreateAndUpdateReglementComponent implements OnInit {
-
-  selectCtrl: UntypedFormControl = new UntypedFormControl();
-
-  static id = 0
-  fournisseurs: any[] = [];
-  clients: any[] = [];
-  @ViewChild('table', { static: true }) table!: MatTable<any>;
-
-  reglements: any[] = [];
-  displayedColumns: string[] = ['modeReglement', 'numPiece', 'banque', 'dateEcheance', 'titulaire', 'ticketEcart', 'montant', 'delete'];
+export class CreateAndUpdateReglementComponent {
 
 
-  showClients: boolean = true;
-  showFournisseurs: boolean = true;
-  showFields: boolean = false;
+  displayedColumns_OP: string[]   = ['type_pay','date_reglement','num_pay' , 'banque_pay', 'date_echeance_pay','titulaire_pay' ,'billet_reg', 'total_pay','deel'];
+  colorTablePanier  = '#6d6f6c0d';//'green';
 
-  
-
-  form: FormGroup = this.fb.group({
-    _id: [this.data?.reglement?._id || CreateAndUpdateReglementComponent.id++ + ''],
-    numero: [this.data?.reglement?.numero || ''],
-    date: [this.data?.reglement?.date || new Date(), [Validators.required, dateVaidator]],
-    fournisseur: [this.data?.document?.fournisseur || {}],
-    client: [this.data?.document?.client || {}],
-    modeReglement: [this.data?.reglement?.modeReglement || '1'],
-    montant: [this.data?.reglement?.montant || this.data?.document?.resteAPayer, [notEqualToZero()]],
-    dateEcheance: [this.data?.reglement?.dateEcheance || null, [dateVaidator]],
-    compteBancaire: [this.data?.reglement?.compteBancaire || ''],
-    agence: [this.data?.reglement?.agence || ''],
-    banque: [this.data?.reglement?.banque || ''],
-    numPiece: [this.data?.reglement?.numPiece || ''],
-    titulaire: [this.data?.reglement?.titulaire || ''],
-    note: [this.data?.reglement?.note || ''],
-    exercice: [this.data?.reglement?.exercice || ''],
-    code_societe: [this.data?.reglement?.code_societe || ''],
-    code_exercice: [this.data?.reglement?.code_exercice || ''],
-    code_depotpv: [this.data?.reglement?.code_depotpv || ''],
-    depotpv: [this.data?.reglement?.depotpv || {}],
-    sessionCaisse: [this.data?.reglement?.sessionCaisse || {}],
-    lettrageReglement: [this.data?.reglement?.lettrageReglement || {}],
-    utilisateur: [this.data?.reglement?.utilisateur || {}],
-    MTsaisie: [this.data?.reglement?.MTsaisie || ''],
-    taux: [this.data?.reglement?.taux || ''],
-   
-
-  });
-
-  mode: 'create' | 'update' = 'create';
-
-  changeModeReglement(ev: any) {
-    const selectedValue = parseInt(ev.value, 10); 
-    this.showFields = selectedValue !== 1;
-    console.log('Selected value:', selectedValue);
-    console.log('Show fields:', this.showFields); 
-  }
-  getAllFournisseurs() {
-    this.reglementHTTPService.getAllFournisseurs().subscribe(data => {
-      this.fournisseurs = data;
-    });
-  }
-  getAllClients() {
-    this.reglementHTTPService.getAllClients().subscribe(data => {
-      this.clients = data;
-    });
-  }
-
-  getAllReglements() {
-    this.reglementHTTPService.getAllReglements().subscribe(data => {
-      this.reglements = data;
-    });
-  }
+  set_total_payement = 0;
+  selectDate :any = this.datePipe.transform(new Date(), "yyyy-MM-dd")
+  selectClient:any =''
+  selectFournisseur:any =''
+  selectNote:any=''
 
 
-  
-  calculateMontantRegle() {
-    const MTsaisie = parseFloat(this.form.get('MTsaisie')?.value) || 0;
-    const taux = parseFloat(this.form.get('taux')?.value) || 0;
-    return (MTsaisie * taux)/100;
-  }
+  especeValidations: any;//FormGroup;
+  ticketValidations: any;//FormGroup;
+  chTrValidations: any;//FormGroup;
 
-  calculateResteAPayer() {
-    const MTsaisie = parseFloat(this.form.get('MTsaisie')?.value) || 0;
-    const montantRegle = this.calculateMontantRegle();
-    return MTsaisie - montantRegle;
-  }
-  
-  
-  
+  referenceTck: string = '';
+  ticketType: string = '';
+  ticketTypeObj: any = '';
+  montantTck: number = 0;
+  quantiteTck: number = 1;
 
-  deleteReglement(reglement: Reglement): void {
-    if (confirm(`Are you sure you want to delete ${reglement.modeReglement}?`)) {
-      this.reglementHTTPService.deleteReglement(reglement).subscribe({
-        next: (updatedReglements: Reglement[]) => {
-          this.reglements = updatedReglements;
-          console.log('Reglement deleted successfully.');
-        },
-        error: (err) => {
-          console.error('Error deleting reglement:', err);
-        }
-      });
+  referenceCh_TR: string = '';
+  montantCh_TR: number = 0;
+  quantiteCh_TR: number = 1;
+  banqueCh_TR: string = '';
+  banqueCh_TR_Obj: string = '';
+  titulaire_Ch_TR: string = '';
+  date_echeance_Ch_TR: Date = new Date();
+
+  clientCtrl = new UntypedFormControl();
+  fournisseurCtrl = new UntypedFormControl();
+
+  banqueCtrl = new UntypedFormControl();
+  ticketCtrl = new UntypedFormControl();
+
+  clients: Client[] = [];
+  fournisseurs: Fournisseur[] = [];
+
+  banques: Banque[] = [];
+  tickets: typeChequeTicket[] = [];
+
+  subjectClient$: ReplaySubject<Client[]> = new ReplaySubject<Client[]>();
+  subjectFournisseur$: ReplaySubject<Fournisseur[]> = new ReplaySubject<Fournisseur[]>();
+
+  subjectBanque$: ReplaySubject<Banque[]> = new ReplaySubject<Banque[]>();
+  subjectTicket$: ReplaySubject<typeChequeTicket[]> = new ReplaySubject<typeChequeTicket[]>();
+
+  dataClient$: Observable<Client[]> = this.subjectClient$.asObservable();
+  dataFournisseur$: Observable<Fournisseur[]> = this.subjectFournisseur$.asObservable();
+
+  dataBanque$: Observable<Banque[]> = this.subjectBanque$.asObservable();
+  dataTicket$: Observable<typeChequeTicket[]> = this.subjectTicket$.asObservable();
+
+  filteredClient$ = this.clientCtrl.valueChanges.pipe(
+    startWith(''),
+    debounceTime(150),
+    distinctUntilChanged(),
+    map((client:any) => (client ? this.filterClients(client).slice(0, 500)  : this.clients.slice(0, 500) ))
+  );
+
+  filteredFournisseur$ = this.fournisseurCtrl.valueChanges.pipe(
+    startWith(''),
+    debounceTime(150),
+    distinctUntilChanged(),
+    map((fournisseur:any) => (fournisseur ? this.filterFournisseurs(fournisseur).slice(0, 500)  : this.fournisseurs.slice(0, 500) ))
+  );
+
+  filteredBanque$ = this.banqueCtrl.valueChanges.pipe(
+    startWith(''),
+    debounceTime(150),
+    distinctUntilChanged(),
+    map((banque) => (banque ? this.filterBanques(banque).slice(0, 500) : this.banques.slice(0, 500)))
+
+  );
+
+  row_existeClient: boolean = false;
+  onEnterClient(evt: any){
+
+    this.row_existeClient = false;
+    let get_val:string =evt.source.value
+    const indexArr =  this.clients.filter(
+      (clt) => clt.code.concat(' ',clt.raisonSociale).toLowerCase().indexOf(get_val.toLowerCase()) >= 0
+    );
+    const selectedState = indexArr.length> 0 ? indexArr[0] : undefined
+    if (evt.source.selected) {
+      if(selectedState !=undefined){
+        console.log("***********selectedState******",  selectedState)
+        this.selectClient = selectedState;
+      }
     }
-  
-}
 
-  getDateFormat(date: Date) {
-    return getDateInput(date)
   }
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any | undefined,
-    private banqueServiceHttp: BanqueHttpService,
-    private reglementHTTPService: ReglementHttpService,
-    private dialogRef: MatDialogRef<CreateAndUpdateReglementComponent>,
-    private fb: FormBuilder,
-    private tokenService: TokenService,
-    private route: ActivatedRoute // Inject ActivatedRoute
-      
-  ) 
-  {
-    // if (data.isDocumentAchat) {
-    //   this.banqueServiceHttp.GetCollections().subscribe((res) => {
-    //     if (res.OK) {
-    //       this.allBanques = res.RESULTAT
-    //       this.setCompteBancaires()
-    //     }
-    //   });
-    // } else {
-    //   this.banqueServiceHttp.GetAll().subscribe((res) => {
-    //     if (res.OK) {
-    //       this.allBanques = res.RESULTAT
-    //       // this.allBanques = this.banqueServiceHttp.getData(res.RESULTAT)
-    //       //this.setCompteBancaires()
-    //     }
-    //   });
+  row_existeFournisseur: boolean = false;
+  onEnterFournisseur(evt: any){
+
+    this.row_existeFournisseur = false;
+    let get_val:string =evt.source.value
+    const indexArr =  this.fournisseurs.filter(
+      (fr) => fr.code.concat(' ',fr.raisonSociale).toLowerCase().indexOf(get_val.toLowerCase()) >= 0
+    );
+    const selectedState = indexArr.length> 0 ? indexArr[0] : undefined
+    if (evt.source.selected) {
+      if(selectedState !=undefined){
+        console.log("***********selectedState******",  selectedState)
+        this.selectFournisseur = selectedState;
+      }
+    }
+
+  }
+
+  set_list_banque() {
+    this.filteredBanque$ = this.banqueCtrl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(150),
+      distinctUntilChanged(),
+      map((banque) => (banque ? this.filterBanques(banque).slice(0, 500) : this.banques.slice(0, 500)))
+
+    );
+  }
+
+  set_list_ticket() {
+    this.filteredTicket$ = this.ticketCtrl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(150),
+      distinctUntilChanged(),
+      map((ticket) => (ticket ? this.filterTickets(ticket).slice(0, 500) : this.tickets.slice(0, 500)))
+    );
+  }
+
+  filteredTicket$ = this.ticketCtrl.valueChanges.pipe(
+    startWith(''),
+    debounceTime(150),
+    distinctUntilChanged(),
+    map((ticket) => (ticket ? this.filterTickets(ticket).slice(0, 500) : this.tickets.slice(0, 500)))
+  );
+
+  row_existeTicket: boolean = false;
+  onEnterTicket(evt: any, typeTCK: any) {
+
+    //this.ticketType = evt.source.value ;
+    this.ticketValidations.patchValue({ ticketTypeObj: typeTCK })
+    this.ticketValidations.patchValue({ ticketType: evt.source.value })
+    this.row_existeTicket = false;
+    const selectedState = this.dataSourceTicket.data.find(state =>
+      state.libelle.toLowerCase() == evt.source.value.toLowerCase());
+    if (evt.source.selected) {
+
+      this.dataSourceTicket._updateChangeSubscription();
+
+      /*
+            if(selectedState) {
+              setTimeout(()=>{
+                console.log("xxxxxxxxxxxx : "+this.categoryCtrl.patchValue(selectedState.reference));
+              }, 0);
+            }
+      */
+    }
+  }
+
+  row_existeBanque: boolean = false;
+  onEnterBanque(evt: any, typeBq: any) {
+
+    //this.ticketType = evt.source.value ;
+
+    this.row_existeBanque = false;
+    const selectedState = this.dataSourceBanque.data.find(state =>
+      state.libelle.toLowerCase() == evt.source.value.toLowerCase());
+    if (evt.source.selected) {
+
+      this.chTrValidations.patchValue({ banqueCh_TR_Obj: typeBq })
+      this.chTrValidations.patchValue({ banqueCh_TR: evt.source.value })
+      this.dataSourceBanque._updateChangeSubscription();
+    }
+
+
+
+  }
+
+  panelOpenBanque = false;
+  dataSourceBanque = new MatTableDataSource<Banque>();
+  dataSourceTicket = new MatTableDataSource<typeChequeTicket>();
+
+  constructor(@Inject(MAT_DIALOG_DATA) public getDetailsPanier: any, private formBuilder: FormBuilder,
+              private dialogRef: MatDialogRef<DemoDialogComponent>, private date_form: AppDateAdapter
+    , private serviceHttpBanque: BanqueHttpService,private datePipe:DatePipe,
+              private serviceHttpClient: ClientHttpService,
+              private serviceHttpFournisseur: FournisseurHttpService,
+              private serviceHttpTypeChequeTicket: TypeChequeTicketHttpService
+    , public utilService: UtilService, private ticketHttpService: TicketHttpService,
+              private tokenService:TokenService ,private reglementHTTPService: ReglementHttpService,) {
+
+    //this.date_form.setLocale("en-in"); // DD/MM/YYYY
+    this.set_Payement = [];
+  }
+
+  getDataBanque(items: any) {
+    // let newItems = []
+    // for (let key of Object.keys(items)) {
+    //   newItems.push(new Banque(items[key]))
     // }
-
+    return items
+  }
+  getDataTicket(items: any) {
+    // let newItems = []
+    // for (let key of Object.keys(items)) {
+    //   newItems.push(new typeChequeTicket(items[key]))
+    // }
+    return items
   }
 
-  // newItemEvent(newValue: any) {
-  //   if (this.form.contains(newValue[0])) {
-  //     this.form.controls[newValue[0] as string].setValue(newValue[1])
-  //   }
+  filterClients(name: string) {
+    return this.clients.filter(
+      (client:any) => client.code.concat(client.matriculeFiscale,client.raisonSociale,client.telephone).toLowerCase().indexOf(name.toLowerCase()) >= 0
+    );
+  }
 
-  //   if (["banque"].includes(newValue[0]) && this.data.isDocumentAchat) {
-  //     this.setCompteBancaires()
-  //   }
-  // }
+  filterFournisseurs(name: string) {
+    return this.fournisseurs.filter(
+      (fournisseur:any) => fournisseur.code.concat(fournisseur.matriculeFiscale,fournisseur.raisonSociale,fournisseur.telephone).toLowerCase().indexOf(name.toLowerCase()) >= 0
+    );
+  }
 
-  allBanques: IBanqueCollection[] | Banque[] = []
-  allCompteBancaires: CompteBancaires[] = []
-  setCompteBancaires() {
-    let idBanque = this.form.value.banque ? this.form.value.banque._id : null
-    let idCompteBancaire = this.form.value.compteBancaire ? this.form.value.compteBancaire._id : null
-    let banque: IBanqueCollection | undefined | Banque = this.allBanques.find((x: IBanqueCollection | Banque) => x._id == idBanque)
-    if (!banque) {
-      this.form.controls['banque'].setValue("")
-      this.form.controls['compteBancaire'].setValue("")
-      this.allCompteBancaires = []
-      return
-    }
-    this.allCompteBancaires = (banque as IBanqueCollection).compteBancaires
-    let compteBanque = this.allCompteBancaires.find((x: ICompteBancaires) => x._id == idCompteBancaire)
-    if (!compteBanque) {
-      this.form.controls['compteBancaire'].setValue("")
-      return
-    }
+  filterBanques(name: string) {
+    return this.banques.filter(
+      (banque) => banque.libelle.concat(banque.abreviation).toLowerCase().indexOf(name.toLowerCase()) >= 0
+    );
+  }
+  filterTickets(name: string) {
+    return this.tickets.filter(
+      (ticket) => ticket.libelle.toLowerCase().indexOf(name.toLowerCase()) >= 0
+    );
   }
 
   ngOnInit() {
 
-    
-    this.form.get('MTsaisie')?.valueChanges.subscribe(() => {
-      this.calculateMontantRegle();
-      this.calculateResteAPayer();
+    this.especeValidations  = this.formBuilder.group({
+      date_reglement:[new Date(), Validators.compose([Validators.required, dateVaidator])],
+      especeNumber: [0, [notEqualToZero()]],
+      taux: [0, [notEqualToZero()]],
+      note:['']
+
+    });
+    this.ticketValidations  = this.formBuilder.group({
+      date_reglement:[new Date(), Validators.compose([Validators.required, dateVaidator])],
+      montantTck: [0, [notEqualToZero()]],
+      referenceTck: ['', [Validators.required,]],
+      ticketType: ['', [Validators.required]],
+      ticketTypeObj: [''],
+      quantiteTck: [1, [Validators.required,]],
+      note:['']
+
+    });
+    this.chTrValidations    = this.formBuilder.group({
+      date_reglement:[new Date(), Validators.compose([Validators.required, dateVaidator])],
+      montantCh_TR: [0, [notEqualToZero()]],
+      quantiteCh_TR: [1, [notEqualToZero()]],
+      referenceCh_TR: ['', [Validators.required,]],
+      banqueCh_TR: ['', [Validators.required,]],
+      banqueCh_TR_Obj: [''],
+      // date_echeance_Ch_TR: [new Date(), [Validators.pattern("/^(0?[1-9]|[12][0-9]|3[01])[\\/\\-](0?[1-9]|1[012])[\\/\\-]\\d{4}$/"),  ]],
+      date_echeance_Ch_TR: [new Date(), Validators.compose([Validators.required, dateVaidator])],
+      titulaire_Ch_TR: [''],
+      note:['']
+
+    });
+    // console.log(" ----***OPEN  >>>>>>>>> panierCaisseEnCours*******---- : ",JSON.stringify(this.getDetailsPanier));
+
+    this.serviceHttpClient.GetAll().subscribe((res) => {
+      this.subjectClient$.next(res.RESULTAT);
     });
 
-    this.form.get('taux')?.valueChanges.subscribe(() => {
-      this.calculateMontantRegle();
-      this.calculateResteAPayer();
+    this.serviceHttpFournisseur.GetAll().subscribe((res) => {
+      this.subjectFournisseur$.next(res.RESULTAT);
     });
 
-    this.route.url.subscribe(url => {
-      const path = url.map(segment => segment.path).join('/');
-      console.log(this.route.url);
-      
-  
-      if (path === 'fournisseur/reglements') {
-        this.showFournisseurs = true; // Show fournisseurs list
-        this.showClients = false;
-      } else if (path === 'reglements') {
-        this.showClients = true; // Show clients list
-        this.showFournisseurs = false;
-        
-      }
+    this.serviceHttpBanque.GetAll().subscribe((res) => {
+      this.subjectBanque$.next(res.RESULTAT);
+      // this.subjectBanque$.next(this.getDataBanque(res.RESULTAT));
     });
-    this.getAllFournisseurs();
-    this.getAllClients();
-    this.getAllReglements();
+    this.serviceHttpTypeChequeTicket.GetAll().subscribe((res) => {
+      this.subjectTicket$.next(this.getDataTicket(res.RESULTAT));
+    });
 
+    this.dataClient$.pipe(filter<Client[]>(Boolean)).subscribe((listItems) => {
+      //this.listItems = listItems;
+      this.clients = listItems;
 
-    if (this.data?.reglement) {
-      this.mode = 'update';
-    } else {
-      this.form.patchValue(
-        {
-          exercice: this.tokenService.getCodeExercice(),
-          code_societe: this.tokenService.getCodeSociete(),
-          code_exercice: this.tokenService.getCodeExercice(),
-          code_depotpv: this.tokenService.getCodePointeVente(),
-          depotpv: this.tokenService.pointVenteCourante,
-          sessionCaisse: this.tokenService.sessionCaisseCourante,
-          utilisateur: {
-            _id: this.tokenService.user?._id,
-            nom: this.tokenService.user?.nom,
-            email: this.tokenService.user?.email,
-          }
-        }
-      )
+    });
+
+    this.dataFournisseur$.pipe(filter<Fournisseur[]>(Boolean)).subscribe((listItems) => {
+      //this.listItems = listItems;
+      this.fournisseurs = listItems;
+
+    });
+
+    this.dataBanque$.pipe(filter<Banque[]>(Boolean)).subscribe((listItems:any) => {
+      //this.listItems = listItems;
+      this.banques = listItems;
+    });
+    this.dataTicket$.pipe(filter<typeChequeTicket[]>(Boolean)).subscribe((listItems:any) => {
+      //this.listItems = listItems;
+      this.tickets = listItems;
+    });
+
+  }
+
+  displayedColumns_CH_TR: string[] = ['num_pay', 'montant_pay', 'banque_pay', 'date_echeance_pay', 'titulaire_pay', 'qte_pay', 'total_pay', 'deel'];
+  displayedColumns_TK: string[] = ['num_pay', 'montant_pay', 'type_ticket_pay', 'qte_pay', 'total_pay', 'deel'];
+  dataSourceOp = new MatTableDataSource<set_ModePayement>();
+
+  addTableChequeTraite() {
+
+    this.montantRecuEspece = Number(this.montantRecuEspece) + Number(this.montantCh_TR * this.quantiteCh_TR)
+
+    const obj = {
+      date_reglement: this.selectDate,
+      _id: '',
+      num_pay: this.chTrValidations.controls['referenceCh_TR'].value, //this.referenceCh_TR,
+      type_ticket_pay: "",
+      ecartEspeceNegatif: 0,
+      montant_pay: this.chTrValidations.controls['montantCh_TR'].value, //this.montantCh_TR,
+      montant_Billet: this.chTrValidations.controls['montantCh_TR'].value, //this.montantCh_TR,
+      qte_pay: this.chTrValidations.controls['quantiteCh_TR'].value, //this.quantiteCh_TR,
+      total_pay: this.chTrValidations.controls['montantCh_TR'].value, //Number(this.montantCh_TR),
+      type_pay: "ESPECE",
+      banque_pay: this.chTrValidations.controls['banqueCh_TR_Obj'].value, //this.banqueCh_TR,
+      titulaire_pay: this.chTrValidations.controls['titulaire_Ch_TR'].value, //this.titulaire_Ch_TR,
+      date_echeance_pay: this.chTrValidations.controls['date_echeance_Ch_TR'].value, //this.date_form.format(this.date_echeance_Ch_TR,"DD/MM/YYYY")
+      //date_echeance_pay:  this.date_form.format(this.chTrValidations.controls['date_echeance_Ch_TR'].value,"DD/MM/YYYY")
+      note:this.selectNote
     }
 
-    console.log(this.form.value.date);
-    
-
-  }
-
-
- 
-  isUpdateReg() {
-    return this.data?.reglement?.numero;
-  }
-
- 
-
-  onBlur(event: any, dateInput: any) {
-    event.stopPropagation();
-    setTimeout(() => {
-      dateInput.focus();
+    let lig_trouvee = false
+    this.dataSourceOp.data.forEach((item: any, index: any) => {
+      if (item.num_pay == this.chTrValidations.controls['referenceCh_TR'].value) { lig_trouvee = true }
     });
+
+    if (lig_trouvee == false) {
+      this.updateEntetPaiement('add', Number(this.chTrValidations.controls['montantCh_TR'].value));
+      this.dataSourceOp.data.unshift(obj)
+      this.dataSourceOp._updateChangeSubscription();
+    } else {
+      Swal.fire({
+        //toast: true,
+        //position: 'top',
+        showConfirmButton: false,
+        icon: 'warning',
+        //timerProgressBar,
+        timer: 5000,
+        title: 'N° pièce ' + this.chTrValidations.controls['referenceCh_TR'].value + ' existe déjà'
+      })
+    }
+
+  }
+  
+  deleteRowChequeTraite_reg(x:any){
+
+    var delBtn = confirm(" Voulez vous supprimer ce mode de paiement ?");
+    if ( delBtn == true ) {
+        console.log(this.set_total_payement+"*********--------***********"+this.dataSourceOp.data[x].total_pay)
+        this.set_total_payement -= Number(this.dataSourceOp.data[x].total_pay)
+        console.log("*********------this.set_total_payement --***********"+this.set_total_payement )
+        this.dataSourceOp.data.splice(x, 1 );
+        this.dataSourceOp._updateChangeSubscription();
+
+    }
+
+  }
+
+  addTableEspece() {
+    const obj = {
+      date_reglement: this.selectDate,
+      _id: '',
+      num_pay: '', //this.referenceTck,
+      type_ticket_pay: "ESPECE",//this.ticketType,
+      ecartEspeceNegatif: 0,
+      montant_pay: this.especeValidations.controls['especeNumber'].value,//this.montantTck,
+      montant_Billet: this.especeValidations.controls['especeNumber'].value,//this.montantTck,
+      qte_pay: 1,//this.quantiteTck,
+      total_pay: this.especeValidations.controls['especeNumber'].value,
+      type_pay: "ESPECE",
+      banque_pay: "",
+      titulaire_pay: "",
+      date_echeance_pay: "",
+      note:this.selectNote
+    }
+    this.updateEntetPaiement('espece', this.especeValidations.controls['especeNumber'].value)
+    this.dataSourceOp.data.unshift(obj)
+    this.dataSourceOp._updateChangeSubscription();
+  }
+  addTableTicket() {
+
+    this.set_total_payement += Number(Number(this.montantTck) * this.quantiteTck)
+    let newHbp = this.ticketValidations.value
+    // console.log("addTableTicket >>>>>>>>>>>>>>>>>>>>>>  "+this.ticketValidations.controls['referenceTck'].value);
+    // console.log(JSON.stringify(newHbp));
+    let totLigne = Number(this.ticketValidations.controls['montantTck'].value * this.ticketValidations.controls['quantiteTck'].value)
+    const obj = {
+      date_reglement: this.selectDate,
+      _id: '',
+      num_pay: this.ticketValidations.controls['referenceTck'].value, //this.referenceTck,
+      type_ticket_pay: this.ticketValidations.controls['ticketTypeObj'].value,//this.ticketType,
+      ecartEspeceNegatif: 0,
+      montant_pay: this.ticketValidations.controls['montantTck'].value,//this.montantTck,
+      montant_Billet: this.ticketValidations.controls['montantTck'].value,//this.montantTck,
+      qte_pay: this.ticketValidations.controls['quantiteTck'].value,//this.quantiteTck,
+      total_pay: totLigne,
+      type_pay: this.getDetailsPanier.typePayment.value,
+      banque_pay: "",
+      titulaire_pay: "",
+      date_echeance_pay: "",
+      note:this.selectNote
+    }
+
+    let lig_trouvee = false
+    const selectedState = this.dataSourceOp.data.findIndex(state =>
+      state.num_pay.toLowerCase() == this.ticketValidations.controls['referenceTck'].value.toLowerCase());
+    if (selectedState > -1) {
+      lig_trouvee = true
+    }
+
+    if (lig_trouvee == false) {
+
+      this.updateEntetPaiement('add', totLigne);
+
+      this.dataSourceOp.data.unshift(obj)
+    } else {
+      Swal.fire({
+        //toast: true,
+        //position: 'top',
+        showConfirmButton: false,
+        icon: 'warning',
+        //timerProgressBar,
+        timer: 5000,
+        title: 'N° ticket ' + this.ticketValidations.controls['referenceTck'].value + ' existe déjà'
+      })
+    }
+
+    this.dataSourceOp._updateChangeSubscription();
+    this.ticketValidations.patchValue({ referenceTck: "" })
+  }
+  updateEntetPaiement(modeOperation: any = '', totLigne: any = 0) {
+
+    if (modeOperation == 'add') {
+      this.set_total_payement = Number(this.set_total_payement) + Number(totLigne)
+    }
+
+    if (modeOperation == 'del') {
+      this.set_total_payement = Number(this.set_total_payement) - Number(totLigne)
+    }
+
+    if (modeOperation == 'espece') {
+      this.set_total_payement = Number(this.set_total_payement) + Number(totLigne)
+    }
+
+  }
+
+  montantRecuEspece: number = 0;
+  set_Payement: set_ModePayement[];
+
+  async setPayement(dataReg:any){
+    await this.reglementHTTPService.AddNew(dataReg).subscribe((res) => {
+      if (res.OK === true) {
+        //return '';
+      } else {
+       // msgErr = msgErr + res.MESSAGE+'/n'
+        showAlertError(res.MESSAGE, res.RESULTAT)
+        //return res.MESSAGE + '\n'+res.RESULTAT
+      }
+
+    });
+  }
+
+    close(answer: string) {
+    if (answer == "1") {
+
+      console.log("***********ccccc******", this.selectClient)
+      let msgErr = ''
+      this.dataSourceOp.data.forEach((item: any, index: any) => {
+
+        let new_data:any = {
+          "date":           item.date_reglement,
+          "montant":        item.montant_pay,
+          "montant_Billet": item.montant_Billet,
+          "ecartEspeceNegatif": item.ecartEspeceNegatif,
+          "utilisateur" :       {_id:this.tokenService.user?._id , nom:this.tokenService.user?.nom},
+          "sessionCaisse" :     {_id:this.tokenService.sessionCaisseCourante?._id , numero:this.tokenService.sessionCaisseCourante?.numero},
+          "client" :{
+            "_id":            this.selectClient._id,
+            "code":           this.selectClient.code,
+            "raisonSociale":  this.selectClient.raisonSociale
+          },
+          "fournisseur":        {
+            "_id":            this.selectFournisseur._id,
+            "code":           this.selectFournisseur.code,
+            "raisonSociale":  this.selectFournisseur.raisonSociale
+          },
+          "modeReglement":      this.utilService.getEnumKeyByValue('enum_modeReglement' , item.type_pay),
+          "numPiece":           item.num_pay,
+          "dateEcheance":       item.date_echeance_pay,
+          "titulaire":          item.titulaire_pay,
+          "banque":             item.banque_pay,
+          //"lettrageReglement":{},
+          // "lettrageReglement":
+          //   {
+          //     "montant_lettre":   item.montant_pay,
+          //     "type":            enum_type_document.TICKET ,// item.lettrageReglement.type  , //"bonlivraisons"
+              // "documents":
+              //   [
+              //     { "_id"     :   data.id_Ticket ,
+              //       "numero"  :   data.numero ,
+              //       "date"   :   data.date ,
+              //       "type"  :   enum_type_document.TICKET ,//item.lettrageReglement.type
+              //     }
+              //   ]
+            // }
+          //,
+          "code_societe":         this.tokenService.getCodeSociete(),
+          "code_exercice":        this.tokenService.getCodeExercice(),
+          "code_depotpv":         this.tokenService.getCodePointeVente(),
+          "tab_reg":              "reglementclients",
+          "note":           item.note,
+
+        }
+
+
+          console.log(new_data)
+          console.log("*************validerReglement avance ***************")
+          this.setPayement(new_data)
+
+      });
+
+      if(msgErr==''){
+        Swal.fire({
+          title: "Règlement  validé",
+          text: "",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        }).then((result) => {
+          setTimeout(() => {
+            this.dialogRef.close(-1);
+          }, 1000);
+        });
+
+      }
+
+    }else{
+      this.dialogRef.close(-1);
+    }
+
+  }
+
+  onEnterTicketScan(evt: any) {
+    let get_clt = evt.target.value;
+    evt.target.value = ''; // vider le champs
+
+    if (get_clt) {
+      //this.tickets
+      let prefixTck = get_clt.substring(0, 3);
+      let mntTck = get_clt.substring(3, 9).toString();
+      let formattedNumber1 = (mntTck.toString() / 1000).toFixed(3);
+      let dateTck = get_clt.substring(9, 11);
+
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      let curDate = currentYear.toString().substring(2, 4)
+
+      if (dateTck === curDate) {
+        let selectedState = this.tickets.find(state => state.code.toLowerCase() == prefixTck.toLowerCase());
+        if (selectedState != undefined) {
+          let montant_deduction = ((Number(selectedState.taux_deduction) * Number(formattedNumber1)) / 100)
+          let valueTKT = Number(formattedNumber1) - Number(montant_deduction)
+          this.ticketValidations.patchValue({ montantTck: roundmMontantNumber(valueTKT) })
+
+          this.ticketValidations.patchValue({ referenceTck: get_clt })
+          this.ticketValidations.patchValue({ ticketType: selectedState.libelle })
+
+          selectedState.montant_ticket = Number(formattedNumber1)
+          selectedState.montant_deduction = Number(montant_deduction)
+          selectedState.valeur_ticket = roundmMontantNumber(valueTKT)
+
+
+          this.ticketValidations.patchValue({ ticketTypeObj: selectedState })
+          //this.referenceTck = get_clt
+          this.addTableTicket();
+        } else {
+          Swal.fire({
+            //toast: true,
+            //position: 'top',
+            showConfirmButton: false,
+            icon: 'warning',
+            //timerProgressBar,
+            timer: 5000,
+            title: 'Inavlid Ticket N° ' + get_clt
+          })
+        }
+      } else {
+        Swal.fire({
+          //toast: true,
+          //position: 'top',
+          showConfirmButton: false,
+          icon: 'warning',
+          //timerProgressBar,
+          timer: 5000,
+          title: 'Date Ticket N° ' + get_clt + '<br>' + 'expirée !'
+        })
+      }
+
+    }
+  }
+
+  typePayment: any
+
+  changeModeReglement(event:any) {
+    // this.getDetailsPanier.typePayment.value = event.source.value
+      console.log(event);
+      this.typePayment = event.value
+  }
+
+  set_foc_client(){
+    this.filteredClient$ = this.clientCtrl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(150),
+      distinctUntilChanged(),
+      map((client) => (client ? this.filterClients(client).slice(0, 500)  : this.clients.slice(0, 500) ))
+    );
+  }
+
+  set_foc_fournisseur(){
+    this.filteredFournisseur$ = this.fournisseurCtrl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(150),
+      distinctUntilChanged(),
+      map((fournisseur) => (fournisseur ? this.filterFournisseurs(fournisseur).slice(0, 500)  : this.fournisseurs.slice(0, 500) ))
+    );
+  }
+
+  calculateMontantRegle() {
+    const especeNumber = parseFloat(this.especeValidations.get('especeNumber')?.value) || 0;
+    const taux = parseFloat(this.especeValidations.get('taux')?.value) || 0;
+    return (especeNumber * taux)/100;
+  }
+
+  calculateResteAPayer() {
+    const especeNumber = parseFloat(this.especeValidations.get('especeNumber')?.value) || 0;
+    const montantRegle = this.calculateMontantRegle();
+    return especeNumber - montantRegle;
   }
 
 }

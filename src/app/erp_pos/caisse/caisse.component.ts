@@ -88,8 +88,8 @@ import { UtilService } from "../../utils/UtilService.service";
 import { LigneDocumentVenteService } from "../../erp_documents_vente/services/ligne-document-vente.service";
 import Swal from "sweetalert2";
 import { TicketHttpService } from "../../erp_params/ticket/services/ticket-http.service";
-import { Balance } from "../../erp_params/balance-plu/models/balance.model";
-import { BalanceHttpService } from "../../erp_params/balance-plu/services/balance-http.service";
+// import { Balance } from "../../erp_params/balance-plu/models/balance.model";
+// import { BalanceHttpService } from "../../erp_params/balance-plu/services/balance-http.service";
 import { SessionsCaissesService } from "../../erp_caisse/sessions-caisses/services/sessions-caisses.service";
 import { UsersHttpService } from "../../erp_params/users/services/users-http.service";
 import { User } from "../../erp_params/users/models/user.model";
@@ -559,7 +559,7 @@ export class CaisseComponent implements OnInit {
     private serviceHttpProduct: ProductHttpServiceService,
     private serviceHttpProductDepotPV: ArticlesDepotPvHttpService,
     private serviceHttpClient: ClientHttpService,
-    private serviceHttpBalance: BalanceHttpService,
+    // private serviceHttpBalance: BalanceHttpService,
     private serviceHttpTicket: TicketHttpService,
     public utilService: UtilService, private tokenService: TokenService,
     private serviceHttpSessionCaisse: SessionsCaissesHttpService,
@@ -642,7 +642,7 @@ export class CaisseComponent implements OnInit {
     articleDepotPvss: ArticleDepotPvs[] = [];
   products: Product[] = [];
   clients: Client[] = [];
-  balances: Balance[] = [];
+  // balances: Balance[] = [];
   palns_list: Plan[] = [];
 
   ticket_list: Ticket[] = [];
@@ -796,7 +796,7 @@ export class CaisseComponent implements OnInit {
               if (set_key == 'ARTICLES_PLAN') { this.palns_list = itemsData; }
               if (set_key == 'TICKETS_CLIENTS') { this.ticket_list = itemsData; }
               if (set_key == 'CLIENTS') { this.clients = itemsData; }
-              if (set_key == 'BALANCES') { this.balances = itemsData; }
+              // if (set_key == 'BALANCES') { this.balances = itemsData; }
 
             } else {
 
@@ -847,14 +847,14 @@ export class CaisseComponent implements OnInit {
                   });
                 }
 
-                if (set_key == 'BALANCES') {
-                  this.serviceHttpBalance.GetAll().subscribe((res) => {
-                    this.balances = this.getDataBalance(res.RESULTAT);
-                    // console.log("-****balancesbalances*******---",JSON.stringify(res.RESULTAT))
-                    this.putIndexedDB("BALANCES", this.balances, 0);
+                // if (set_key == 'BALANCES') {
+                //   this.serviceHttpBalance.GetAll().subscribe((res) => {
+                //     this.balances = this.getDataBalance(res.RESULTAT);
+                //     // console.log("-****balancesbalances*******---",JSON.stringify(res.RESULTAT))
+                //     this.putIndexedDB("BALANCES", this.balances, 0);
 
-                  });
-                }
+                //   });
+                // }
 
               }
               //console.log("-***********---"+this.result)

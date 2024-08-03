@@ -87,21 +87,7 @@
                      onClick="this.select();"
                    appMontantDecimaNumber [(ngModel)]="selectMontantT" [ngModelOptions]="{standalone: true}"  placeholder="Montant en dinars (15.250)">
             <mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
-            
-           
-             
           </mat-form-field>
-
-        <mat-form-field  class="flex-none">
-          <mat-label>Mode Règlement</mat-label>
-          <mat-select  placeholder="Mode Règlement" (selectionChange)="changeModeReglement($event)">
-            <mat-option value="1">Espèce</mat-option>
-            <mat-option value="2">Chèque</mat-option>
-            <mat-option value="3">Traite</mat-option>
-            <mat-option value="4">Ticket</mat-option>
-          </mat-select>
-        </mat-form-field>
-
       </div>
 
       <!-- *************ESPECE************ -->
@@ -278,9 +264,26 @@
           <button (click)="addTableChequeTraite()" [disabled]="!chTrValidations.valid  || !selectClient || selectClient==''"  color="primary" mat-icon-button type="button" > <mat-icon svgIcon="mat:add"></mat-icon> </button>
         </div>
       </form>
+      <div class="px-6 py-4 flex flex-col">
 
+        <div class="grid grid-cols-3 gap-1">
+          <mat-form-field   appearance="outline" class="col-md-4">
+            <mat-label>Mode Règlement</mat-label>
+        <mat-select  placeholder="Mode Règlement" (selectionChange)="changeModeReglement($event)">
+          <mat-option value="1">Espèce</mat-option>
+          <mat-option value="2">Chèque</mat-option>
+          <mat-option value="3">Traite</mat-option>
+          <mat-option value="4">Ticket</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+ </div>
+</div>
     </div>
+    
   </div>
+
+  
 
   <div class="p-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-1 container">
 

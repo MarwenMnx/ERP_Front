@@ -83,6 +83,7 @@ export class CreateAndUpdateReglementComponent {
   selectClient:any =''
   selectFournisseur:any =''
   selectNote:any=''
+  selectMontantT:number=0
 
 
   especeValidations: any;//FormGroup;
@@ -314,9 +315,14 @@ export class CreateAndUpdateReglementComponent {
       date_reglement:[new Date(), Validators.compose([Validators.required, dateVaidator])],
       especeNumber: [0, [notEqualToZero()]],
       taux: [0, [notEqualToZero()]],
-      note:['']
+      note:[''],
+      montantT: [0, ],
+
 
     });
+
+    
+    
     this.ticketValidations  = this.formBuilder.group({
       date_reglement:[new Date(), Validators.compose([Validators.required, dateVaidator])],
       montantTck: [0, [notEqualToZero()]],
@@ -324,7 +330,9 @@ export class CreateAndUpdateReglementComponent {
       ticketType: ['', [Validators.required]],
       ticketTypeObj: [''],
       quantiteTck: [1, [Validators.required,]],
-      note:['']
+      note:[''],
+      montantT: [0, ],
+
 
     });
     this.chTrValidations    = this.formBuilder.group({
@@ -337,7 +345,9 @@ export class CreateAndUpdateReglementComponent {
       // date_echeance_Ch_TR: [new Date(), [Validators.pattern("/^(0?[1-9]|[12][0-9]|3[01])[\\/\\-](0?[1-9]|1[012])[\\/\\-]\\d{4}$/"),  ]],
       date_echeance_Ch_TR: [new Date(), Validators.compose([Validators.required, dateVaidator])],
       titulaire_Ch_TR: [''],
-      note:['']
+      note:[''],
+      montantT: [0, ],
+
 
     });
     // console.log(" ----***OPEN  >>>>>>>>> panierCaisseEnCours*******---- : ",JSON.stringify(this.getDetailsPanier));
@@ -379,6 +389,8 @@ export class CreateAndUpdateReglementComponent {
       this.tickets = listItems;
     });
 
+    this.calculateResteAPayer()
+
   }
 
   displayedColumns_CH_TR: string[] = ['num_pay', 'montant_pay', 'banque_pay', 'date_echeance_pay', 'titulaire_pay', 'qte_pay', 'total_pay', 'deel'];
@@ -404,7 +416,9 @@ export class CreateAndUpdateReglementComponent {
       titulaire_pay: this.chTrValidations.controls['titulaire_Ch_TR'].value, //this.titulaire_Ch_TR,
       date_echeance_pay: this.chTrValidations.controls['date_echeance_Ch_TR'].value, //this.date_form.format(this.date_echeance_Ch_TR,"DD/MM/YYYY")
       //date_echeance_pay:  this.date_form.format(this.chTrValidations.controls['date_echeance_Ch_TR'].value,"DD/MM/YYYY")
-      note:this.selectNote
+      note:this.selectNote,
+      montantT:this.selectMontantT
+
     }
 
     let lig_trouvee = false
@@ -459,9 +473,11 @@ export class CreateAndUpdateReglementComponent {
       banque_pay: "",
       titulaire_pay: "",
       date_echeance_pay: "",
-      note:this.selectNote
+      note:this.selectNote,
+      montantT:this.selectMontantT
+      
     }
-    this.updateEntetPaiement('espece', this.especeValidations.controls['especeNumber'].value)
+    this.updateEntetPaiement('espece', this.especeValidations.controls['montantT'].value)
     this.dataSourceOp.data.unshift(obj)
     this.dataSourceOp._updateChangeSubscription();
   }
@@ -486,7 +502,9 @@ export class CreateAndUpdateReglementComponent {
       banque_pay: "",
       titulaire_pay: "",
       date_echeance_pay: "",
-      note:this.selectNote
+      note:this.selectNote,
+      montantT:this.selectMontantT
+
     }
 
     let lig_trouvee = false
@@ -516,18 +534,22 @@ export class CreateAndUpdateReglementComponent {
     this.dataSourceOp._updateChangeSubscription();
     this.ticketValidations.patchValue({ referenceTck: "" })
   }
+  set_rest_Apayer:number = 0
   updateEntetPaiement(modeOperation: any = '', totLigne: any = 0) {
 
     if (modeOperation == 'add') {
       this.set_total_payement = Number(this.set_total_payement) + Number(totLigne)
+      this.set_rest_Apayer -=  Number(totLigne)
     }
 
     if (modeOperation == 'del') {
       this.set_total_payement = Number(this.set_total_payement) - Number(totLigne)
+      this.set_rest_Apayer +=  Number(totLigne)
     }
 
     if (modeOperation == 'espece') {
       this.set_total_payement = Number(this.set_total_payement) + Number(totLigne)
+      this.set_rest_Apayer    -=  Number(totLigne)
     }
 
   }
@@ -597,6 +619,8 @@ export class CreateAndUpdateReglementComponent {
           "code_depotpv":         this.tokenService.getCodePointeVente(),
           "tab_reg":              "reglementclients",
           "note":           item.note,
+         "montantT": item.montantT,
+
 
         }
 
@@ -716,13 +740,17 @@ export class CreateAndUpdateReglementComponent {
   calculateMontantRegle() {
     const especeNumber = parseFloat(this.especeValidations.get('especeNumber')?.value) || 0;
     const taux = parseFloat(this.especeValidations.get('taux')?.value) || 0;
-    return (especeNumber * taux)/100;
+    return especeNumber-((especeNumber * taux)/100);
   }
 
-  calculateResteAPayer() {
-    const especeNumber = parseFloat(this.especeValidations.get('especeNumber')?.value) || 0;
+  rest:number=0
+  calculateResteAPayer(){
+    const montantT =this.selectMontantT;
     const montantRegle = this.calculateMontantRegle();
-    return especeNumber - montantRegle;
+    this.set_rest_Apayer = montantT - montantRegle;
+    this.rest = montantT - montantRegle
+    return this.rest;
   }
+  
 
 }

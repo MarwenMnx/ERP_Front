@@ -81,7 +81,16 @@
               </button>
             </mat-form-field>
           </div>
-       
+          <mat-form-field appearance="outline" class="col-sm-6">
+            <mat-label>Montant total</mat-label>
+            <input style="text-align: right; padding-right: 1px !important;" matInput
+                     onClick="this.select();"
+                   appMontantDecimaNumber [(ngModel)]="selectMontantT" [ngModelOptions]="{standalone: true}"  placeholder="Montant en dinars (15.250)">
+            <mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
+            
+           
+             
+          </mat-form-field>
 
         <mat-form-field  class="flex-none">
           <mat-label>Mode Règlement</mat-label>
@@ -98,7 +107,7 @@
       <!-- *************ESPECE************ -->
       <form class="example-form" [formGroup]="especeValidations"
             *ngIf="typePayment == '1' || typePayment == '1'">
-            <div class="grid grid-cols-3 gap-1 border-bottom">
+       <div class="grid grid-cols-3 gap-1 border-bottom">
         <mat-form-field appearance="outline" class="col-sm-6">
           <mat-label>Montant</mat-label>
           <input style="text-align: right; padding-right: 1px !important;" matInput
@@ -112,7 +121,7 @@
        
         <div class="libelle-div" >
           <legend>Reste A Payer</legend>
-          <span><b>{{ calculateResteAPayer() }}</b></span>
+          <span><b>{{ calculateResteAPayer()  }}</b></span>
         </div>
         </div>
         <div class="grid grid-cols-3 gap-1 border-bottom">
@@ -126,7 +135,15 @@
           </div>
  
         </div>
-        <button (click)="addTableEspece()"  [disabled]="!especeValidations.valid || !selectClient || selectClient=='' " color="primary" mat-icon-button type="button" > <mat-icon svgIcon="mat:add"></mat-icon> </button>
+        <button
+        (click)="addTableEspece()"
+        [disabled]="!especeValidations.valid || selectMontantT === 0 || !selectClient || selectClient === ''"
+        color="primary"
+        mat-icon-button
+        type="button"
+      >
+        <mat-icon svgIcon="mat:add"></mat-icon>
+      </button>
 
       </form>
       <!-- *************TICKET************ -->

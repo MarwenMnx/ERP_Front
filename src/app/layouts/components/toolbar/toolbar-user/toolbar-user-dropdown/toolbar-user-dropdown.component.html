@@ -8,16 +8,14 @@
     </div>
 
     <div>
-      <span>Langue</span>
     <button
       [matMenuTriggerFor]="settingsMenu"
       mat-icon-button
-      matTooltip="Settings"
+      matTooltip="Langue"
       matTooltipPosition="before"
       type="button">
-      <mat-icon
-        class="notifications-header-icon"
-        svgIcon="mat:settings"></mat-icon>
+      <mat-icon svgIcon="mat:language"></mat-icon>
+
     </button>
   </div>
   </div>
@@ -74,15 +72,26 @@
 </mat-menu>
 
 <mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
-  <button mat-menu-item>
-    <mat-icon svgIcon="mat:language"></mat-icon>
-  </button>
+ 
 
-  <div class="language-selector flex justify-center mb-4">
-    <button (click)="changeLanguage('en')" mat-button>English</button>
-    <button (click)="changeLanguage('fr')" mat-button>Français</button>
-    <button (click)="changeLanguage('ar')" mat-button>العربية</button>
+  <div class="language-selector">
+    <div class="language-button">
+      <button (click)="changeLanguage('en')" mat-button>
+        <img src="../../../../../../assets/img/language/united-states-of-america.png" alt="English" class="flag-icon"> English
+      </button>
+    </div>
+    <div class="language-button">
+      <button (click)="changeLanguage('fr')" mat-button>
+        <img src="../../../../../../assets/img/language/france.png" alt="Français" class="flag-icon"> Français
+      </button>
+    </div>
+    <div class="language-button rtl">
+      <button (click)="changeLanguage('ar')" mat-button>
+        <img src="../../../../../../assets/img/language/flag.png" alt="العربية" class="flag-icon"> العربية
+      </button>
+    </div>
   </div>
+  
 
   <!-- <button mat-menu-item>
     <mat-icon svgIcon="mat:verified_user"></mat-icon>

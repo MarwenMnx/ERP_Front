@@ -311,6 +311,8 @@ export class CreateAndUpdateReglementComponent {
   }
 
   ngOnInit() {
+   
+
 
     this.especeValidations  = this.formBuilder.group({
       date_reglement:[new Date(), Validators.compose([Validators.required, dateVaidator])],
@@ -395,7 +397,6 @@ export class CreateAndUpdateReglementComponent {
       this.tickets = listItems;
     });
 
-    this.calculateResteAPayer()
 
   }
 
@@ -451,22 +452,23 @@ export class CreateAndUpdateReglementComponent {
 
   }
   
-  deleteRowChequeTraite_reg(x:any){
-
+  deleteRowChequeTraite_reg(x: any) {
     var delBtn = confirm(" Voulez vous supprimer ce mode de paiement ?");
-    if ( delBtn == true ) {
-        console.log(this.set_total_payement+"*********--------***********"+this.dataSourceOp.data[x].total_pay)
-        this.set_total_payement -= Number(this.dataSourceOp.data[x].total_pay)
-        console.log("*********------this.set_total_payement --***********"+this.set_total_payement )
-        this.dataSourceOp.data.splice(x, 1 );
-        this.dataSourceOp._updateChangeSubscription();
-
+    if (delBtn == true) {
+      const totalPayToDelete = Number(this.dataSourceOp.data[x].total_pay);
+  
+      console.log(this.set_total_payement + "*********--------***********" + totalPayToDelete);
+      this.dataSourceOp.data.splice(x, 1);
+      this.dataSourceOp._updateChangeSubscription();
+  
+      this.updateEntetPaiement("del", totalPayToDelete);
     }
-
   }
+  
 
+  restP:number=0
   addTableEspece() {
-    const obj = {
+    let obj = {
       date_reglement: this.selectDate,
       _id: '',
       num_pay: '', //this.referenceTck,
@@ -483,9 +485,10 @@ export class CreateAndUpdateReglementComponent {
       note:this.selectNote,
       montantT:this.selectMontantT,
       taux:this.selectTaux
-
       
     }
+    
+    // this.restP=this.calculateMontantRegle()-parseFloat(this.especeValidations.controls['especeNumber'].value);
     this.updateEntetPaiement('espece', this.especeValidations.controls['montantT'].value)
     this.dataSourceOp.data.unshift(obj)
     this.dataSourceOp._updateChangeSubscription();
@@ -547,22 +550,26 @@ export class CreateAndUpdateReglementComponent {
   }
   set_rest_Apayer:number = 0
   updateEntetPaiement(modeOperation: any = '', totLigne: any = 0) {
-
     if (modeOperation == 'add') {
+      totLigne = parseFloat(this.especeValidations.get('especeNumber')?.value) || 0
+
       this.set_total_payement = Number(this.set_total_payement) + Number(totLigne)
       this.set_rest_Apayer -=  Number(totLigne)
     }
 
     if (modeOperation == 'del') {
+
       this.set_total_payement = Number(this.set_total_payement) - Number(totLigne)
       this.set_rest_Apayer +=  Number(totLigne)
     }
 
     if (modeOperation == 'espece') {
+      totLigne = parseFloat(this.especeValidations.get('especeNumber')?.value) || 0
+
       this.set_total_payement = Number(this.set_total_payement) + Number(totLigne)
       this.set_rest_Apayer    -=  Number(totLigne)
     }
-
+      this.calculateMontantRegle()
   }
 
   montantRecuEspece: number = 0;
@@ -748,20 +755,28 @@ export class CreateAndUpdateReglementComponent {
       map((fournisseur) => (fournisseur ? this.filterFournisseurs(fournisseur).slice(0, 500)  : this.fournisseurs.slice(0, 500) ))
     );
   }
+  montantRegle:number=0
 
+  
   calculateMontantRegle() {
     const montantT =this.selectMontantT;
     const taux = this.selectTaux;
-    return montantT-((montantT * taux)/100);
-  }
-
-  rest:number=0
-  calculateResteAPayer(){
     const especeNumber = parseFloat(this.especeValidations.get('especeNumber')?.value) || 0;
+    let totReg = this.set_total_payement
+    
+     this.montantRegle = ((montantT * taux)/100);
+     this.restP = montantT - this.montantRegle - totReg
 
-    const montantRegle = this.calculateMontantRegle();
-    this.set_rest_Apayer = montantRegle - especeNumber;
-    this.rest = montantRegle - especeNumber
-    return this.rest;
   }
+
+  rest: number = 0;
+// calculateResteAPayer() {
+//   const especeNumber = parseFloat(this.especeValidations.get('especeNumber')?.value) || 0;
+//   const montantRegle = this.calculateMontantRegle();
+//   this.rest = montantRegle- especeNumber;
+//   this.set_rest_Apayer = this.rest;
+//   return this.rest;
+// }
+
+
 }

@@ -93,3 +93,44 @@
 .notification + .notification {
   @apply border-t;
 }
+.language-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  .language-button {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 200px; /* Adjust width as needed */
+      padding: 10px;
+      font-size: 16px;
+      text-transform: none;
+
+      .flag-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+      }
+    }
+
+    &.rtl {
+      button {
+        direction: rtl; /* Right-to-left text direction for Arabic */
+        .flag-icon {
+          margin-left: 0px; /* Adjust margin for RTL layout */
+          margin-right: 45px;
+        }
+      }
+    }
+  }
+}
+
+

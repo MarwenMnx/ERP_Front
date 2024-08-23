@@ -83,7 +83,7 @@
             <mat-form-field appearance="outline" class="col-sm-6">
               <mat-label>Montant total</mat-label>
               <input style="text-align: right; padding-right: 1px !important;" matInput
-                       onClick="this.select();"
+                       onClick="this.select();" (keyup)="calculateMontantRegle()"
                      appMontantDecimaNumber [(ngModel)]="selectMontantT" [ngModelOptions]="{standalone: true}"  placeholder="Montant en dinars (15.250)">
               <mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
             </mat-form-field>
@@ -103,14 +103,14 @@
 
           <mat-form-field appearance="outline" class="col-span-1">
             <mat-label>Taux %</mat-label>
-            <input [(ngModel)]="selectTaux" [ngModelOptions]="{standalone: true}" cdkFocusInitial matInput />
+            <input (keyup)="calculateMontantRegle()" [(ngModel)]="selectTaux" [ngModelOptions]="{standalone: true}" cdkFocusInitial matInput />
           </mat-form-field>
           
           
 
           <div class="libelle-div col-span-1">
-            <legend>Montant Reglé : {{ calculateMontantRegle() }}</legend>
-            <legend>Reste A Payer: {{ calculateResteAPayer() }}</legend>
+            <legend>Montant Reglé: {{ montantRegle }}</legend>
+            <legend>Reste A Payer: {{ restP }}</legend>
           </div>
         
           
@@ -119,44 +119,36 @@
        
 
       <!-- *************ESPECE************ -->
-      <form class="example-form" [formGroup]="especeValidations"
-            *ngIf="typePayment == '1' || typePayment == '1'">
-       <div class="grid grid-cols-4 gap-1 border-bottom">
-  <mat-form-field appearance="outline" class="col-span-1">
-    <mat-label>Montant</mat-label>
-    <input
-      style="text-align: right; padding-right: 1px !important;"
-      matInput
-      formControlName="especeNumber"
-      onClick="this.select();"
-      appMontantDecimaNumber
-      placeholder="Montant en dinars (15.250)"
-    />
-    <mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
-    <mat-error *ngIf="especeValidations.get('especeNumber').hasError('notEqualToZero')">
-      Le montant ne doit pas être à Zero.
-    </mat-error>
-  </mat-form-field>
+<form class="example-form" [formGroup]="especeValidations" 
+*ngIf="typePayment == '1'">
+<div class="grid grid-cols-4 gap-1 border-bottom">
+<mat-form-field appearance="outline" class="col-span-1">
+<mat-label>Montant</mat-label>
+<input
+  style="text-align: right; padding-right: 1px !important;"
+  matInput
+  formControlName="especeNumber"
+  onClick="this.select();"
+  appMontantDecimaNumber
+  placeholder="Montant en dinars (15.250)"
+/>
+<mat-icon matIconPrefix svgIcon="mat:money"></mat-icon>
+<mat-error *ngIf="especeValidations.get('especeNumber').hasError('notEqualToZero')">
+  Le montant ne doit pas être à Zero.
+</mat-error>
+</mat-form-field>
 
- 
-
-  <button
-  (click)="addTableEspece()"
-  [disabled]="!especeValidations.valid || selectMontantT === 0 || !selectClient || selectClient === ''"
-  color="primary"
-  mat-icon-button
-  type="button"
+<button
+(click)="addTableEspece()"
+[disabled]="!especeValidations.valid || selectMontantT === 0 || !selectClient || selectClient === ''"
+color="primary"
+mat-icon-button
+type="button"
 >
-  <mat-icon svgIcon="mat:add"></mat-icon>
+<mat-icon svgIcon="mat:add"></mat-icon>
 </button>
 </div>
-
-          
-          
- 
-        
-
-      </form>
+</form>
       <!-- *************TICKET************ -->
       <form class="example-form" [formGroup]="ticketValidations"  *ngIf="typePayment == '4'">
         <div    class="p-1 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-1 container"

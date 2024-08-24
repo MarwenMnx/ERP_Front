@@ -1,0 +1,33 @@
+{
+    "TITLE": "Ajouter/Mettre à jour les rôles",
+    "USER_PLACEHOLDER": "Entrez le nom d'utilisateur",
+    "SUBMIT_BUTTON": "Soumettre",
+    "ROLES_LABEL": "Rôles",
+    "USER_LABEL": "Le nom d'utilisateur",
+    
+      "Admin": "Administrateur",
+      "Editor": "Éditeur",
+      "Viewer": "Spectateur",
+
+
+
+      "WELCOME_BACK": "Bon retour",
+      "SIGN_IN_PROMPT": "Connectez-vous avec vos identifiants ci-dessous.",
+      "EMAIL_LABEL": "E-Mail",
+      "EMAIL_ERROR": "Nous avons besoin d'une adresse email pour vous connecter",
+      "PASSWORD_LABEL": "Mot de passe",
+      "PASSWORD_ERROR": "Nous avons besoin d'un mot de passe pour vous connecter",
+      "TOGGLE_VISIBILITY": "Afficher/Masquer",
+      "TOGGLE_VISIBILITY_HINT": "Cliquez sur l'œil pour afficher/masquer",
+      "REMEMBER_ME": "Se souvenir de moi",
+      "FORGOT_PASSWORD": "Mot de passe oublié ?",
+      "SIGN_IN_BUTTON": "SE CONNECTER",
+      "NO_ACCOUNT_PROMPT": "Vous n'avez pas de compte ?",
+      "REGISTER_LINK": "Cliquez ici pour en créer un",
+      "SIGN_IN_SUCCESS_MESSAGE": "Chanceux ! On dirait que vous n'aviez pas besoin d'un mot de passe ou d'une adresse email ! Pour une application réelle, nous fournissons des validateurs pour éviter cela. ;)",
+      "THANKS": "MERCI"
+
+
+
+  }
+  

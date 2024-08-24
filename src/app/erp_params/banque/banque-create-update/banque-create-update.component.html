@@ -11,7 +11,7 @@
   <h2
     *ngIf="!defaults?.libelle"
     class="headline m-0 flex-auto">
-    Ajouter banque
+    {{ 'Ajouter Banque' | translate }}
   </h2>
 
     <button
@@ -31,7 +31,7 @@
           <mat-label>Libelle</mat-label>
           <input cdkFocusInitial formControlName="libelle" matInput />
           <mat-error *ngIf="form.controls.libelle.hasError('required')"
-            >Veillez inserer la libelle.
+            >{{'Veuillez inserer la libelle' | translate}}
             </mat-error>
         </mat-form-field>
 

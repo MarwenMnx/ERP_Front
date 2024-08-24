@@ -16,6 +16,7 @@ import { NgIf } from '@angular/common';
 import { Banque } from '../models/banque.model';
 import { BanqueService } from '../services/banque.service';
 import { BanqueHttpService } from '../services/banque-http.service';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'vex-banque-create-update',
@@ -31,7 +32,8 @@ import { BanqueHttpService } from '../services/banque-http.service';
     MatIconModule,
     MatDividerModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    TranslateModule
   ]
 })
 export class BanqueCreateUpdateComponent implements OnInit {
@@ -50,11 +52,16 @@ export class BanqueCreateUpdateComponent implements OnInit {
     private dialogRef: MatDialogRef<BanqueCreateUpdateComponent>,
     private fb: FormBuilder,
     private serviceHttp:BanqueHttpService,
-    private service:BanqueService
+    private service:BanqueService,
+    private translate: TranslateService
+
   ) {}
 
 
   ngOnInit() {
+    const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+    this.translate.setDefaultLang(savedLanguage);
+    this.translate.use(savedLanguage);
     if (this.defaults) {
       this.mode = 'update';
     } else {
@@ -63,6 +70,7 @@ export class BanqueCreateUpdateComponent implements OnInit {
 
     this.form.patchValue(this.defaults);
   }
+  
 
   save() {
     if (!this.form.valid) return

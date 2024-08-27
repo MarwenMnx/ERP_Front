@@ -98,21 +98,21 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 20px;
 
   .language-button {
     display: flex;
-    justify-content: center;
-    width: 100%;
+    flex-direction: row;
+   
+    gap: 20px;
+  
 
     button {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 200px; /* Adjust width as needed */
-      padding: 10px;
-      font-size: 16px;
-      text-transform: none;
+      flex-direction: row;
+     
+      gap: 20px;
+    
 
       .flag-icon {
         width: 20px;
